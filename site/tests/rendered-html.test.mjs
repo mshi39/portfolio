@@ -170,3 +170,15 @@ test("feedback intelligence hero preserves source order without invented metadat
   assert.doesNotMatch(hero, />Project type</);
   assert.doesNotMatch(hero, />Context</);
 });
+test("case-study media and grid items can shrink below intrinsic media width", async () => {
+  const { readFile } = await import("node:fs/promises");
+  const css = await readFile(new URL("../app/case-study.css", import.meta.url), "utf8");
+  const rule = (selector) => css.match(new RegExp(`${selector.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}\\{([^}]*)\\}`))?.[1] ?? "";
+  for (const selector of [".case-media", ".case-media-frame", ".feedback-blocks"]) {
+    assert.match(rule(selector), /min-width:\s*0/, `${selector} must allow intrinsic content to shrink`);
+    assert.match(rule(selector), /max-width:\s*100%/, `${selector} must stay within its containing block`);
+  }
+  for (const selector of [".feedback-comparison-grid article", ".feedback-insights-grid article", ".feedback-outcomes-grid article", ".feedback-pipeline-grid article"]) {
+    assert.match(rule(selector), /min-width:\s*0/, `${selector} must not impose an intrinsic grid minimum`);
+  }
+});
