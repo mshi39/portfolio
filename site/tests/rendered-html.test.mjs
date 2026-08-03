@@ -145,8 +145,10 @@ test("case study preserves key metrics and outcomes", async () => {
 
 test("feedback intelligence hero preserves source order without invented metadata", async () => {
   const { html } = await render("/work/ai-powered-feedback-intelligence-platform");
-  const heroEnd = html.indexOf('class="chapter-nav"');
-  const hero = html.slice(0, heroEnd);
+  const heroStart = html.indexOf('<header class="case-hero');
+  const heroEnd = html.indexOf('class="chapter-nav"', heroStart);
+  assert.ok(heroStart >= 0, "expected the visible case-study hero");
+  const hero = html.slice(heroStart, heroEnd);
   const ordered = [
     "AI-Powered Customer Feedback Intelligence Platform",
     "Redefining an AI meeting concept into an end-to-end system that connects customer insights to product action",
