@@ -142,3 +142,29 @@ test("case study preserves key metrics and outcomes", async () => {
     assert.match(html, new RegExp(value.replace("+", "\\+"), "i"));
   }
 });
+
+test("feedback intelligence hero preserves source order without invented metadata", async () => {
+  const { html } = await render("/work/ai-powered-feedback-intelligence-platform");
+  const heroEnd = html.indexOf('class="chapter-nav"');
+  const hero = html.slice(0, heroEnd);
+  const ordered = [
+    "AI-Powered Customer Feedback Intelligence Platform",
+    "Redefining an AI meeting concept into an end-to-end system that connects customer insights to product action",
+    ">Overview<",
+    ">Projected Impact<",
+    ">My Role<",
+    "Solo UX Designer",
+    ">Timeline<",
+    "April–May 2026",
+    "feedback-intelligence-thumbnail",
+    "feedback-intelligence-hero-insights",
+  ];
+  let cursor = -1;
+  for (const value of ordered) {
+    const next = hero.indexOf(value, cursor + 1);
+    assert.ok(next > cursor, `expected ${value} after the prior hero content`);
+    cursor = next;
+  }
+  assert.doesNotMatch(hero, />Project type</);
+  assert.doesNotMatch(hero, />Context</);
+});

@@ -105,7 +105,12 @@ export default function FeedbackIntelligenceCaseStudy() {
   const heroOverview = feedbackContent.slice(indexOf("Overview") + 1, indexOf("Projected Impact"));
   const heroImpactStart = indexOf("Projected Impact");
   const heroRoleStart = indexOf("My Role");
+  const heroTimelineStart = indexOf("Timeline");
   const heroImpact = feedbackContent.slice(heroImpactStart + 1, heroRoleStart);
+  const heroRoleHeading = feedbackContent[heroRoleStart];
+  const heroRoleValue = feedbackContent[heroRoleStart + 1];
+  const heroTimelineHeading = feedbackContent[heroTimelineStart];
+  const heroTimelineValue = feedbackContent[heroTimelineStart + 1];
   const impactStart = secondHeadingIndex("Projected Impact", chapterStarts.collaboration);
 
   const workflowBlocks = chapterSlice(chapterStarts.workflow, chapterStarts.architecture);
@@ -123,8 +128,11 @@ export default function FeedbackIntelligenceCaseStudy() {
       <p className="eyebrow">AI product design · Feedback intelligence</p>
       <h1>{feedbackContent[0].type === "heading" ? feedbackContent[0].text : ""}</h1>
       <p className="case-deck">{feedbackContent[1].type === "heading" ? feedbackContent[1].text : ""}</p>
-      <div className="case-meta"><div><span>My Role</span><strong>Solo UX Designer</strong></div><div><span>Timeline</span><strong>April–May 2026</strong></div><div><span>Project type</span><strong>AI Product Design</strong></div><div><span>Context</span><strong>Voice of the Customer</strong></div></div>
       <div className="feedback-hero-overview"><div><h2>Overview</h2><BasicBlocks blocks={heroOverview} /></div><div><h2>Projected Impact</h2><BasicBlocks blocks={heroImpact} /></div></div>
+      <div className="case-meta feedback-source-meta">
+        <div><span>{heroRoleHeading.type === "heading" ? heroRoleHeading.text : ""}</span><strong>{heroRoleValue.type === "paragraph" ? heroRoleValue.text : ""}</strong></div>
+        <div><span>{heroTimelineHeading.type === "heading" ? heroTimelineHeading.text : ""}</span><strong>{heroTimelineValue.type === "paragraph" ? heroTimelineValue.text : ""}</strong></div>
+      </div>
       {heroThumbnail?.type === "media" && mediaBlock(heroThumbnail.key, 0)}
       {heroVideo?.type === "media" && mediaBlock(heroVideo.key, 1)}
     </header>
