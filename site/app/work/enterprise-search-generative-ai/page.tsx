@@ -2,12 +2,25 @@ import type { Metadata } from "next";
 import { ButtonLink } from "../../components/ButtonLink";
 import { SiteHeader } from "../../components/SiteHeader";
 import { CaseStudyFigure } from "../../components/case-study/CaseStudyFigure";
+import { CaseStudyMedia } from "../../components/case-study/CaseStudyMedia";
 import { CaseStudySection } from "../../components/case-study/CaseStudySection";
 import { ChapterNav } from "../../components/case-study/ChapterNav";
 import { MetricCard } from "../../components/case-study/MetricCard";
 
 export const metadata: Metadata = { title: "Enterprise Search in the Age of Generative AI — Melissa Shi", description: "Research that clarified the enduring value and future direction of an internal enterprise search product." };
 const asset = (name: string) => `/portfolio/enterprise-search-${name}.png`;
+
+const enterpriseChapters = [
+  { id: "background", label: "Context" },
+  { id: "goals-methods", label: "Approach" },
+  { id: "survey-findings", label: "Survey" },
+  { id: "interviews", label: "Interviews" },
+  { id: "key-insights", label: "Insights" },
+  { id: "future-state", label: "Future state" },
+  { id: "ai-attitudes", label: "AI attitudes" },
+  { id: "recommendations", label: "Recommendations" },
+  { id: "outcomes", label: "Outcomes" },
+];
 
 export default function EnterpriseSearchCaseStudy() {
   return <main className="case-study">
@@ -20,11 +33,11 @@ export default function EnterpriseSearchCaseStudy() {
       <div className="case-meta"><div><span>Role</span><strong>Lead UX Researcher</strong></div><div><span>Timeline</span><strong>September 2025 – December 2025</strong></div><div><span>Organization</span><strong>Splunk × Cisco</strong></div><div><span>Methods</span><strong>Survey · Interviews · Synthesis</strong></div></div>
       <div className="case-hero-art"><span>Search</span><strong>→</strong><span>Trusted data</span><strong>→</strong><span>AI answers</span></div>
     </header>
-    <ChapterNav />
+    <ChapterNav chapters={enterpriseChapters} />
 
     <CaseStudySection id="background" eyebrow="01 · Background" title="A trusted product at a turning point">
       <div className="prose"><p>After Splunk merged with Cisco, employees were navigating a major technology and organizational transition just as generative AI tools were changing how people found information. The Search Team needed to reassess Concierge, Splunk’s internal enterprise search engine, and understand whether it still held a meaningful place in this new landscape.</p><p>I led the research to identify the product’s unique and enduring value, explain declining retention and engagement, and translate the evidence into a concrete product direction. The core question was simple but consequential: <strong>What can Concierge uniquely provide when AI can answer almost anything?</strong></p></div>
-      <CaseStudyFigure src={asset("question-consolidation")} alt="Research questions consolidated into a central research objective" caption="The team consolidated broad stakeholder questions into one decision-driving research objective." />
+      <CaseStudyMedia kind="image" src={asset("question-consolidation")} alt="Research questions consolidated into a central research objective" caption="The team consolidated broad stakeholder questions into one decision-driving research objective." />
     </CaseStudySection>
 
     <CaseStudySection id="goals-methods" eyebrow="02 · Goals and methods" title="Measure the pattern, then understand the why" tone="pink">

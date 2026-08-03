@@ -56,6 +56,7 @@ test("server-renders the complete enterprise search case study", async () => {
   assert.equal((html.match(/<h1[ >]/g) ?? []).length, 1);
   for (const anchor of ["background", "goals-methods", "survey-findings", "interviews", "key-insights", "future-state", "ai-attitudes", "recommendations", "outcomes"]) {
     assert.match(html, new RegExp(`id="${anchor}"`));
+    assert.match(html, new RegExp(`href="#${anchor}"`));
   }
   for (const recommendation of ["Integrate Concierge into Slack and Webex", "Enable Integration with Cisco AI Assistant", "Reposition and Rebrand Concierge", "Improve Targeted Awareness"]) {
     assert.match(html, new RegExp(recommendation));
@@ -63,6 +64,14 @@ test("server-renders the complete enterprise search case study", async () => {
 });
 
 
+
+test("shared case-study media renders semantic image markup", async () => {
+  const { html } = await render("/work/enterprise-search-generative-ai");
+  assert.match(
+    html,
+    /<figure class="case-media case-media-image">[\s\S]*?<img[^>]+enterprise-search-question-consolidation[^>]*>[\s\S]*?<figcaption>/,
+  );
+});
 test("renders the complete feedback intelligence case study", async () => {
   const { response, html } = await render("/work/ai-powered-feedback-intelligence-platform");
   assert.equal(response.status, 200);
