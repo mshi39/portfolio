@@ -35,6 +35,14 @@ test("enterprise search card uses final metadata and local route", async () => {
   assert.match(html, /href="\/work\/enterprise-search-generative-ai"/);
 });
 
+
+test("feedback intelligence card links to the local case study", async () => {
+  const { html } = await render("/");
+  assert.match(html, /AI-Powered Customer Feedback Intelligence Platform/);
+  assert.match(html, /April.*May 2026/);
+  assert.match(html, /href="\/work\/ai-powered-feedback-intelligence-platform"/);
+});
+
 test("server-renders the dedicated About Me page", async () => {
   const { response, html } = await render("/about");
   assert.equal(response.status, 200);
@@ -54,10 +62,68 @@ test("server-renders the complete enterprise search case study", async () => {
   }
 });
 
+
+test("renders the complete feedback intelligence case study", async () => {
+  const { response, html } = await render("/work/ai-powered-feedback-intelligence-platform");
+  assert.equal(response.status, 200);
+  assert.equal((html.match(/<h1[ >]/g) ?? []).length, 1);
+  for (const id of ["opportunity", "workflow-research", "product-architecture", "concept-validation", "feedback-pipeline", "trust-in-ai", "collaboration", "projected-impact", "demonstrated-skills"]) {
+    assert.match(html, new RegExp(`id="${id}"`));
+    assert.match(html, new RegExp(`href="#${id}"`));
+  }
+
+  for (const phrase of [
+    "Redefining an AI meeting concept into an end-to-end system that connects customer insights to product action",
+    "Solo UX Designer",
+    "35 pain points",
+    "17 MVP requirements",
+    "more than 20 hours per product-testing program",
+    "approximately 3?????",
+    "How might we create a continuous system that captures customer feedback, turns it into trustworthy intelligence, and connects it to product action?",
+    "AI supports synthesis and content generation, while users retain authority over interpretation, prioritization, and execution.",
+  ]) {
+    assert.match(html, new RegExp(phrase.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")));
+  }
+});
+
 test("case study renders all required local research figures", async () => {
   const { html } = await render("/work/enterprise-search-generative-ai");
   for (const figure of ["question-consolidation", "survey-analysis-1", "survey-analysis-2", "survey-analysis-3", "trusted-data", "ai-adversaries", "ai-light-users", "ai-power-users", "slack-webex-integration", "mcp-integration", "data-layer-positioning"]) {
     assert.match(html, new RegExp(`/portfolio/enterprise-search-${figure}\\.`));
+  }
+});
+
+
+test("feedback intelligence case study renders all local media placements", async () => {
+  const { html } = await render("/work/ai-powered-feedback-intelligence-platform");
+  const placements = [
+    "thumbnail",
+    "hero-insights",
+    "workshop-map",
+    "user-flow",
+    "product-models",
+    "prototype",
+    "lower-barrier",
+    "scheduling",
+    "hero-insights",
+    "source-verification",
+    "central-feedback",
+    "jira",
+    "presentation",
+    "customer-portal",
+  ];
+
+  for (const placement of placements) {
+    assert.match(html, new RegExp(`/portfolio/feedback-intelligence-${placement}\\.`));
+  }
+  assert.equal((html.match(/\/portfolio\/feedback-intelligence-hero-insights\./g) ?? []).length, 2);
+
+  const videos = html.match(/<video\b[^>]*>/gi) ?? [];
+  assert.ok(videos.length > 0, "expected feedback intelligence media to include videos");
+  for (const video of videos) {
+    assert.match(video, /\bcontrols(?:\s|=|>)/i);
+    assert.match(video, /\bplaysinline(?:\s|=|>)/i);
+    assert.match(video, /\bpreload="metadata"/i);
   }
 });
 
