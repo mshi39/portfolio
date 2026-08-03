@@ -182,3 +182,16 @@ test("case-study media and grid items can shrink below intrinsic media width", a
     assert.match(rule(selector), /min-width:\s*0/, `${selector} must not impose an intrinsic grid minimum`);
   }
 });
+test("feedback intelligence images render their real intrinsic dimensions", async () => {
+  const { html } = await render("/work/ai-powered-feedback-intelligence-platform");
+  for (const [name, width, height] of [
+    ["thumbnail", 653, 453],
+    ["workshop-map", 2871, 1381],
+    ["user-flow", 3615, 443],
+    ["product-models", 1721, 641],
+  ]) {
+    const image = html.match(new RegExp(`<img[^>]+feedback-intelligence-${name}[^>]*>`))?.[0] ?? "";
+    assert.match(image, new RegExp(`width="${width}"`), `${name} must render its intrinsic width`);
+    assert.match(image, new RegExp(`height="${height}"`), `${name} must render its intrinsic height`);
+  }
+});

@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 import { ButtonLink } from "../../components/ButtonLink";
 import { SiteHeader } from "../../components/SiteHeader";
 import { CaseStudyMedia } from "../../components/case-study/CaseStudyMedia";
@@ -23,12 +24,14 @@ const chapters = [
   { id: "demonstrated-skills", label: "Demonstrated skills" },
 ];
 
-const media: Record<FeedbackMediaKey, { kind: "image" | "video"; src: string; alt?: string; caption: string }> = {
-  thumbnail: { kind: "image", src: "/portfolio/feedback-intelligence-thumbnail.png", alt: "AI-powered customer feedback intelligence platform interface", caption: "AI-Powered Customer Feedback Intelligence Platform" },
+type FeedbackImageMedia = { kind: "image"; src: string; alt: string; caption: string; width: number; height: number };
+type FeedbackVideoMedia = { kind: "video"; src: string; caption: string };
+const media: Record<FeedbackMediaKey, FeedbackImageMedia | FeedbackVideoMedia> = {
+  thumbnail: { kind: "image", src: "/portfolio/feedback-intelligence-thumbnail.png", alt: "AI-powered customer feedback intelligence platform interface", width: 653, height: 453, caption: "AI-Powered Customer Feedback Intelligence Platform" },
   "hero-video": { kind: "video", src: "/portfolio/feedback-intelligence-hero-insights.mp4", caption: "AI-powered insight generation experience" },
-  "workshop-map": { kind: "image", src: "/portfolio/feedback-intelligence-workshop-map.png", alt: "Collaborative Miro journey-mapping workshop board", caption: "Workshop Miro board used to map the customer-feedback workflow" },
-  "user-flow": { kind: "image", src: "/portfolio/feedback-intelligence-user-flow.jpg", alt: "Full customer-feedback workflow map", caption: "Full user-flow map showing the end-to-end customer-feedback journey" },
-  "product-models": { kind: "image", src: "/portfolio/feedback-intelligence-product-models.png", alt: "Comparison of three product architecture approaches", caption: "Product-model comparison and trade-offs" },
+  "workshop-map": { kind: "image", src: "/portfolio/feedback-intelligence-workshop-map.png", alt: "Collaborative Miro journey-mapping workshop board", width: 2871, height: 1381, caption: "Workshop Miro board used to map the customer-feedback workflow" },
+  "user-flow": { kind: "image", src: "/portfolio/feedback-intelligence-user-flow.jpg", alt: "Full customer-feedback workflow map", width: 3615, height: 443, caption: "Full user-flow map showing the end-to-end customer-feedback journey" },
+  "product-models": { kind: "image", src: "/portfolio/feedback-intelligence-product-models.png", alt: "Comparison of three product architecture approaches", width: 1721, height: 641, caption: "Product-model comparison and trade-offs" },
   prototype: { kind: "video", src: "/portfolio/feedback-intelligence-prototype.mp4", caption: "End-to-end concept prototype used for validation" },
   "lower-barrier": { kind: "video", src: "/portfolio/feedback-intelligence-lower-barrier.mp4", caption: "Lower-barrier meeting intelligence workflow" },
   scheduling: { kind: "video", src: "/portfolio/feedback-intelligence-scheduling.mp4", caption: "Flexible scheduling experience" },
@@ -124,7 +127,7 @@ export default function FeedbackIntelligenceCaseStudy() {
   return <main className="case-study feedback-case-study">
     <SiteHeader />
     <header className="case-hero case-shell feedback-hero">
-      <a className="case-back" href="/#selected-work">← Back to selected work</a>
+      <Link className="case-back" href="/#selected-work">← Back to selected work</Link>
       <p className="eyebrow">AI product design · Feedback intelligence</p>
       <h1>{feedbackContent[0].type === "heading" ? feedbackContent[0].text : ""}</h1>
       <p className="case-deck">{feedbackContent[1].type === "heading" ? feedbackContent[1].text : ""}</p>

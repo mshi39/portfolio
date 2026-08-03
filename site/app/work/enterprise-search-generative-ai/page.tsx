@@ -37,7 +37,7 @@ export default function EnterpriseSearchCaseStudy() {
 
     <CaseStudySection id="background" eyebrow="01 · Background" title="A trusted product at a turning point">
       <div className="prose"><p>After Splunk merged with Cisco, employees were navigating a major technology and organizational transition just as generative AI tools were changing how people found information. The Search Team needed to reassess Concierge, Splunk’s internal enterprise search engine, and understand whether it still held a meaningful place in this new landscape.</p><p>I led the research to identify the product’s unique and enduring value, explain declining retention and engagement, and translate the evidence into a concrete product direction. The core question was simple but consequential: <strong>What can Concierge uniquely provide when AI can answer almost anything?</strong></p></div>
-      <CaseStudyMedia kind="image" src={asset("question-consolidation")} alt="Research questions consolidated into a central research objective" caption="The team consolidated broad stakeholder questions into one decision-driving research objective." />
+      <CaseStudyMedia kind="image" src={asset("question-consolidation")} alt="Research questions consolidated into a central research objective" width={1180} height={467} caption="The team consolidated broad stakeholder questions into one decision-driving research objective." />
     </CaseStudySection>
 
     <CaseStudySection id="goals-methods" eyebrow="02 · Goals and methods" title="Measure the pattern, then understand the why" tone="pink">
