@@ -78,7 +78,7 @@ test("renders the complete feedback intelligence case study", async () => {
     "35 pain points",
     "17 MVP requirements",
     "more than 20 hours per product-testing program",
-    "approximately 3?????",
+    "approximately 3×",
     "How might we create a continuous system that captures customer feedback, turns it into trustworthy intelligence, and connects it to product action?",
     "AI supports synthesis and content generation, while users retain authority over interpretation, prioritization, and execution.",
   ]) {
