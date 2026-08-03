@@ -1,0 +1,10 @@
+.worktrees/
+.superpowers/
+**/node_modules/
+**/dist/
+**/.next/
+**/.wrangler/
+**/.dev-output.log
+**/.dev-error.log
+*.log
+output/
