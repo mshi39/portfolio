@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
-import { ButtonLink } from "../../components/ButtonLink";
-import { SiteHeader } from "../../components/SiteHeader";
+import { ActionLink } from "../../components/ActionLink";
+import { PortfolioFooter } from "../../components/PortfolioFooter";
+import { PortfolioHeader } from "../../components/PortfolioHeader";
 import { CaseStudyFigure } from "../../components/case-study/CaseStudyFigure";
 import { CaseStudyMedia } from "../../components/case-study/CaseStudyMedia";
 import { CaseStudySection } from "../../components/case-study/CaseStudySection";
@@ -24,7 +25,7 @@ const enterpriseChapters = [
 
 export default function EnterpriseSearchCaseStudy() {
   return <main className="case-study">
-    <SiteHeader />
+    <PortfolioHeader />
     <header className="case-hero case-shell">
       <a className="case-back" href="/#selected-work">← Back to selected work</a>
       <p className="eyebrow">Generative research · Enterprise AI</p>
@@ -78,7 +79,7 @@ export default function EnterpriseSearchCaseStudy() {
       <div className="outcome-grid"><article><strong>Customer Experience</strong><p>Identified as a valuable segment with strong success but low awareness.</p></article><article><strong>Roadmap clarity</strong><p>Prioritized Slack indexing and Slack/Webex integration as near-term initiatives.</p></article><article><strong>Strategic repositioning</strong><p>Established Concierge as the critical data layer powering Cisco AI Assistant through MCP.</p></article><article><strong>2K+ users after release</strong><p>The MCP capability reached more than two thousand users following release.</p></article><article><strong>Introduced survey research practices</strong><p>Built a repeatable quantitative research approach for the team.</p></article></div>
       <div className="case-closing"><p className="eyebrow">The lasting lesson</p><h3>Generative AI did not eliminate the need for enterprise search. It made trustworthy retrieval more important.</h3><p>The research helped the team stop treating AI as a replacement threat and start treating Concierge as the evidence layer that makes internal AI useful, verifiable, and safe.</p></div>
     </CaseStudySection>
-    <section className="case-next case-shell"><p className="eyebrow">Keep exploring</p><h2>See more work where research shapes product strategy.</h2><ButtonLink href="/#selected-work">Back to selected work</ButtonLink></section>
-    <footer className="footer shell"><p>Designed with curiosity and a little purple magic.</p><p>© {new Date().getFullYear()} Melissa Shi</p></footer>
+    <section className="case-next case-shell"><p className="eyebrow">Keep exploring</p><h2>See more work where research shapes product strategy.</h2><ActionLink href="/#selected-work">Back to selected work</ActionLink></section>
+    <PortfolioFooter />
   </main>;
 }

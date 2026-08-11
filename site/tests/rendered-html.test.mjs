@@ -108,6 +108,21 @@ test("server-renders the dedicated About Me page", async () => {
   assert.match(html, /melissa-hero\.png/);
 });
 
+test("production shared chrome has stable component-library names", async () => {
+  const { html: home } = await render("/");
+  const { html: about } = await render("/about");
+
+  assert.match(home, /<header[^>]+data-component="PortfolioHeader"/);
+  assert.match(home, /<a[^>]+class="brand"[^>]+href="\/"[^>]*>.*?Melissa Shi/);
+  assert.match(home, /<a[^>]+href="\/#selected-work"[^>]*>My Work<\/a>/);
+  assert.match(home, /<a[^>]+href="\/about"[^>]*>About Me<\/a>/);
+  assert.match(home, /<a[^>]+class="button button-primary"[^>]+data-component="ActionLink"/);
+  assert.match(home, /<a[^>]+class="button button-secondary"[^>]+data-component="ActionLink"/);
+  assert.match(about, /<footer[^>]+data-component="PortfolioFooter"/);
+  assert.match(about, /Designed with curiosity and a little purple magic\./);
+  assert.match(about, /©\s*(?:<!-- -->)?\s*\d{4}\s*(?:<!-- -->)?\s*Melissa Shi/);
+});
+
 test("server-renders the complete enterprise search case study", async () => {
   const { response, html } = await render("/work/enterprise-search-generative-ai");
   assert.equal(response.status, 200);
