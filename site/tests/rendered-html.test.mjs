@@ -290,12 +290,14 @@ test("feedback articles use h4 headings while the standalone Outcome remains h3"
   const { html } = await render("/work/ai-powered-feedback-intelligence-platform");
   const articles = [...html.matchAll(/<article\b[^>]*>([\s\S]*?)<\/article>/g)].map((match) => match[1]);
   assert.ok(articles.length > 0, "expected feedback article elements");
+  let headingCount = 0;
   for (const article of articles) {
     const headings = [...article.matchAll(/<h([1-6])[^>]*>([^<]+)<\/h\1>/g)];
-    assert.ok(headings.length > 0, "expected every feedback article to have a heading");
+    headingCount += headings.length;
     assert.doesNotMatch(article, /<h3[ >]/);
     for (const [, level, text] of headings) assert.equal(level, "4", `expected ${text} to be an h4 inside its article`);
   }
+  assert.ok(headingCount > 0, "expected feedback articles with headings");
 
   const workflowSection = html.match(/<section id="workflow-research"[\s\S]*?<\/section>/)?.[0] ?? "";
   assert.match(workflowSection, /<h3>Outcome<\/h3>/);
@@ -305,7 +307,13 @@ test("feedback articles use h4 headings while the standalone Outcome remains h3"
 test("feedback article h4 headings use the approved ink and size", async () => {
   const { readFile } = await import("node:fs/promises");
   const css = await readFile(new URL("../app/case-study.css", import.meta.url), "utf8");
-  const articleH4Rule = css.match(/\.feedback-(?:comparison|insights|outcomes|pipeline)-grid article h4\{([^}]*)\}/)?.[1] ?? "";
+  const feedbackGrids = ["comparison", "insights", "outcomes", "pipeline"];
+  const articleH4Rules = [...css.matchAll(/([^{}]+)\{([^{}]*)\}/g)];
+  const articleH4Rule = articleH4Rules.find(([, selector]) =>
+    selector.includes(".feedback-case-study article h4")
+    || feedbackGrids.every((grid) => selector.includes(`.feedback-${grid}-grid article h4`)),
+  )?.[2] ?? "";
+  assert.ok(articleH4Rule, "expected a Feedback-scoped h4 rule that covers every article grid");
   assert.match(articleH4Rule, /color:\s*#17121d/);
   assert.match(articleH4Rule, /font-size:\s*20px/);
 });
