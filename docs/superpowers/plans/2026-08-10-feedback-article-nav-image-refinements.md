@@ -101,4 +101,3 @@
 - [ ] Confirm Enterprise Search navigation and closing panel remain unchanged.
 - [ ] Request whole-feature code review and address all Critical or Important findings.
 - [ ] Report build/test counts, transparency evidence, desktop/mobile results, and any non-blocking baseline limitation.
-

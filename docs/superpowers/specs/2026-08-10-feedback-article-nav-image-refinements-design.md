@@ -62,4 +62,3 @@ Improve the Feedback Intelligence case study’s semantic heading hierarchy, quo
 - Assert the Feedback rail has no container background/border and uses a connected vertical-line treatment with thicker hover/focus/active segments.
 - Run the production build and full test suite.
 - Verify the live page at desktop and mobile widths for rail alignment, content overlap, image transparency, quote appearance, heading hierarchy, and zero horizontal overflow.
-
