@@ -40,17 +40,14 @@
 
 - [ ] **Step 1: Add failing naming and shared-chrome contracts**
 
-Add a test that asserts source modules export the production names and rendered Home/About/Enterprise routes retain the existing brand link, primary navigation, action styles, and footer copy.
+Add a test that asserts rendered Home/About/Enterprise routes expose stable `data-component` identities for the shared production components and retain the existing brand link, primary navigation, action styles, and footer copy.
 
 ```js
 test("production shared chrome has stable component-library names", async () => {
-  const { readFile } = await import("node:fs/promises");
-  const header = await readFile(new URL("../app/components/PortfolioHeader.tsx", import.meta.url), "utf8");
-  const action = await readFile(new URL("../app/components/ActionLink.tsx", import.meta.url), "utf8");
-  const footer = await readFile(new URL("../app/components/PortfolioFooter.tsx", import.meta.url), "utf8");
-  assert.match(header, /export function PortfolioHeader/);
-  assert.match(action, /export function ActionLink/);
-  assert.match(footer, /export function PortfolioFooter/);
+  const { html } = await render("/");
+  assert.match(html, /data-component="PortfolioHeader"/);
+  assert.match(html, /data-component="ActionLink"/);
+  assert.match(html, /data-component="PortfolioFooter"/);
 });
 ```
 
@@ -120,14 +117,13 @@ git commit -m "refactor: name shared portfolio components"
 
 - [ ] **Step 1: Add failing Home production-component contracts**
 
-Assert the Home route imports the seven production components and retains one `h1`, the portrait dimensions, all three professional actions, the selected-work anchor, project-card count, contact callout, and footer.
+Assert the rendered Home route exposes the production component identities and retains one `h1`, the portrait dimensions, all three professional actions, the selected-work anchor, project-card count, contact callout, and footer.
 
 ```js
 test("home composes production-backed library components", async () => {
-  const { readFile } = await import("node:fs/promises");
-  const source = await readFile(new URL("../app/page.tsx", import.meta.url), "utf8");
-  for (const name of ["PortfolioHero", "SectionIntro", "ProjectPreviewCard", "ContactCallout", "PortfolioFooter", "ScrollReveal"]) {
-    assert.match(source, new RegExp(`<${name}\\b`));
+  const { html } = await render("/");
+  for (const name of ["PortfolioHero", "PortraitStage", "SectionIntro", "ProjectPreviewCard", "ContactCallout", "PortfolioFooter", "ScrollReveal"]) {
+    assert.match(html, new RegExp(`data-component="${name}"`));
   }
 });
 ```
@@ -191,14 +187,13 @@ git commit -m "refactor: extract home portfolio components"
 
 - [ ] **Step 1: Add failing case-study component contracts**
 
-Assert production modules exist and the Feedback route composes `CaseStudyHero`, `ChapterRail`, `ContentBlockRenderer`, `InsightGrid`, `RecommendationList`, and `PortfolioFooter`.
+Assert the rendered Feedback route exposes stable production component identities for `CaseStudyHero`, `ChapterRail`, `ContentBlockRenderer`, `InsightGrid`, `RecommendationList`, and `PortfolioFooter` while retaining its existing semantic output.
 
 ```js
 test("feedback case study composes production-backed library components", async () => {
-  const { readFile } = await import("node:fs/promises");
-  const source = await readFile(new URL("../app/work/ai-powered-feedback-intelligence-platform/page.tsx", import.meta.url), "utf8");
+  const { html } = await render("/work/ai-powered-feedback-intelligence-platform");
   for (const name of ["CaseStudyHero", "ChapterRail", "ContentBlockRenderer", "InsightGrid", "RecommendationList", "PortfolioFooter"]) {
-    assert.match(source, new RegExp(`<${name}\\b`));
+    assert.match(html, new RegExp(`data-component="${name}"`));
   }
 });
 ```
@@ -347,4 +342,3 @@ git diff --check <starting-commit>..HEAD
 ```
 
 Expected: only approved component-library, refactor, test, and documentation files appear in the implementation range; user-owned uncommitted changes remain present and unaltered.
-
