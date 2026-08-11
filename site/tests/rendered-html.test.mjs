@@ -336,6 +336,24 @@ test("end-to-end capabilities and final lists use their requested presentation c
   assert.match(simpleListItemRule, /border-radius:\s*0/);
 });
 
+test("end-to-end capability cards preserve media and prose source order", async () => {
+  const { html } = await render("/work/ai-powered-feedback-intelligence-platform");
+  const section = html.match(/<section id="feedback-pipeline"[\s\S]*?<\/section>/)?.[0] ?? "";
+  const communicateCard = [...section.matchAll(/<article class="recommendation-card">([\s\S]*?)<\/article>/g)]
+    .find((match) => match[1].includes("<h3>Communicate Findings Efficiently</h3>"))?.[1] ?? "";
+  const ordered = [
+    "To reduce this repeated work, I designed an AI-assisted presentation workflow.",
+    "feedback-intelligence-presentation.mp4",
+    "Leadership can also access a high-level view of customer themes, priorities, and resulting product work without reviewing individual meetings.",
+  ];
+  let cursor = -1;
+  for (const value of ordered) {
+    const next = communicateCard.indexOf(value, cursor + 1);
+    assert.ok(next > cursor, `expected ${value} after the prior communicate-card content`);
+    cursor = next;
+  }
+});
+
 test("case-study captions and h3 headings have the approved spacing and accent color", async () => {
   const { readFile } = await import("node:fs/promises");
   const css = await readFile(new URL("../app/case-study.css", import.meta.url), "utf8");

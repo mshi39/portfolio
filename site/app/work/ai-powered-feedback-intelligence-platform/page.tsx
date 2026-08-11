@@ -108,16 +108,29 @@ function PipelineBlocks({ blocks }: { blocks: FeedbackContentBlock[] }) {
     else introduction.push(block);
   }
 
+  const segmentsFor = (group: FeedbackContentBlock[]) => {
+    const segments: Array<FeedbackContentBlock[] | Extract<FeedbackContentBlock, { type: "media" }>> = [];
+    let content: FeedbackContentBlock[] = [];
+    for (const block of group) {
+      if (block.type === "media") {
+        if (content.length) segments.push(content);
+        segments.push(block);
+        content = [];
+      } else content.push(block);
+    }
+    if (content.length) segments.push(content);
+    return segments;
+  };
+
   return <>
     <BasicBlocks blocks={introduction} />
     <div className="feedback-pipeline-grid">{groups.map((group, index) => {
-      const content = group.filter((block) => block.type !== "media");
-      const visuals = group.filter((block): block is Extract<FeedbackContentBlock, { type: "media" }> => block.type === "media");
       const cardClassName = index === groups.length - 1 ? "recommendation-card feedback-customer-card" : "recommendation-card";
       return <article className={cardClassName} key={index}>
         <span>{String(index + 1).padStart(2, "0")}</span>
-        <BasicBlocks blocks={content} />
-        {visuals.map((block, mediaIndex) => mediaBlock(block.key, mediaIndex))}
+        {segmentsFor(group).map((segment, segmentIndex) => Array.isArray(segment)
+          ? <BasicBlocks blocks={segment} key={`content-${segmentIndex}`} />
+          : mediaBlock(segment.key, segmentIndex))}
       </article>;
     })}</div>
   </>;
