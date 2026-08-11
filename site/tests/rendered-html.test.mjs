@@ -86,6 +86,37 @@ test("home page uses final brand assets", async () => {
   assert.match(html, /melissa-hero\.png/);
 });
 
+test("home composes production-backed library components", async () => {
+  const { html } = await render("/");
+
+  for (const name of [
+    "PortfolioHero",
+    "PortraitStage",
+    "SectionIntro",
+    "ProjectPreviewCard",
+    "ContactCallout",
+    "PortfolioFooter",
+    "ScrollReveal",
+  ]) {
+    assert.match(html, new RegExp(`data-component="${name}"`), `expected ${name} to render on Home`);
+  }
+
+  assert.equal((html.match(/<h1[ >]/g) ?? []).length, 1, "Home must have exactly one h1");
+  const portrait = html.match(/<img[^>]+melissa-hero\.png[^>]*>/)?.[0] ?? "";
+  assert.match(portrait, /width="1086"/);
+  assert.match(portrait, /height="1448"/);
+  for (const href of [
+    "https://drive.google.com/file/d/1MeOyIEgyo-7H6YKICb3Wx_NCdbPeXLrx/view?usp=sharing",
+    "https://www.linkedin.com/in/melissaxshi/",
+    "https://medium.com/@shineew16",
+  ]) assert.ok(html.includes(`href="${href}"`), `expected professional link: ${href}`);
+  assert.match(html, /href="#selected-work"/);
+  assert.equal((html.match(/aria-label="View case study:/g) ?? []).length, 7, "Home must keep every project preview");
+  assert.match(html, /Curious about how I think and create\?/);
+  assert.match(html, /Get to know the designer behind the work/);
+  assert.match(html, /Designed with curiosity and a little purple magic\./);
+});
+
 test("enterprise search card uses final metadata and local route", async () => {
   const { html } = await render();
   assert.match(html, /Research: Value of Internal Enterprise Search in the Age of Generative AI/);
