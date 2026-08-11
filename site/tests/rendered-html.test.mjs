@@ -228,6 +228,15 @@ test("feedback intelligence uses the fixed desktop chapter rail and hides it on 
   assert.match(css, /@media\s*\(max-width:\s*900px\)\{[\s\S]*?\.feedback-chapter-nav\{[^}]*display:\s*none[^}]*\}/);
 });
 
+test("feedback rail reserves a reading gutter across intermediate desktop widths", async () => {
+  const { readFile } = await import("node:fs/promises");
+  const css = await readFile(new URL("../app/case-study.css", import.meta.url), "utf8");
+  const gutterRule = css.match(/@media\s*\(min-width:\s*901px\)\s*and\s*\(max-width:\s*1439px\)\{[\s\S]*?\.feedback-case-study \.case-shell\{([^}]*)\}/)?.[1] ?? "";
+
+  assert.match(gutterRule, /box-sizing:\s*border-box/);
+  assert.match(gutterRule, /padding-left:\s*clamp\(/);
+});
+
 test("enterprise search keeps the default horizontal sticky chapter navigation", async () => {
   const { html } = await render("/work/enterprise-search-generative-ai");
   const { readFile } = await import("node:fs/promises");
