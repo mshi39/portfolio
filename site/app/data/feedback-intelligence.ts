@@ -1,6 +1,7 @@
 export type FeedbackMediaKey =
   | "thumbnail"
   | "hero-video"
+  | "desired-workflow"
   | "workshop-map"
   | "user-flow"
   | "product-models"
@@ -17,6 +18,7 @@ export type FeedbackMediaKey =
 export type FeedbackContentBlock =
   | { type: "heading"; level: 2 | 3; text: string; id?: string }
   | { type: "paragraph"; text: string }
+  | { type: "quote"; text: string; variant?: "workflow-question" }
   | { type: "list"; items: string[] }
   | { type: "media"; key: FeedbackMediaKey };
 
@@ -109,7 +111,7 @@ export const feedbackContent: FeedbackContentBlock[] = [
   {
     "type": "heading",
     "level": 2,
-    "text": "1. Mapping the Real Customer-Feedback Workflow"
+    "text": "Mapping the Real Customer-Feedback Workflow"
   },
   {
     "type": "heading",
@@ -224,6 +226,11 @@ export const feedbackContent: FeedbackContentBlock[] = [
     "text": "Insights still had to be translated into prioritized, trackable work in Jira."
   },
   {
+    "type": "heading",
+    "level": 3,
+    "text": "Outcome"
+  },
+  {
     "type": "paragraph",
     "text": "The research showed that the real problem was not simply:"
   },
@@ -236,13 +243,9 @@ export const feedbackContent: FeedbackContentBlock[] = [
     "text": "It was:"
   },
   {
-    "type": "paragraph",
-    "text": "How might we create a continuous system that captures customer feedback, turns it into trustworthy intelligence, and connects it to product action?"
-  },
-  {
-    "type": "heading",
-    "level": 3,
-    "text": "Outcome"
+    "type": "quote",
+    "text": "How might we create a continuous system that captures customer feedback, turns it into trustworthy intelligence, and connects it to product action?",
+    "variant": "workflow-question"
   },
   {
     "type": "paragraph",
@@ -255,7 +258,7 @@ export const feedbackContent: FeedbackContentBlock[] = [
   {
     "type": "heading",
     "level": 2,
-    "text": "2. Defining the Right Product Architecture"
+    "text": "Defining the Right Product Architecture"
   },
   {
     "type": "heading",
@@ -361,7 +364,7 @@ export const feedbackContent: FeedbackContentBlock[] = [
   {
     "type": "heading",
     "level": 2,
-    "text": "3. Validation Product Direction Through Design"
+    "text": "Validation Product Direction Through Design"
   },
   {
     "type": "heading",
@@ -443,7 +446,11 @@ export const feedbackContent: FeedbackContentBlock[] = [
     "text": "Capture → Analyze → Prioritize → Execute → Track"
   },
   {
-    "type": "paragraph",
+    "type": "media",
+    "key": "desired-workflow"
+  },
+  {
+    "type": "quote",
     "text": "“AI could interpret it one way and I could interpret it the other way.”"
   },
   {
@@ -451,7 +458,7 @@ export const feedbackContent: FeedbackContentBlock[] = [
     "text": "– Splunk Product Manager "
   },
   {
-    "type": "paragraph",
+    "type": "quote",
     "text": "\"I really like the idea about insight center, we just wanna make sure that this is a single source of truth.“AI could interpret it one way… I could interpret it another.”"
   },
   {
@@ -461,7 +468,7 @@ export const feedbackContent: FeedbackContentBlock[] = [
   {
     "type": "heading",
     "level": 2,
-    "text": "4. Designing an End-to-End Feedback Intelligence Pipeline"
+    "text": "Designing an End-to-End Feedback Intelligence Pipeline"
   },
   {
     "type": "paragraph",
@@ -688,7 +695,7 @@ export const feedbackContent: FeedbackContentBlock[] = [
   {
     "type": "heading",
     "level": 2,
-    "text": "5. Building Trust into the AI Experience"
+    "text": "Building Trust into the AI Experience"
   },
   {
     "type": "paragraph",
@@ -696,7 +703,7 @@ export const feedbackContent: FeedbackContentBlock[] = [
   },
   {
     "type": "paragraph",
-    "text": "I incorporated several trust mechanisms into the concept."
+    "text": "I incorporated several trust mechanisms into the concept that positioned AI as a collaborative layer within the workflow rather than an opaque decision-maker."
   },
   {
     "type": "heading",
@@ -742,10 +749,6 @@ export const feedbackContent: FeedbackContentBlock[] = [
   {
     "type": "paragraph",
     "text": "AI supports synthesis and content generation, while users retain authority over interpretation, prioritization, and execution."
-  },
-  {
-    "type": "paragraph",
-    "text": "These decisions positioned AI as a collaborative layer within the workflow rather than an opaque decision-maker."
   },
   {
     "type": "heading",
