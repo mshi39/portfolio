@@ -1,10 +1,16 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { ButtonLink } from "../../components/ButtonLink";
+import { PortfolioFooter } from "../../components/PortfolioFooter";
 import { SiteHeader } from "../../components/SiteHeader";
+import { CaseStudyHero } from "../../components/case-study/CaseStudyHero";
 import { CaseStudyMedia } from "../../components/case-study/CaseStudyMedia";
 import { CaseStudySection } from "../../components/case-study/CaseStudySection";
-import { ChapterNav } from "../../components/case-study/ChapterNav";
+import { ChapterRail } from "../../components/case-study/ChapterNav";
+import { ContentBlockRenderer } from "../../components/case-study/ContentBlockRenderer";
+import { InsightGrid } from "../../components/case-study/InsightGrid";
+import { RecommendationList } from "../../components/case-study/RecommendationList";
+import { SimpleContentList } from "../../components/case-study/SimpleContentList";
 import { feedbackContent, type FeedbackContentBlock, type FeedbackMediaKey } from "../../data/feedback-intelligence";
 
 export const metadata: Metadata = {
@@ -62,21 +68,6 @@ function mediaBlock(key: FeedbackMediaKey, index: number) {
   return <CaseStudyMedia key={`${key}-${index}`} {...item} />;
 }
 
-function BasicBlocks({ blocks, className = "", listClassName, articleHeadings = false }: { blocks: FeedbackContentBlock[]; className?: string; listClassName?: string; articleHeadings?: boolean }) {
-  return <div className={`feedback-blocks ${className}`.trim()}>{blocks.map((block, index) => {
-    if (block.type === "media") return mediaBlock(block.key, index);
-    if (block.type === "list") return <ul className={listClassName} key={index}>{block.items.map((item) => <li key={item}>{item}</li>)}</ul>;
-    if (block.type === "quote") return <blockquote className={`case-quote${block.variant === "workflow-question" ? " feedback-workflow-question" : ""}`} key={index}>
-      {block.text}
-      {block.attribution && <footer><cite>{block.attribution}</cite></footer>}
-    </blockquote>;
-    if (block.type === "heading") return block.level === 2
-      ? <h2 key={index}>{block.text}</h2>
-      : articleHeadings ? <h4 key={index}>{block.text}</h4> : <h3 key={index}>{block.text}</h3>;
-    return <p key={index}>{block.text}</p>;
-  })}</div>;
-}
-
 function GroupedBlocks({ blocks, mode }: { blocks: FeedbackContentBlock[]; mode: "comparison" | "insights" | "outcomes" }) {
   const introduction: FeedbackContentBlock[] = [];
   const groups: FeedbackContentBlock[][] = [];
@@ -94,8 +85,8 @@ function GroupedBlocks({ blocks, mode }: { blocks: FeedbackContentBlock[]; mode:
     else introduction.push(block);
   }
   return <>
-    <BasicBlocks blocks={introduction} />
-    <div className={`feedback-${mode}-grid`}>{groups.map((group, index) => <article key={index}><BasicBlocks blocks={group} articleHeadings /></article>)}</div>
+    <ContentBlockRenderer blocks={introduction} renderMedia={mediaBlock} />
+    <InsightGrid mode={mode} groups={groups.map((group, index) => <ContentBlockRenderer blocks={group} renderMedia={mediaBlock} articleHeadings key={index} />)} />
   </>;
 }
 
@@ -126,16 +117,13 @@ function PipelineBlocks({ blocks }: { blocks: FeedbackContentBlock[] }) {
   };
 
   return <>
-    <BasicBlocks blocks={introduction} />
-    <div className="feedback-pipeline-grid">{groups.map((group, index) => {
-      const cardClassName = index === groups.length - 1 ? "recommendation-card feedback-customer-card" : "recommendation-card";
-      return <article className={cardClassName} key={index}>
-        <span>{String(index + 1).padStart(2, "0")}</span>
-        {segmentsFor(group).map((segment, segmentIndex) => Array.isArray(segment)
-          ? <BasicBlocks blocks={segment} articleHeadings key={`content-${segmentIndex}`} />
-          : mediaBlock(segment.key, segmentIndex))}
-      </article>;
-    })}</div>
+    <ContentBlockRenderer blocks={introduction} renderMedia={mediaBlock} />
+    <RecommendationList cards={groups.map((group, index) => ({
+      customerCard: index === groups.length - 1,
+      segments: segmentsFor(group).map((segment, segmentIndex) => Array.isArray(segment)
+        ? <ContentBlockRenderer blocks={segment} renderMedia={mediaBlock} articleHeadings key={`content-${segmentIndex}`} />
+        : mediaBlock(segment.key, segmentIndex)),
+    }))} />
   </>;
 }
 
@@ -169,41 +157,44 @@ export default function FeedbackIntelligenceCaseStudy() {
   const architectureBlocks = chapterSlice(chapterStarts.architecture, chapterStarts.validation);
   const optionsStart = architectureBlocks.findIndex((block) => block.type === "heading" && block.text.startsWith("Option 1:"));
   const optionsEnd = architectureBlocks.findIndex((block) => block.type === "heading" && block.text === "Evaluating the Trade-Offs");
+  const metadataItems = [
+    { label: heroRoleHeading.type === "heading" ? heroRoleHeading.text : "", value: heroRoleValue.type === "paragraph" ? heroRoleValue.text : "" },
+    { label: heroTimelineHeading.type === "heading" ? heroTimelineHeading.text : "", value: heroTimelineValue.type === "paragraph" ? heroTimelineValue.text : "" },
+  ];
 
   return <main className="case-study feedback-case-study">
     <SiteHeader />
-    <header className="case-hero case-shell feedback-hero">
-      <Link className="case-back" href="/#selected-work">← Back to selected work</Link>
-      <p className="eyebrow">AI product design · Feedback intelligence</p>
-      <h1>{feedbackContent[0].type === "heading" ? feedbackContent[0].text : ""}</h1>
-      <p className="case-deck">{feedbackContent[1].type === "heading" ? feedbackContent[1].text : ""}</p>
-      <div className="feedback-hero-overview"><div><h2>Overview</h2><BasicBlocks blocks={heroOverview} /></div><div><h2>Projected Impact</h2><BasicBlocks blocks={heroImpact} /></div></div>
-      <div className="case-meta feedback-source-meta">
-        <div><span>{heroRoleHeading.type === "heading" ? heroRoleHeading.text : ""}</span><strong>{heroRoleValue.type === "paragraph" ? heroRoleValue.text : ""}</strong></div>
-        <div><span>{heroTimelineHeading.type === "heading" ? heroTimelineHeading.text : ""}</span><strong>{heroTimelineValue.type === "paragraph" ? heroTimelineValue.text : ""}</strong></div>
-      </div>
-      {heroVideo?.type === "media" && mediaBlock(heroVideo.key, 0)}
-    </header>
-    <ChapterNav chapters={chapters} variant="feedback-rail" />
+    <CaseStudyHero
+      className="case-hero case-shell feedback-hero"
+      backLink={<Link className="case-back" href="/#selected-work">← Back to selected work</Link>}
+      eyebrow="AI product design · Feedback intelligence"
+      title={feedbackContent[0].type === "heading" ? feedbackContent[0].text : ""}
+      deck={feedbackContent[1].type === "heading" ? feedbackContent[1].text : ""}
+      overview={<div className="feedback-hero-overview"><div><h2>Overview</h2><ContentBlockRenderer blocks={heroOverview} renderMedia={mediaBlock} /></div><div><h2>Projected Impact</h2><ContentBlockRenderer blocks={heroImpact} renderMedia={mediaBlock} /></div></div>}
+      metadataItems={metadataItems}
+      metadataClassName="feedback-source-meta"
+      mediaSlots={heroVideo?.type === "media" ? mediaBlock(heroVideo.key, 0) : undefined}
+    />
+    <ChapterRail chapters={chapters} variant="feedback-rail" />
 
     <CaseStudySection id="opportunity" eyebrow="01 · Opportunity" title="The Opportunity">
-      <BasicBlocks blocks={chapterSlice(chapterStarts.opportunity, chapterStarts.workflow)} />
+      <ContentBlockRenderer blocks={chapterSlice(chapterStarts.opportunity, chapterStarts.workflow)} renderMedia={mediaBlock} />
     </CaseStudySection>
 
     <CaseStudySection id="workflow-research" eyebrow="02 · Workflow research" title="Mapping the Real Customer-Feedback Workflow" tone="pink">
-      <BasicBlocks blocks={workflowLead} />
+      <ContentBlockRenderer blocks={workflowLead} renderMedia={mediaBlock} />
       <GroupedBlocks blocks={workflowInsights} mode="insights" />
-      <BasicBlocks blocks={workflowOutcome} />
+      <ContentBlockRenderer blocks={workflowOutcome} renderMedia={mediaBlock} />
     </CaseStudySection>
 
     <CaseStudySection id="product-architecture" eyebrow="03 · Product architecture" title="Defining the Right Product Architecture">
-      <BasicBlocks blocks={architectureBlocks.slice(0, optionsStart)} />
+      <ContentBlockRenderer blocks={architectureBlocks.slice(0, optionsStart)} renderMedia={mediaBlock} />
       <GroupedBlocks blocks={architectureBlocks.slice(optionsStart, optionsEnd)} mode="comparison" />
-      <BasicBlocks blocks={architectureBlocks.slice(optionsEnd)} />
+      <ContentBlockRenderer blocks={architectureBlocks.slice(optionsEnd)} renderMedia={mediaBlock} />
     </CaseStudySection>
 
     <CaseStudySection id="concept-validation" eyebrow="04 · Concept validation" title="Validation Product Direction Through Design" tone="pink">
-      <BasicBlocks blocks={chapterSlice(chapterStarts.validation, chapterStarts.pipeline)} />
+      <ContentBlockRenderer blocks={chapterSlice(chapterStarts.validation, chapterStarts.pipeline)} renderMedia={mediaBlock} />
     </CaseStudySection>
 
     <CaseStudySection id="feedback-pipeline" eyebrow="05 · End-to-end system" title="Designing an End-to-End Feedback Intelligence Pipeline">
@@ -219,14 +210,14 @@ export default function FeedbackIntelligenceCaseStudy() {
     </CaseStudySection>
 
     <CaseStudySection id="projected-impact" eyebrow="08 · Projected impact" title="Projected Impact" tone="pink">
-      <BasicBlocks blocks={chapterSlice(impactStart, chapterStarts.skills)} className="feedback-impact" listClassName="simple-list" />
+      <ContentBlockRenderer blocks={chapterSlice(impactStart, chapterStarts.skills)} renderMedia={mediaBlock} className="feedback-impact" renderList={(items) => <SimpleContentList items={items} />} />
     </CaseStudySection>
 
     <CaseStudySection id="demonstrated-skills" eyebrow="09 · Reflection" title="What This Project Demonstrated">
-      <BasicBlocks blocks={feedbackContent.slice(chapterStarts.skills + 1)} className="feedback-skills" listClassName="simple-list" />
+      <ContentBlockRenderer blocks={feedbackContent.slice(chapterStarts.skills + 1)} renderMedia={mediaBlock} className="feedback-skills" renderList={(items) => <SimpleContentList items={items} />} />
     </CaseStudySection>
 
     <section className="case-next case-shell"><p className="eyebrow">Keep exploring</p><h2>See more work where research shapes product strategy.</h2><ButtonLink href="/#selected-work">Back to selected work</ButtonLink></section>
-    <footer className="footer shell"><p>Designed with curiosity and a little purple magic.</p><p>© {new Date().getFullYear()} Melissa Shi</p></footer>
+    <PortfolioFooter />
   </main>;
 }

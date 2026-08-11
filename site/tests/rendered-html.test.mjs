@@ -275,6 +275,38 @@ test("feedback intelligence hero preserves source order without invented metadat
   assert.doesNotMatch(hero, />Project type</);
   assert.doesNotMatch(hero, />Context</);
 });
+
+test("feedback case study composes production-backed library components", async () => {
+  const { html } = await render("/work/ai-powered-feedback-intelligence-platform");
+
+  for (const name of [
+    "CaseStudyHero",
+    "CaseStudyMetadata",
+    "ChapterRail",
+    "ContentBlockRenderer",
+    "InsightCard",
+    "InsightGrid",
+    "RecommendationCard",
+    "RecommendationList",
+    "CaseStudyQuote",
+    "SimpleContentList",
+    "PortfolioFooter",
+  ]) {
+    assert.match(html, new RegExp(`data-component="${name}"`), `expected ${name} to render on Feedback`);
+  }
+
+  const count = (name) => (html.match(new RegExp(`data-component="${name}"`, "g")) ?? []).length;
+  assert.equal(count("CaseStudyHero"), 1);
+  assert.equal(count("CaseStudyMetadata"), 1);
+  assert.equal(count("ChapterRail"), 1);
+  assert.equal(count("SimpleContentList"), 2);
+  assert.equal(count("CaseStudyQuote"), 3, "expected two validation quotes plus the workflow question");
+  assert.equal(count("RecommendationCard"), 8, "expected seven primary recommendations plus the customer card");
+  const cardClasses = [...html.matchAll(/<article class="([^"]+)" data-component="RecommendationCard">/g)].map((match) => match[1]);
+  assert.equal(cardClasses.filter((className) => className === "recommendation-card").length, 7);
+  assert.equal(cardClasses.filter((className) => className === "recommendation-card feedback-customer-card").length, 1);
+});
+
 test("case-study media and grid items can shrink below intrinsic media width", async () => {
   const { readFile } = await import("node:fs/promises");
   const css = await readFile(new URL("../app/case-study.css", import.meta.url), "utf8");
@@ -316,7 +348,7 @@ test("feedback intelligence uses the fixed desktop chapter rail and hides it on 
   const chapterNavSource = await readFile(new URL("../app/components/case-study/ChapterNav.tsx", import.meta.url), "utf8");
   const css = await readFile(new URL("../app/case-study.css", import.meta.url), "utf8");
 
-  assert.match(html, /<nav class="chapter-nav feedback-chapter-nav" aria-label="Case study chapters">/);
+  assert.match(html, /<nav class="chapter-nav feedback-chapter-nav" aria-label="Case study chapters"[^>]*>/);
   assert.equal((html.match(/<nav class="chapter-nav feedback-chapter-nav"[\s\S]*?<\/nav>/)?.[0].match(/href="#/g) ?? []).length, 9);
   assert.match(html, /<a[^>]+href="#opportunity"[^>]+aria-current="location"/);
   assert.match(chapterNavSource, /["']use client["']/);
@@ -367,7 +399,7 @@ test("feedback article h4 headings use the approved ink and size", async () => {
 test("concept-validation quotes own their cite attribution without external speaker paragraphs", async () => {
   const { html } = await render("/work/ai-powered-feedback-intelligence-platform");
   const section = html.match(/<section id="concept-validation"[\s\S]*?<\/section>/)?.[0] ?? "";
-  const quotes = [...section.matchAll(/<blockquote class="case-quote">([\s\S]*?)<\/blockquote>/g)];
+  const quotes = [...section.matchAll(/<blockquote class="case-quote"[^>]*>([\s\S]*?)<\/blockquote>/g)];
   assert.equal(quotes.length, 2);
   for (const [, quote] of quotes) {
     assert.match(quote, /<footer><cite>– Splunk Product Manager<\/cite><\/footer>/);
@@ -432,7 +464,7 @@ test("enterprise search keeps the default horizontal sticky chapter navigation",
   const css = await readFile(new URL("../app/case-study.css", import.meta.url), "utf8");
   const defaultNavRule = css.match(/\.chapter-nav\{([^}]*)\}/)?.[1] ?? "";
 
-  assert.match(html, /<nav class="chapter-nav" aria-label="Case study chapters">/);
+  assert.match(html, /<nav class="chapter-nav" aria-label="Case study chapters"[^>]*>/);
   assert.doesNotMatch(html, /feedback-chapter-nav/);
   assert.match(defaultNavRule, /position:\s*sticky/);
   assert.match(defaultNavRule, /display:\s*flex/);
@@ -458,7 +490,7 @@ test("workflow research keeps Outcome outside insight cards and preserves its re
     "The research showed that the real problem was not simply:",
     "How might we summarize customer meetings with AI?",
     "It was:",
-    '<blockquote class="case-quote feedback-workflow-question">How might we create a continuous system that captures customer feedback, turns it into trustworthy intelligence, and connects it to product action?</blockquote>',
+    '<blockquote class="case-quote feedback-workflow-question" data-component="CaseStudyQuote">How might we create a continuous system that captures customer feedback, turns it into trustworthy intelligence, and connects it to product action?</blockquote>',
     "I synthesized the findings with the product manager and translated them into 17 MVP requirements.",
     "This established a user-driven foundation for the new capability rather than relying solely on the initial product concept.",
   ];
@@ -473,7 +505,7 @@ test("workflow research keeps Outcome outside insight cards and preserves its re
 test("concept validation uses semantic quotes and the local desired-workflow illustration", async () => {
   const { html } = await render("/work/ai-powered-feedback-intelligence-platform");
   const section = html.match(/<section id="concept-validation"[\s\S]*?<\/section>/)?.[0] ?? "";
-  const quotes = [...section.matchAll(/<blockquote class="case-quote">([\s\S]*?)<\/blockquote>/g)].map((match) => match[1]);
+  const quotes = [...section.matchAll(/<blockquote class="case-quote"[^>]*>([\s\S]*?)<\/blockquote>/g)].map((match) => match[1]);
   assert.deepEqual(quotes.map((quote) => quote.match(/^([^<]+)/)?.[1]), [
     "“AI could interpret it one way and I could interpret it the other way.”",
     "“I really like the idea about insight center, we just wanna make sure that this is a single source of truth.”",
@@ -496,7 +528,7 @@ test("end-to-end capabilities and final lists use their requested presentation c
   const { readFile } = await import("node:fs/promises");
   const css = await readFile(new URL("../app/case-study.css", import.meta.url), "utf8");
   const pipeline = html.match(/<section id="feedback-pipeline"[\s\S]*?<\/section>/)?.[0] ?? "";
-  const cards = [...pipeline.matchAll(/<article class="recommendation-card">([\s\S]*?)<\/article>/g)].map((match) => match[1]);
+  const cards = [...pipeline.matchAll(/<article class="recommendation-card"[^>]*>([\s\S]*?)<\/article>/g)].map((match) => match[1]);
   assert.equal(cards.length, 7);
   assert.deepEqual(cards.map((card) => card.match(/<h4>([^<]+)<\/h4>/)?.[1]), [
     "Lower the Barrier to Capturing Feedback",
@@ -511,7 +543,7 @@ test("end-to-end capabilities and final lists use their requested presentation c
   assert.match(css, /@media\s*\(max-width:\s*900px\)\{[\s\S]*?\.feedback-pipeline-grid\{[^}]*grid-template-columns:\s*1fr[^}]*\}/);
   for (const sectionId of ["projected-impact", "demonstrated-skills"]) {
     const section = html.match(new RegExp(`<section id="${sectionId}"[\\s\\S]*?<\\/section>`))?.[0] ?? "";
-    assert.match(section, /<ul class="simple-list">/);
+    assert.match(section, /<ul class="simple-list"[^>]*>/);
   }
   const simpleListRule = css.match(/\.simple-list\{([^}]*)\}/)?.[1] ?? "";
   const simpleListItemRule = css.match(/\.simple-list li\{([^}]*)\}/)?.[1] ?? "";
@@ -525,7 +557,7 @@ test("end-to-end capabilities and final lists use their requested presentation c
 test("end-to-end capability cards preserve media and prose source order", async () => {
   const { html } = await render("/work/ai-powered-feedback-intelligence-platform");
   const section = html.match(/<section id="feedback-pipeline"[\s\S]*?<\/section>/)?.[0] ?? "";
-  const communicateCard = [...section.matchAll(/<article class="recommendation-card">([\s\S]*?)<\/article>/g)]
+  const communicateCard = [...section.matchAll(/<article class="recommendation-card"[^>]*>([\s\S]*?)<\/article>/g)]
     .find((match) => match[1].includes("<h4>Communicate Findings Efficiently</h4>"))?.[1] ?? "";
   const ordered = [
     "To reduce this repeated work, I designed an AI-assisted presentation workflow.",

@@ -4,12 +4,12 @@ import { useEffect, useState } from "react";
 
 export type Chapter = { id: string; label: string };
 
-type ChapterNavProps = {
+type ChapterRailProps = {
   chapters: Chapter[];
   variant?: "default" | "feedback-rail";
 };
 
-export function ChapterNav({ chapters, variant = "default" }: ChapterNavProps) {
+export function ChapterRail({ chapters, variant = "default" }: ChapterRailProps) {
   const isFeedbackRail = variant === "feedback-rail";
   const [activeId, setActiveId] = useState(chapters[0]?.id ?? "");
 
@@ -46,7 +46,7 @@ export function ChapterNav({ chapters, variant = "default" }: ChapterNavProps) {
   const className = isFeedbackRail ? "chapter-nav feedback-chapter-nav" : "chapter-nav";
 
   return (
-    <nav className={className} aria-label="Case study chapters">
+    <nav className={className} aria-label="Case study chapters" data-component="ChapterRail">
       {chapters.map(({ id, label }) => (
         <a
           key={id}
@@ -60,3 +60,5 @@ export function ChapterNav({ chapters, variant = "default" }: ChapterNavProps) {
     </nav>
   );
 }
+
+export const ChapterNav = ChapterRail;
