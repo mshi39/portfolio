@@ -1,6 +1,7 @@
 "use client";
 
 import Image from "next/image";
+import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 
 export function PortfolioHeader({ current = "work" }: { current?: "work" | "about" }) {
@@ -23,10 +24,10 @@ export function PortfolioHeader({ current = "work" }: { current?: "work" | "abou
 
   return (
     <header className={`site-header shell ${visible ? "header-visible" : "header-hidden"}`} data-component="PortfolioHeader" onFocus={() => { focused.current = true; setVisible(true); }} onBlur={() => { focused.current = false; }}>
-      <a className="brand" href="/" aria-label="Melissa Shi home"><Image unoptimized src="/portfolio/portfolio-logo.png" alt="" width={52} height={52} /><span>Melissa Shi</span></a>
+      <Link className="brand" href="/" aria-label="Melissa Shi home"><Image unoptimized src="/portfolio/portfolio-logo.png" alt="" width={52} height={52} /><span>Melissa Shi</span></Link>
       <nav aria-label="Primary navigation">
-        <a className={`nav-link ${current === "work" ? "active" : ""}`} href="/#selected-work" aria-current={current === "work" ? "page" : undefined}>My Work</a>
-        <a className={`nav-link ${current === "about" ? "active" : ""}`} href="/about" aria-current={current === "about" ? "page" : undefined}>About Me</a>
+        <Link className={`nav-link ${current === "work" ? "active" : ""}`} href="/#selected-work" aria-current={current === "work" ? "page" : undefined}>My Work</Link>
+        <Link className={`nav-link ${current === "about" ? "active" : ""}`} href="/about" aria-current={current === "about" ? "page" : undefined}>About Me</Link>
       </nav>
     </header>
   );

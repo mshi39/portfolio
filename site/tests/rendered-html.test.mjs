@@ -144,7 +144,7 @@ test("production shared chrome has stable component-library names", async () => 
   const { html: about } = await render("/about");
 
   assert.match(home, /<header[^>]+data-component="PortfolioHeader"/);
-  assert.match(home, /<a[^>]+class="brand"[^>]+href="\/"[^>]*>.*?Melissa Shi/);
+  assert.match(home, /<a(?=[^>]*class="brand")(?=[^>]*href="\/")(?=[^>]*aria-label="Melissa Shi home")[^>]*>.*?Melissa Shi/);
   assert.match(home, /<a[^>]+href="\/#selected-work"[^>]*>My Work<\/a>/);
   assert.match(home, /<a[^>]+href="\/about"[^>]*>About Me<\/a>/);
   assert.match(home, /<a[^>]+class="button button-primary"[^>]+data-component="ActionLink"/);
