@@ -233,8 +233,18 @@ test("feedback rail reserves a reading gutter across intermediate desktop widths
   const css = await readFile(new URL("../app/case-study.css", import.meta.url), "utf8");
   const gutterRule = css.match(/@media\s*\(min-width:\s*901px\)\s*and\s*\(max-width:\s*1439px\)\{[\s\S]*?\.feedback-case-study \.case-shell\{([^}]*)\}/)?.[1] ?? "";
 
+  assert.match(gutterRule, /width:\s*min\(1040px,calc\(100%\s*-\s*224px\)\)/);
+  assert.match(gutterRule, /margin-left:\s*208px/);
+  assert.match(gutterRule, /margin-right:\s*16px/);
   assert.match(gutterRule, /box-sizing:\s*border-box/);
-  assert.match(gutterRule, /padding-left:\s*clamp\(/);
+  const railRight = 24 + 160;
+  for (const viewport of [901, 1200, 1439]) {
+    const shellLeft = 208;
+    const shellWidth = Math.min(1040, viewport - 224);
+    assert.ok(shellLeft > railRight, `expected a rail gap at ${viewport}px`);
+    assert.ok(shellWidth >= 677, `expected a readable shell width at ${viewport}px`);
+    assert.ok(shellLeft + shellWidth <= viewport, `expected the shell to stay in bounds at ${viewport}px`);
+  }
 });
 
 test("enterprise search keeps the default horizontal sticky chapter navigation", async () => {

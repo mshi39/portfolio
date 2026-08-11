@@ -14,4 +14,4 @@
 .feedback-chapter-nav{position:fixed;z-index:30;top:50%;left:24px;width:auto;display:flex;flex-direction:column;gap:4px;margin:0;padding:8px;overflow:visible;border-radius:16px;transform:translateY(-50%)}.feedback-chapter-nav a{padding:8px 12px;transition:background-color .2s ease,color .2s ease,font-size .2s ease}.feedback-chapter-nav a[aria-current="location"]{background:var(--pink);color:var(--purple);font-size:.84rem}
 @media(prefers-reduced-motion:reduce){.feedback-chapter-nav a{transition:none}}
 @media(max-width:900px){.feedback-chapter-nav{display:none}}
-@media(min-width:901px) and (max-width:1439px){.feedback-case-study .case-shell{box-sizing:border-box;padding-left:clamp(40px,calc(564px - 45.7vw),152px)}}
+@media(min-width:901px) and (max-width:1439px){.feedback-case-study .case-shell{box-sizing:border-box;width:min(1040px,calc(100% - 224px));margin-left:208px;margin-right:16px}}
