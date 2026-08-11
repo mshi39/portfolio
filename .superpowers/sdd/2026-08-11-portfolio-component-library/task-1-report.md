@@ -68,3 +68,49 @@ Result: 33 passing.
 - The rendered test verifies the shared component identities while retaining behavior assertions for the brand link, primary navigation, both button variants, and the exact visible footer copy.
 - Home and Feedback remain on their compatibility component names as required; only About and Enterprise were migrated.
 - No product concerns. The Windows shell required `npx.cmd cross-env` for the build because direct `npm` invocation is blocked by local PowerShell policy and `npm.cmd` does not interpret the package script's POSIX-style environment assignment.
+
+## Shared-header lint fix round
+
+### Red lint reproduction
+
+```powershell
+npx.cmd eslint app/components/PortfolioHeader.tsx
+```
+
+Result: failed with 2 errors and 0 warnings. `@next/next/no-html-link-for-pages` identified the raw brand `/` anchor at line 26 and the raw `/#selected-work` anchor at line 28.
+
+### Fix
+
+Imported `Link` from `next/link` and used it for the brand `/`, My Work `/#selected-work`, and About Me `/about` navigation while preserving each link's class, href, accessible attributes, text, and the header's scroll/focus behavior. The shared-chrome test's brand matcher was made attribute-order-independent because `Link` emits `href` before `class` while preserving the same rendered anchor semantics.
+
+### Green lint verification
+
+```powershell
+npx.cmd eslint app/components/PortfolioHeader.tsx
+```
+
+Result: succeeded with 0 errors and 0 warnings.
+
+### Fresh build
+
+```powershell
+npx.cmd cross-env WRANGLER_LOG_PATH=.wrangler/wrangler.log vinext build
+```
+
+Result: succeeded; all five Vinext build stages completed and all five application routes were emitted.
+
+### Focused rendered verification
+
+```powershell
+node --test --test-name-pattern="production shared chrome|server-renders Melissa's My Work page|server-renders the dedicated About Me page" tests/rendered-html.test.mjs
+```
+
+Result: 3 passing, 0 failing.
+
+### Fix commit
+
+`8ea9209` — `fix: use framework links in portfolio header`
+
+### Fix-round concerns
+
+No product concerns. The build continues to emit the existing Node `module.register()` deprecation warning.
