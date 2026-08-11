@@ -321,11 +321,15 @@ test("case-study captions and h3 headings have the approved spacing and accent c
   const { readFile } = await import("node:fs/promises");
   const css = await readFile(new URL("../app/case-study.css", import.meta.url), "utf8");
   const captionRule = css.match(/\.case-media figcaption\{([^}]*)\}/)?.[1] ?? "";
+  const marginValues = captionRule.match(/margin:\s*([^;]+);/)?.[1].trim().split(/\s+/) ?? [];
+  const marginBottom = marginValues.length === 1
+    ? marginValues[0]
+    : marginValues.length === 2
+      ? marginValues[0]
+      : marginValues[2];
   assert.ok(
     /margin-bottom:\s*12px/.test(captionRule)
-      || /margin:\s*12px\s+[^;\s]+\s+12px(?:\s+[^;\s]+)?\s*;/.test(captionRule)
-      || /margin:\s*12px\s+[^;\s]+\s*;/.test(captionRule)
-      || /margin:\s*12px\s*;/.test(captionRule),
+      || marginBottom === "12px",
     "case-media figcaptions must have a 12px bottom margin",
   );
   assert.match(css, /\.case-section h3\{[^}]*color:\s*var\(--purple\)[^}]*\}/);
