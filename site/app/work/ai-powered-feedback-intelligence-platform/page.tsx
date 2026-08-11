@@ -62,14 +62,17 @@ function mediaBlock(key: FeedbackMediaKey, index: number) {
   return <CaseStudyMedia key={`${key}-${index}`} {...item} />;
 }
 
-function BasicBlocks({ blocks, className = "", listClassName }: { blocks: FeedbackContentBlock[]; className?: string; listClassName?: string }) {
+function BasicBlocks({ blocks, className = "", listClassName, articleHeadings = false }: { blocks: FeedbackContentBlock[]; className?: string; listClassName?: string; articleHeadings?: boolean }) {
   return <div className={`feedback-blocks ${className}`.trim()}>{blocks.map((block, index) => {
     if (block.type === "media") return mediaBlock(block.key, index);
     if (block.type === "list") return <ul className={listClassName} key={index}>{block.items.map((item) => <li key={item}>{item}</li>)}</ul>;
-    if (block.type === "quote") return <blockquote className={`case-quote${block.variant === "workflow-question" ? " feedback-workflow-question" : ""}`} key={index}>{block.text}</blockquote>;
+    if (block.type === "quote") return <blockquote className={`case-quote${block.variant === "workflow-question" ? " feedback-workflow-question" : ""}`} key={index}>
+      {block.text}
+      {block.attribution && <footer><cite>{block.attribution}</cite></footer>}
+    </blockquote>;
     if (block.type === "heading") return block.level === 2
       ? <h2 key={index}>{block.text}</h2>
-      : <h3 key={index}>{block.text}</h3>;
+      : articleHeadings ? <h4 key={index}>{block.text}</h4> : <h3 key={index}>{block.text}</h3>;
     return <p key={index}>{block.text}</p>;
   })}</div>;
 }
@@ -92,7 +95,7 @@ function GroupedBlocks({ blocks, mode }: { blocks: FeedbackContentBlock[]; mode:
   }
   return <>
     <BasicBlocks blocks={introduction} />
-    <div className={`feedback-${mode}-grid`}>{groups.map((group, index) => <article key={index}><BasicBlocks blocks={group} /></article>)}</div>
+    <div className={`feedback-${mode}-grid`}>{groups.map((group, index) => <article key={index}><BasicBlocks blocks={group} articleHeadings /></article>)}</div>
   </>;
 }
 
@@ -129,7 +132,7 @@ function PipelineBlocks({ blocks }: { blocks: FeedbackContentBlock[] }) {
       return <article className={cardClassName} key={index}>
         <span>{String(index + 1).padStart(2, "0")}</span>
         {segmentsFor(group).map((segment, segmentIndex) => Array.isArray(segment)
-          ? <BasicBlocks blocks={segment} key={`content-${segmentIndex}`} />
+          ? <BasicBlocks blocks={segment} articleHeadings key={`content-${segmentIndex}`} />
           : mediaBlock(segment.key, segmentIndex))}
       </article>;
     })}</div>

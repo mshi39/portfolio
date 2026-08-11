@@ -18,7 +18,7 @@ export type FeedbackMediaKey =
 export type FeedbackContentBlock =
   | { type: "heading"; level: 2 | 3; text: string; id?: string }
   | { type: "paragraph"; text: string }
-  | { type: "quote"; text: string; variant?: "workflow-question" }
+  | { type: "quote"; text: string; attribution?: string; variant?: "workflow-question" }
   | { type: "list"; items: string[] }
   | { type: "media"; key: FeedbackMediaKey };
 
@@ -451,19 +451,13 @@ export const feedbackContent: FeedbackContentBlock[] = [
   },
   {
     "type": "quote",
-    "text": "“AI could interpret it one way and I could interpret it the other way.”"
-  },
-  {
-    "type": "paragraph",
-    "text": "– Splunk Product Manager "
+    "text": "“AI could interpret it one way and I could interpret it the other way.”",
+    "attribution": "– Splunk Product Manager"
   },
   {
     "type": "quote",
-    "text": "“I really like the idea about insight center, we just wanna make sure that this is a single source of truth.”"
-  },
-  {
-    "type": "paragraph",
-    "text": "– Splunk Product Manager "
+    "text": "“I really like the idea about insight center, we just wanna make sure that this is a single source of truth.”",
+    "attribution": "– Splunk Product Manager"
   },
   {
     "type": "heading",
