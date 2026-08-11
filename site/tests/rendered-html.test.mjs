@@ -106,7 +106,6 @@ test("case study renders all required local research figures", async () => {
 test("feedback intelligence case study renders all local media placements", async () => {
   const { html } = await render("/work/ai-powered-feedback-intelligence-platform");
   const placements = [
-    "thumbnail",
     "hero-insights",
     "workshop-map",
     "user-flow",
@@ -130,6 +129,9 @@ test("feedback intelligence case study renders all local media placements", asyn
   const videos = html.match(/<video\b[^>]*>/gi) ?? [];
   assert.ok(videos.length > 0, "expected feedback intelligence media to include videos");
   for (const video of videos) {
+    assert.match(video, /\bautoplay(?:\s|=|>)/i);
+    assert.match(video, /\bloop(?:\s|=|>)/i);
+    assert.match(video, /\bmuted(?:\s|=|>)/i);
     assert.match(video, /\bcontrols(?:\s|=|>)/i);
     assert.match(video, /\bplaysinline(?:\s|=|>)/i);
     assert.match(video, /\bpreload="metadata"/i);
@@ -158,7 +160,6 @@ test("feedback intelligence hero preserves source order without invented metadat
     "Solo UX Designer",
     ">Timeline<",
     "April–May 2026",
-    "feedback-intelligence-thumbnail",
     "feedback-intelligence-hero-insights",
   ];
   let cursor = -1;
@@ -185,7 +186,6 @@ test("case-study media and grid items can shrink below intrinsic media width", a
 test("feedback intelligence images render their real intrinsic dimensions", async () => {
   const { html } = await render("/work/ai-powered-feedback-intelligence-platform");
   for (const [name, width, height] of [
-    ["thumbnail", 653, 453],
     ["workshop-map", 2871, 1381],
     ["user-flow", 3615, 443],
     ["product-models", 1721, 641],
@@ -194,4 +194,92 @@ test("feedback intelligence images render their real intrinsic dimensions", asyn
     assert.match(image, new RegExp(`width="${width}"`), `${name} must render its intrinsic width`);
     assert.match(image, new RegExp(`height="${height}"`), `${name} must render its intrinsic height`);
   }
+});
+
+test("feedback hero removes its thumbnail while retaining the hero video", async () => {
+  const { html } = await render("/work/ai-powered-feedback-intelligence-platform");
+  const heroStart = html.indexOf('<header class="case-hero');
+  const heroEnd = html.indexOf('class="chapter-nav', heroStart);
+  const hero = html.slice(heroStart, heroEnd);
+  assert.ok(heroStart >= 0 && heroEnd > heroStart, "expected the visible case-study hero and chapter navigation");
+  assert.doesNotMatch(hero, /feedback-intelligence-thumbnail/);
+  assert.match(hero, /<video[^>]+feedback-intelligence-hero-insights[^>]*>/);
+});
+
+test("feedback intelligence uses the fixed desktop chapter rail and hides it on mobile", async () => {
+  const { html } = await render("/work/ai-powered-feedback-intelligence-platform");
+  const { readFile } = await import("node:fs/promises");
+  const css = await readFile(new URL("../app/case-study.css", import.meta.url), "utf8");
+
+  assert.match(html, /<nav class="chapter-nav feedback-chapter-nav" aria-label="Case study chapters">/);
+  assert.equal((html.match(/<nav class="chapter-nav feedback-chapter-nav"[\s\S]*?<\/nav>/)?.[0].match(/href="#/g) ?? []).length, 9);
+  const railRule = css.match(/\.feedback-chapter-nav\{([^}]*)\}/)?.[1] ?? "";
+  assert.match(railRule, /position:\s*fixed/);
+  assert.match(railRule, /left:\s*[^;]+/);
+  assert.match(railRule, /top:\s*50%/);
+  assert.match(railRule, /transform:\s*translateY\(-50%\)/);
+  assert.match(railRule, /flex-direction:\s*column/);
+  assert.match(css, /\.feedback-chapter-nav a\[aria-current="location"\]\{[^}]*color:\s*var\(--purple[^}]*\}/);
+  assert.match(css, /@media\s*\(max-width:\s*900px\)\{[\s\S]*?\.feedback-chapter-nav\{[^}]*display:\s*none[^}]*\}/);
+});
+
+test("feedback section headings are unnumbered", async () => {
+  const { html } = await render("/work/ai-powered-feedback-intelligence-platform");
+  const sectionHeadings = [...html.matchAll(/<section[^>]*class="[^"]*case-section[^"]*"[\s\S]*?<h2>([^<]+)<\/h2>/g)].map((match) => match[1]);
+  assert.equal(sectionHeadings.length, 9, "expected every feedback chapter to render an h2");
+  for (const heading of sectionHeadings) assert.doesNotMatch(heading.trim(), /^\d+\.\s/);
+});
+
+test("workflow research keeps Outcome outside insight cards and preserves its revised narrative order", async () => {
+  const { html } = await render("/work/ai-powered-feedback-intelligence-platform");
+  const section = html.match(/<section id="workflow-research"[\s\S]*?<\/section>/)?.[0] ?? "";
+  assert.match(section, /<h3>Outcome<\/h3>/);
+  assert.doesNotMatch(section, /<article[^>]*>[\s\S]*?<h3>Outcome<\/h3>/);
+
+  const ordered = [
+    "<h3>Outcome</h3>",
+    "The research showed that the real problem was not simply:",
+    "How might we summarize customer meetings with AI?",
+    "It was:",
+    '<blockquote class="case-quote feedback-workflow-question">How might we create a continuous system that captures customer feedback, turns it into trustworthy intelligence, and connects it to product action?</blockquote>',
+    "I synthesized the findings with the product manager and translated them into 17 MVP requirements.",
+    "This established a user-driven foundation for the new capability rather than relying solely on the initial product concept.",
+  ];
+  let cursor = -1;
+  for (const value of ordered) {
+    const next = section.indexOf(value, cursor + 1);
+    assert.ok(next > cursor, `expected ${value} after the prior workflow-research content`);
+    cursor = next;
+  }
+});
+
+test("concept validation uses semantic quotes and the local desired-workflow illustration", async () => {
+  const { html } = await render("/work/ai-powered-feedback-intelligence-platform");
+  const section = html.match(/<section id="concept-validation"[\s\S]*?<\/section>/)?.[0] ?? "";
+  assert.equal((section.match(/<blockquote class="case-quote">/g) ?? []).length, 2);
+  assert.match(section, /<img[^>]+src="\/portfolio\/feedback-intelligence-desired-workflow\.png"[^>]+alt="[^"]+"[^>]+width="\d+"[^>]+height="\d+"[^>]*>/);
+  assert.match(section, /<figcaption>[^<]*desired feedback workflow[^<]*<\/figcaption>/i);
+});
+
+test("trust copy replaces the duplicated collaborative-layer sentence", async () => {
+  const { html } = await render("/work/ai-powered-feedback-intelligence-platform");
+  assert.match(html, /I incorporated several trust mechanisms into the concept that positioned AI as a collaborative layer within the workflow rather than an opaque decision-maker\./);
+  assert.doesNotMatch(html, /These decisions positioned AI as a collaborative layer within the workflow rather than an opaque decision-maker\./);
+});
+
+test("end-to-end capabilities and final lists use their requested presentation classes", async () => {
+  const { html } = await render("/work/ai-powered-feedback-intelligence-platform");
+  const pipeline = html.match(/<section id="feedback-pipeline"[\s\S]*?<\/section>/)?.[0] ?? "";
+  assert.equal((pipeline.match(/<article class="recommendation-card">/g) ?? []).length, 7);
+  for (const sectionId of ["projected-impact", "demonstrated-skills"]) {
+    const section = html.match(new RegExp(`<section id="${sectionId}"[\\s\\S]*?<\\/section>`))?.[0] ?? "";
+    assert.match(section, /<ul class="simple-list">/);
+  }
+});
+
+test("case-study captions and h3 headings have the approved spacing and accent color", async () => {
+  const { readFile } = await import("node:fs/promises");
+  const css = await readFile(new URL("../app/case-study.css", import.meta.url), "utf8");
+  assert.match(css, /\.case-media figcaption\{[^}]*margin:\s*12px\s+16px\s+12px;/);
+  assert.match(css, /\.case-section h3\{[^}]*color:\s*var\(--purple\)[^}]*\}/);
 });
