@@ -1,6 +1,64 @@
 import assert from "node:assert/strict";
 import test from "node:test";
 
+async function readPng(fileUrl) {
+  const { readFile } = await import("node:fs/promises");
+  const { inflateSync } = await import("node:zlib");
+  const bytes = await readFile(fileUrl);
+  assert.deepEqual([...bytes.subarray(0, 8)], [137, 80, 78, 71, 13, 10, 26, 10], "expected a PNG signature");
+
+  let offset = 8;
+  let width;
+  let height;
+  let bitDepth;
+  let colorType;
+  let interlace;
+  const data = [];
+  while (offset < bytes.length) {
+    const length = bytes.readUInt32BE(offset);
+    const type = bytes.subarray(offset + 4, offset + 8).toString("ascii");
+    const chunk = bytes.subarray(offset + 8, offset + 8 + length);
+    if (type === "IHDR") {
+      width = chunk.readUInt32BE(0);
+      height = chunk.readUInt32BE(4);
+      bitDepth = chunk[8];
+      colorType = chunk[9];
+      interlace = chunk[12];
+    }
+    if (type === "IDAT") data.push(chunk);
+    offset += length + 12;
+  }
+
+  assert.equal(bitDepth, 8, "transparent workflow validation expects an 8-bit PNG");
+  assert.equal(interlace, 0, "transparent workflow validation expects a non-interlaced PNG");
+  assert.ok(colorType === 4 || colorType === 6, "workflow PNG must use an alpha-capable color type");
+  const channels = colorType === 4 ? 2 : 4;
+  const stride = width * channels;
+  const decoded = inflateSync(Buffer.concat(data));
+  const pixels = Buffer.alloc(stride * height);
+  let source = 0;
+  for (let y = 0; y < height; y += 1) {
+    const filter = decoded[source++];
+    const row = pixels.subarray(y * stride, (y + 1) * stride);
+    const prior = y === 0 ? null : pixels.subarray((y - 1) * stride, y * stride);
+    for (let x = 0; x < stride; x += 1) {
+      const raw = decoded[source++];
+      const left = x < channels ? 0 : row[x - channels];
+      const above = prior?.[x] ?? 0;
+      const upperLeft = x < channels ? 0 : prior?.[x - channels] ?? 0;
+      const paeth = () => {
+        const prediction = left + above - upperLeft;
+        const leftDistance = Math.abs(prediction - left);
+        const aboveDistance = Math.abs(prediction - above);
+        const upperLeftDistance = Math.abs(prediction - upperLeft);
+        return leftDistance <= aboveDistance && leftDistance <= upperLeftDistance ? left : aboveDistance <= upperLeftDistance ? above : upperLeft;
+      };
+      row[x] = (raw + (filter === 1 ? left : filter === 2 ? above : filter === 3 ? Math.floor((left + above) / 2) : filter === 4 ? paeth() : 0)) & 255;
+    }
+  }
+  return { width, height, channels, pixels };
+}
+
 async function render(path = "/") {
   const workerUrl = new URL("../dist/server/index.js", import.meta.url);
   workerUrl.searchParams.set("test", `${process.pid}-${Date.now()}-${path}`);
@@ -226,6 +284,62 @@ test("feedback intelligence uses the fixed desktop chapter rail and hides it on 
   assert.match(railRule, /flex-direction:\s*column/);
   assert.match(css, /\.feedback-chapter-nav a\[aria-current="location"\]\{[^}]*color:\s*var\(--purple-dark\)[^}]*\}/);
   assert.match(css, /@media\s*\(max-width:\s*900px\)\{[\s\S]*?\.feedback-chapter-nav\{[^}]*display:\s*none[^}]*\}/);
+});
+
+test("feedback articles use h4 headings while the standalone Outcome remains h3", async () => {
+  const { html } = await render("/work/ai-powered-feedback-intelligence-platform");
+  const articleHeadings = [...html.matchAll(/<article\b[^>]*>[\s\S]*?<h([1-6])[^>]*>([^<]+)<\/h\1>/g)];
+  assert.ok(articleHeadings.length > 0, "expected feedback articles with headings");
+  for (const [, level, text] of articleHeadings) assert.equal(level, "4", `expected ${text} to be an h4 inside its article`);
+
+  const workflowSection = html.match(/<section id="workflow-research"[\s\S]*?<\/section>/)?.[0] ?? "";
+  assert.match(workflowSection, /<h3>Outcome<\/h3>/);
+  assert.doesNotMatch(workflowSection.match(/<article\b[\s\S]*?<\/article>/g)?.join("") ?? "", /<h3>Outcome<\/h3>/);
+});
+
+test("feedback article h4 headings use the approved ink and size", async () => {
+  const { readFile } = await import("node:fs/promises");
+  const css = await readFile(new URL("../app/case-study.css", import.meta.url), "utf8");
+  const articleH4Rule = css.match(/\.feedback-(?:comparison|insights|outcomes|pipeline)-grid article h4\{([^}]*)\}/)?.[1] ?? "";
+  assert.match(articleH4Rule, /color:\s*#17121d/);
+  assert.match(articleH4Rule, /font-size:\s*20px/);
+});
+
+test("concept-validation quotes own their cite attribution without external speaker paragraphs", async () => {
+  const { html } = await render("/work/ai-powered-feedback-intelligence-platform");
+  const section = html.match(/<section id="concept-validation"[\s\S]*?<\/section>/)?.[0] ?? "";
+  const quotes = [...section.matchAll(/<blockquote class="case-quote">([\s\S]*?)<\/blockquote>/g)];
+  assert.equal(quotes.length, 2);
+  for (const [, quote] of quotes) {
+    assert.match(quote, /<footer><cite>â€“ Splunk Product Manager<\/cite><\/footer>/);
+  }
+  assert.equal((section.match(/Splunk Product Manager/g) ?? []).length, 2, "speaker attribution must appear only inside the two blockquotes");
+  assert.doesNotMatch(section, /<\/blockquote>\s*<p>\s*â€“ Splunk Product Manager\s*<\/p>/);
+});
+
+test("desired workflow PNG preserves dimensions and transparent outer corners", async () => {
+  const png = await readPng(new URL("../public/portfolio/feedback-intelligence-desired-workflow.png", import.meta.url));
+  assert.equal(png.width, 1693);
+  assert.equal(png.height, 929);
+  const alphaOffset = png.channels - 1;
+  for (const [x, y] of [[0, 0], [png.width - 1, 0], [0, png.height - 1], [png.width - 1, png.height - 1]]) {
+    assert.equal(png.pixels[(y * png.width + x) * png.channels + alphaOffset], 0, `expected transparent corner at ${x},${y}`);
+  }
+});
+
+test("feedback chapter navigation is a connected rail with locally thickened interaction segments", async () => {
+  const { readFile } = await import("node:fs/promises");
+  const css = await readFile(new URL("../app/case-study.css", import.meta.url), "utf8");
+  const railRule = css.match(/\.feedback-chapter-nav\{([^}]*)\}/)?.[1] ?? "";
+  assert.match(railRule, /background:\s*transparent/);
+  assert.match(railRule, /border:\s*0/);
+  assert.match(railRule, /border-radius:\s*0/);
+  assert.match(railRule, /box-shadow:\s*none/);
+  assert.match(css, /\.feedback-chapter-nav::before\{[^}]*position:\s*absolute[^}]*top:\s*0[^}]*bottom:\s*0[^}]*width:\s*2px[^}]*\}/);
+  assert.match(css, /\.feedback-chapter-nav a::before\{[^}]*position:\s*absolute[^}]*width:\s*2px[^}]*\}/);
+  for (const selector of [".feedback-chapter-nav a:hover::before", ".feedback-chapter-nav a:focus-visible::before", '.feedback-chapter-nav a[aria-current="location"]::before']) {
+    assert.match(css, new RegExp(`${selector.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}\\{[^}]*width:\\s*4px[^}]*\\}`));
+  }
 });
 
 test("feedback rail reserves a reading gutter across intermediate desktop widths", async () => {
