@@ -224,7 +224,7 @@ test("feedback intelligence uses the fixed desktop chapter rail and hides it on 
   assert.match(railRule, /top:\s*50%/);
   assert.match(railRule, /transform:\s*translateY\(-50%\)/);
   assert.match(railRule, /flex-direction:\s*column/);
-  assert.match(css, /\.feedback-chapter-nav a\[aria-current="location"\]\{[^}]*color:\s*var\(--purple[^}]*\}/);
+  assert.match(css, /\.feedback-chapter-nav a\[aria-current="location"\]\{[^}]*color:\s*var\(--purple-dark\)[^}]*\}/);
   assert.match(css, /@media\s*\(max-width:\s*900px\)\{[\s\S]*?\.feedback-chapter-nav\{[^}]*display:\s*none[^}]*\}/);
 });
 
@@ -376,4 +376,14 @@ test("case-study captions and h3 headings have the approved spacing and accent c
     "case-media figcaptions must have a 12px bottom margin",
   );
   assert.match(css, /\.case-section h3\{[^}]*color:\s*var\(--purple\)[^}]*\}/);
+});
+
+test("enterprise closing heading keeps white contrast on the purple closing panel", async () => {
+  const { readFile } = await import("node:fs/promises");
+  const css = await readFile(new URL("../app/case-study.css", import.meta.url), "utf8");
+  const closingRule = css.match(/\.case-closing\{([^}]*)\}/)?.[1] ?? "";
+  const closingHeadingRule = [...css.matchAll(/\.case-closing h3\{([^}]*)\}/g)].at(-1)?.[1] ?? "";
+
+  assert.match(closingRule, /background:\s*var\(--purple\)/);
+  assert.match(closingHeadingRule, /color:\s*#fff/);
 });
