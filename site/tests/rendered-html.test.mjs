@@ -521,3 +521,12 @@ test("enterprise closing heading keeps white contrast on the purple closing pane
   assert.match(closingRule, /background:\s*var\(--purple\)/);
   assert.match(closingHeadingRule, /color:\s*#fff/);
 });
+
+test("workflow question, quotes, and media frames use approved styling", async () => {
+  const { readFile } = await import("node:fs/promises");
+  const css = await readFile(new URL("../app/case-study.css", import.meta.url), "utf8");
+
+  assert.match(css, /\.feedback-workflow-question\{[^}]*background:\s*var\(--purple-dark\)/s);
+  assert.match(css, /\.case-quote\{[^}]*font-style:\s*italic/s);
+  assert.match(css, /\.case-media-frame\{[^}]*padding:\s*0(?:px)?(?:;|})/s);
+});
