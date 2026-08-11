@@ -288,9 +288,14 @@ test("feedback intelligence uses the fixed desktop chapter rail and hides it on 
 
 test("feedback articles use h4 headings while the standalone Outcome remains h3", async () => {
   const { html } = await render("/work/ai-powered-feedback-intelligence-platform");
-  const articleHeadings = [...html.matchAll(/<article\b[^>]*>[\s\S]*?<h([1-6])[^>]*>([^<]+)<\/h\1>/g)];
-  assert.ok(articleHeadings.length > 0, "expected feedback articles with headings");
-  for (const [, level, text] of articleHeadings) assert.equal(level, "4", `expected ${text} to be an h4 inside its article`);
+  const articles = [...html.matchAll(/<article\b[^>]*>([\s\S]*?)<\/article>/g)].map((match) => match[1]);
+  assert.ok(articles.length > 0, "expected feedback article elements");
+  for (const article of articles) {
+    const headings = [...article.matchAll(/<h([1-6])[^>]*>([^<]+)<\/h\1>/g)];
+    assert.ok(headings.length > 0, "expected every feedback article to have a heading");
+    assert.doesNotMatch(article, /<h3[ >]/);
+    for (const [, level, text] of headings) assert.equal(level, "4", `expected ${text} to be an h4 inside its article`);
+  }
 
   const workflowSection = html.match(/<section id="workflow-research"[\s\S]*?<\/section>/)?.[0] ?? "";
   assert.match(workflowSection, /<h3>Outcome<\/h3>/);
@@ -325,6 +330,7 @@ test("desired workflow PNG preserves dimensions and transparent outer corners", 
   for (const [x, y] of [[0, 0], [png.width - 1, 0], [0, png.height - 1], [png.width - 1, png.height - 1]]) {
     assert.equal(png.pixels[(y * png.width + x) * png.channels + alphaOffset], 0, `expected transparent corner at ${x},${y}`);
   }
+  assert.ok(png.pixels.some((value, index) => index % png.channels === alphaOffset && value > 0), "expected the workflow artwork to retain visible pixels");
 });
 
 test("feedback chapter navigation is a connected rail with locally thickened interaction segments", async () => {
@@ -335,10 +341,15 @@ test("feedback chapter navigation is a connected rail with locally thickened int
   assert.match(railRule, /border:\s*0/);
   assert.match(railRule, /border-radius:\s*0/);
   assert.match(railRule, /box-shadow:\s*none/);
-  assert.match(css, /\.feedback-chapter-nav::before\{[^}]*position:\s*absolute[^}]*top:\s*0[^}]*bottom:\s*0[^}]*width:\s*2px[^}]*\}/);
-  assert.match(css, /\.feedback-chapter-nav a::before\{[^}]*position:\s*absolute[^}]*width:\s*2px[^}]*\}/);
+  assert.match(railRule, /backdrop-filter:\s*none/);
+  assert.match(css, /\.feedback-chapter-nav::before\{[^}]*position:\s*absolute[^}]*top:\s*0[^}]*bottom:\s*0[^}]*width:\s*\d+(?:\.\d+)?px[^}]*background:\s*(?!transparent|none)[^;}]+[^}]*\}/);
+  const baseSegment = css.match(/\.feedback-chapter-nav a::before\{[^}]*position:\s*absolute[^}]*width:\s*(\d+(?:\.\d+)?)(px)[^}]*background:\s*(?!transparent|none)[^;}]+[^}]*\}/);
+  assert.ok(baseSegment, "expected every navigation link to have a visible local rail segment");
   for (const selector of [".feedback-chapter-nav a:hover::before", ".feedback-chapter-nav a:focus-visible::before", '.feedback-chapter-nav a[aria-current="location"]::before']) {
-    assert.match(css, new RegExp(`${selector.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}\\{[^}]*width:\\s*4px[^}]*\\}`));
+    const interactionSegment = css.match(new RegExp(`${selector.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}\\{[^}]*width:\\s*(\\d+(?:\\.\\d+)?)(px)[^}]*\\}`));
+    assert.ok(interactionSegment, `expected ${selector} to define a local rail segment width`);
+    assert.equal(interactionSegment[2], baseSegment[2]);
+    assert.ok(Number(interactionSegment[1]) > Number(baseSegment[1]), `expected ${selector} to thicken the local rail segment`);
   }
 });
 
@@ -408,11 +419,12 @@ test("workflow research keeps Outcome outside insight cards and preserves its re
 test("concept validation uses semantic quotes and the local desired-workflow illustration", async () => {
   const { html } = await render("/work/ai-powered-feedback-intelligence-platform");
   const section = html.match(/<section id="concept-validation"[\s\S]*?<\/section>/)?.[0] ?? "";
-  const quotes = [...section.matchAll(/<blockquote class="case-quote">([^<]+)<\/blockquote>/g)].map((match) => match[1]);
-  assert.deepEqual(quotes, [
+  const quotes = [...section.matchAll(/<blockquote class="case-quote">([\s\S]*?)<\/blockquote>/g)].map((match) => match[1]);
+  assert.deepEqual(quotes.map((quote) => quote.match(/^([^<]+)/)?.[1]), [
     "“AI could interpret it one way and I could interpret it the other way.”",
     "“I really like the idea about insight center, we just wanna make sure that this is a single source of truth.”",
   ]);
+  for (const quote of quotes) assert.match(quote, /<footer><cite>â€“ Splunk Product Manager<\/cite><\/footer>$/);
   assert.equal((section.match(/AI could interpret/g) ?? []).length, 1);
   assert.doesNotMatch(section, /truth\.[“"]AI/);
   assert.match(section, /<img[^>]+src="\/portfolio\/feedback-intelligence-desired-workflow\.png"[^>]+alt="[^"]+"[^>]+width="\d+"[^>]+height="\d+"[^>]*>/);
@@ -432,7 +444,7 @@ test("end-to-end capabilities and final lists use their requested presentation c
   const pipeline = html.match(/<section id="feedback-pipeline"[\s\S]*?<\/section>/)?.[0] ?? "";
   const cards = [...pipeline.matchAll(/<article class="recommendation-card">([\s\S]*?)<\/article>/g)].map((match) => match[1]);
   assert.equal(cards.length, 7);
-  assert.deepEqual(cards.map((card) => card.match(/<h3>([^<]+)<\/h3>/)?.[1]), [
+  assert.deepEqual(cards.map((card) => card.match(/<h4>([^<]+)<\/h4>/)?.[1]), [
     "Lower the Barrier to Capturing Feedback",
     "Handle Real-World Scheduling Complexity",
     "Automate Insight Extraction with AI",
@@ -460,7 +472,7 @@ test("end-to-end capability cards preserve media and prose source order", async 
   const { html } = await render("/work/ai-powered-feedback-intelligence-platform");
   const section = html.match(/<section id="feedback-pipeline"[\s\S]*?<\/section>/)?.[0] ?? "";
   const communicateCard = [...section.matchAll(/<article class="recommendation-card">([\s\S]*?)<\/article>/g)]
-    .find((match) => match[1].includes("<h3>Communicate Findings Efficiently</h3>"))?.[1] ?? "";
+    .find((match) => match[1].includes("<h4>Communicate Findings Efficiently</h4>"))?.[1] ?? "";
   const ordered = [
     "To reduce this repeated work, I designed an AI-assisted presentation workflow.",
     "feedback-intelligence-presentation.mp4",
