@@ -294,7 +294,13 @@ test("workflow research keeps Outcome outside insight cards and preserves its re
 test("concept validation uses semantic quotes and the local desired-workflow illustration", async () => {
   const { html } = await render("/work/ai-powered-feedback-intelligence-platform");
   const section = html.match(/<section id="concept-validation"[\s\S]*?<\/section>/)?.[0] ?? "";
-  assert.equal((section.match(/<blockquote class="case-quote">/g) ?? []).length, 2);
+  const quotes = [...section.matchAll(/<blockquote class="case-quote">([^<]+)<\/blockquote>/g)].map((match) => match[1]);
+  assert.deepEqual(quotes, [
+    "“AI could interpret it one way and I could interpret it the other way.”",
+    "“I really like the idea about insight center, we just wanna make sure that this is a single source of truth.”",
+  ]);
+  assert.equal((section.match(/AI could interpret/g) ?? []).length, 1);
+  assert.doesNotMatch(section, /truth\.[“"]AI/);
   assert.match(section, /<img[^>]+src="\/portfolio\/feedback-intelligence-desired-workflow\.png"[^>]+alt="[^"]+"[^>]+width="\d+"[^>]+height="\d+"[^>]*>/);
   assert.match(section, /<figcaption>[^<]*desired feedback workflow[^<]*<\/figcaption>/i);
 });

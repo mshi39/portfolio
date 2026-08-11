@@ -459,7 +459,7 @@ export const feedbackContent: FeedbackContentBlock[] = [
   },
   {
     "type": "quote",
-    "text": "\"I really like the idea about insight center, we just wanna make sure that this is a single source of truth.“AI could interpret it one way… I could interpret it another.”"
+    "text": "“I really like the idea about insight center, we just wanna make sure that this is a single source of truth.”"
   },
   {
     "type": "paragraph",
