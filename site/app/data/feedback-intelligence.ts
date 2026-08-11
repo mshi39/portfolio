@@ -441,7 +441,7 @@ export const feedbackContent: FeedbackContentBlock[] = [
     "type": "paragraph",
     "text": "Users described the desired workflow as:"
   },
- 
+
   {
     "type": "media",
     "key": "desired-workflow"

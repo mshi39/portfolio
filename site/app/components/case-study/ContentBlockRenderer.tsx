@@ -33,8 +33,8 @@ export function ContentBlockRenderer<TMediaKey>({
       ? <WorkflowQuestion attribution={block.attribution} key={index}>{block.text}</WorkflowQuestion>
       : <CaseStudyQuote attribution={block.attribution} key={index}>{block.text}</CaseStudyQuote>;
     if (block.type === "heading") return block.level === 2
-      ? <h2 key={index}>{block.text}</h2>
-      : articleHeadings ? <h4 key={index}>{block.text}</h4> : <h3 key={index}>{block.text}</h3>;
+      ? <h2 id={block.id} key={index}>{block.text}</h2>
+      : articleHeadings ? <h4 id={block.id} key={index}>{block.text}</h4> : <h3 id={block.id} key={index}>{block.text}</h3>;
     return <p key={index}>{block.text}</p>;
   })}</div>;
 }

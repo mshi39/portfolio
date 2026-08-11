@@ -117,6 +117,29 @@ test("home composes production-backed library components", async () => {
   assert.match(html, /Designed with curiosity and a little purple magic\./);
 });
 
+test("home preserves the complete contact and footer copy contracts", async () => {
+  const { html } = await render("/");
+  const contact = html.match(/<section[^>]+data-component="ContactCallout"[\s\S]*?<\/section>/)?.[0] ?? "";
+  const footer = html.match(/<footer[^>]+data-component="PortfolioFooter"[\s\S]*?<\/footer>/)?.[0] ?? "";
+
+  assert.match(contact, /<p class="eyebrow">There&#x27;s more to the story<\/p>/);
+  assert.match(contact, /<p>Get to know the designer behind the work\u2014or come say hello on LinkedIn\.<\/p>/);
+  assert.deepEqual(
+    [...contact.matchAll(/<a\b([^>]*)>([^<]+)<span aria-hidden="true">[^<]+<\/span><\/a>/g)].map(([, attributes, text]) => ({
+      href: attributes.match(/\bhref="([^"]+)"/)?.[1] ?? "",
+      text,
+    })),
+    [
+      { href: "/about", text: "About me" },
+      { href: "https://www.linkedin.com/in/melissaxshi/", text: "Let&#x27;s connect" },
+    ],
+  );
+  assert.deepEqual(
+    [...footer.matchAll(/<p>([\s\S]*?)<\/p>/g)].map(([, text]) => text.replaceAll("<!-- -->", "")),
+    ["Designed with curiosity and a little purple magic.", `\u00a9 ${new Date().getFullYear()} Melissa Shi`],
+  );
+});
+
 test("enterprise search card uses final metadata and local route", async () => {
   const { html } = await render();
   assert.match(html, /Research: Value of Internal Enterprise Search in the Age of Generative AI/);
@@ -600,6 +623,36 @@ test("enterprise closing heading keeps white contrast on the purple closing pane
   assert.match(closingHeadingRule, /color:\s*#fff/);
 });
 
+test("ContentBlockRenderer forwards heading IDs to each rendered heading level", async () => {
+  const previousNoDeprecation = process.noDeprecation;
+  process.noDeprecation = true;
+  try {
+    const [{ createElement }, { renderToStaticMarkup }, { tsImport }] = await Promise.all([
+      import("react"),
+      import("react-dom/server"),
+      import("tsx/esm/api"),
+    ]);
+    const { ContentBlockRenderer } = await tsImport(
+      "../app/components/case-study/ContentBlockRenderer.tsx",
+      import.meta.url,
+    );
+    const renderHeadings = (articleHeadings) => renderToStaticMarkup(createElement(ContentBlockRenderer, {
+      articleHeadings,
+      blocks: [
+        { type: "heading", level: 2, id: "section-heading", text: "Section heading" },
+        { type: "heading", level: 3, id: "detail-heading", text: "Detail heading" },
+      ],
+      renderMedia: () => null,
+    }));
+
+    assert.match(renderHeadings(false), /<h2 id="section-heading">Section heading<\/h2>/);
+    assert.match(renderHeadings(false), /<h3 id="detail-heading">Detail heading<\/h3>/);
+    assert.match(renderHeadings(true), /<h4 id="detail-heading">Detail heading<\/h4>/);
+  } finally {
+    process.noDeprecation = previousNoDeprecation;
+  }
+});
+
 test("workflow question, quotes, and media frames use approved styling", async () => {
   const { readFile } = await import("node:fs/promises");
   const css = await readFile(new URL("../app/case-study.css", import.meta.url), "utf8");
@@ -683,8 +736,8 @@ test("component library renders production identities and semantic previews", as
 test("component library keeps contained navigation interactive and sticky", async () => {
   const { readFile } = await import("node:fs/promises");
   const css = await readFile(new URL("../app/component-library/component-library.css", import.meta.url), "utf8");
-  const pageRule = [...css.matchAll(/\.component-library-page\{([^}]*)\}/g)].map((match) => match[1]).join(";");
-  const headerRule = [...css.matchAll(/\.component-library-page \.component-library-preview \.site-header\{([^}]*)\}/g)].map((match) => match[1]).join(";");
+  const pageRule = [...css.matchAll(/\.component-library-page\s*\{([^}]*)\}/g)].map((match) => match[1]).join(";");
+  const headerRule = [...css.matchAll(/\.component-library-page \.component-library-preview \.site-header\s*\{([^}]*)\}/g)].map((match) => match[1]).join(";");
 
   assert.match(pageRule, /overflow-x:\s*clip/, "page containment must not create a sticky-nav scroll container");
   assert.match(headerRule, /pointer-events:\s*auto/, "contained header must remain interactive after its production scroll state changes");
