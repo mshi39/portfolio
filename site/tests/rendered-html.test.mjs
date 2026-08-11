@@ -324,7 +324,7 @@ test("concept-validation quotes own their cite attribution without external spea
   const quotes = [...section.matchAll(/<blockquote class="case-quote">([\s\S]*?)<\/blockquote>/g)];
   assert.equal(quotes.length, 2);
   for (const [, quote] of quotes) {
-    assert.match(quote, /<footer><cite>â€“ Splunk Product Manager<\/cite><\/footer>/);
+    assert.match(quote, /<footer><cite>– Splunk Product Manager<\/cite><\/footer>/);
   }
   assert.equal((section.match(/Splunk Product Manager/g) ?? []).length, 2, "speaker attribution must appear only inside the two blockquotes");
   assert.doesNotMatch(section, /<\/blockquote>\s*<p>\s*â€“ Splunk Product Manager\s*<\/p>/);
@@ -432,7 +432,7 @@ test("concept validation uses semantic quotes and the local desired-workflow ill
     "“AI could interpret it one way and I could interpret it the other way.”",
     "“I really like the idea about insight center, we just wanna make sure that this is a single source of truth.”",
   ]);
-  for (const quote of quotes) assert.match(quote, /<footer><cite>â€“ Splunk Product Manager<\/cite><\/footer>$/);
+  for (const quote of quotes) assert.match(quote, /<footer><cite>– Splunk Product Manager<\/cite><\/footer>$/);
   assert.equal((section.match(/AI could interpret/g) ?? []).length, 1);
   assert.doesNotMatch(section, /truth\.[“"]AI/);
   assert.match(section, /<img[^>]+src="\/portfolio\/feedback-intelligence-desired-workflow\.png"[^>]+alt="[^"]+"[^>]+width="\d+"[^>]+height="\d+"[^>]*>/);
