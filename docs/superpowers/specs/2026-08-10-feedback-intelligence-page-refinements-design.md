@@ -79,4 +79,3 @@ The work applies to `/work/ai-powered-feedback-intelligence-platform`. Shared co
 - Add regression coverage for header thumbnail removal, video autoplay/loop/muted attributes, unnumbered `h2` titles, updated Trust copy, removed duplicate sentence, blockquote semantics, Workflow Outcome structure, highlighted question, new workflow image, navigation variant/active-state contract, and simple final lists.
 - Run a production build and the full rendered-HTML suite.
 - Verify the live page at desktop and mobile sizes. Desktop must show the fixed vertical rail and active-section changes; mobile must hide it. Confirm autoplay-ready video attributes, media loading, responsive card stacking, and zero horizontal overflow.
-

@@ -129,4 +129,3 @@
 - [ ] Verify Workflow Outcome structure, highlighted question, blockquotes, desired workflow image, recommendation-style pipeline cards, Trust copy, and simple lists visually and semantically.
 - [ ] Request whole-feature code review and address any Critical or Important findings.
 - [ ] Report final route, build/test counts, asset status, desktop/mobile overflow results, and any environment limitation.
-
