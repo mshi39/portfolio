@@ -33,7 +33,7 @@ export default function EnterpriseSearchCaseStudy() {
       <div className="case-meta"><div><span>Role</span><strong>Lead UX Researcher</strong></div><div><span>Timeline</span><strong>September 2025 – December 2025</strong></div><div><span>Organization</span><strong>Splunk × Cisco</strong></div><div><span>Methods</span><strong>Survey · Interviews · Synthesis</strong></div></div>
       <div className="case-hero-art"><span>Search</span><strong>→</strong><span>Trusted data</span><strong>→</strong><span>AI answers</span></div>
     </header>
-    <ChapterNav chapters={enterpriseChapters} />
+    <ChapterNav chapters={enterpriseChapters} variant="default" />
 
     <CaseStudySection id="background" eyebrow="01 · Background" title="A trusted product at a turning point">
       <div className="prose"><p>After Splunk merged with Cisco, employees were navigating a major technology and organizational transition just as generative AI tools were changing how people found information. The Search Team needed to reassess Concierge, Splunk’s internal enterprise search engine, and understand whether it still held a meaningful place in this new landscape.</p><p>I led the research to identify the product’s unique and enduring value, explain declining retention and engagement, and translate the evidence into a concrete product direction. The core question was simple but consequential: <strong>What can Concierge uniquely provide when AI can answer almost anything?</strong></p></div>

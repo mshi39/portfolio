@@ -139,7 +139,7 @@ export default function FeedbackIntelligenceCaseStudy() {
       {heroThumbnail?.type === "media" && mediaBlock(heroThumbnail.key, 0)}
       {heroVideo?.type === "media" && mediaBlock(heroVideo.key, 1)}
     </header>
-    <ChapterNav chapters={chapters} />
+    <ChapterNav chapters={chapters} variant="feedback-rail" />
 
     <CaseStudySection id="opportunity" eyebrow="01 · Opportunity" title="The Opportunity">
       <BasicBlocks blocks={chapterSlice(chapterStarts.opportunity, chapterStarts.workflow)} />

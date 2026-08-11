@@ -22,7 +22,7 @@ export function CaseStudyMedia(props: Props) {
     <figure className={`case-media case-media-${props.kind}`}>
       <div className="case-media-frame">
         {props.kind === "video" ? (
-          <video src={props.src} controls playsInline preload="metadata">
+          <video src={props.src} autoPlay loop muted controls playsInline preload="metadata">
             Your browser does not support this video.
           </video>
         ) : (
