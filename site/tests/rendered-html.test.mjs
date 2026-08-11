@@ -209,10 +209,15 @@ test("feedback hero removes its thumbnail while retaining the hero video", async
 test("feedback intelligence uses the fixed desktop chapter rail and hides it on mobile", async () => {
   const { html } = await render("/work/ai-powered-feedback-intelligence-platform");
   const { readFile } = await import("node:fs/promises");
+  const chapterNavSource = await readFile(new URL("../app/components/case-study/ChapterNav.tsx", import.meta.url), "utf8");
   const css = await readFile(new URL("../app/case-study.css", import.meta.url), "utf8");
 
   assert.match(html, /<nav class="chapter-nav feedback-chapter-nav" aria-label="Case study chapters">/);
   assert.equal((html.match(/<nav class="chapter-nav feedback-chapter-nav"[\s\S]*?<\/nav>/)?.[0].match(/href="#/g) ?? []).length, 9);
+  assert.match(html, /<a[^>]+href="#opportunity"[^>]+aria-current="location"/);
+  assert.match(chapterNavSource, /["']use client["']/);
+  assert.match(chapterNavSource, /IntersectionObserver/);
+  assert.match(chapterNavSource, /aria-current=\{[^}]*\?\s*["']location["']/);
   const railRule = css.match(/\.feedback-chapter-nav\{([^}]*)\}/)?.[1] ?? "";
   assert.match(railRule, /position:\s*fixed/);
   assert.match(railRule, /left:\s*[^;]+/);
@@ -221,6 +226,19 @@ test("feedback intelligence uses the fixed desktop chapter rail and hides it on 
   assert.match(railRule, /flex-direction:\s*column/);
   assert.match(css, /\.feedback-chapter-nav a\[aria-current="location"\]\{[^}]*color:\s*var\(--purple[^}]*\}/);
   assert.match(css, /@media\s*\(max-width:\s*900px\)\{[\s\S]*?\.feedback-chapter-nav\{[^}]*display:\s*none[^}]*\}/);
+});
+
+test("enterprise search keeps the default horizontal sticky chapter navigation", async () => {
+  const { html } = await render("/work/enterprise-search-generative-ai");
+  const { readFile } = await import("node:fs/promises");
+  const css = await readFile(new URL("../app/case-study.css", import.meta.url), "utf8");
+  const defaultNavRule = css.match(/\.chapter-nav\{([^}]*)\}/)?.[1] ?? "";
+
+  assert.match(html, /<nav class="chapter-nav" aria-label="Case study chapters">/);
+  assert.doesNotMatch(html, /feedback-chapter-nav/);
+  assert.match(defaultNavRule, /position:\s*sticky/);
+  assert.match(defaultNavRule, /display:\s*flex/);
+  assert.doesNotMatch(defaultNavRule, /flex-direction:\s*column/);
 });
 
 test("feedback section headings are unnumbered", async () => {
@@ -234,7 +252,8 @@ test("workflow research keeps Outcome outside insight cards and preserves its re
   const { html } = await render("/work/ai-powered-feedback-intelligence-platform");
   const section = html.match(/<section id="workflow-research"[\s\S]*?<\/section>/)?.[0] ?? "";
   assert.match(section, /<h3>Outcome<\/h3>/);
-  assert.doesNotMatch(section, /<article[^>]*>[\s\S]*?<h3>Outcome<\/h3>/);
+  const insightArticles = section.match(/<article\b[^>]*>[\s\S]*?<\/article>/g) ?? [];
+  for (const article of insightArticles) assert.doesNotMatch(article, /<h3>Outcome<\/h3>/);
 
   const ordered = [
     "<h3>Outcome</h3>",
@@ -269,17 +288,45 @@ test("trust copy replaces the duplicated collaborative-layer sentence", async ()
 
 test("end-to-end capabilities and final lists use their requested presentation classes", async () => {
   const { html } = await render("/work/ai-powered-feedback-intelligence-platform");
+  const { readFile } = await import("node:fs/promises");
+  const css = await readFile(new URL("../app/case-study.css", import.meta.url), "utf8");
   const pipeline = html.match(/<section id="feedback-pipeline"[\s\S]*?<\/section>/)?.[0] ?? "";
-  assert.equal((pipeline.match(/<article class="recommendation-card">/g) ?? []).length, 7);
+  const cards = [...pipeline.matchAll(/<article class="recommendation-card">([\s\S]*?)<\/article>/g)].map((match) => match[1]);
+  assert.equal(cards.length, 7);
+  assert.deepEqual(cards.map((card) => card.match(/<h3>([^<]+)<\/h3>/)?.[1]), [
+    "Lower the Barrier to Capturing Feedback",
+    "Handle Real-World Scheduling Complexity",
+    "Automate Insight Extraction with AI",
+    "Keep Humans in Control",
+    "Centralize Feedback Across Channels",
+    "Connect Insight to Execution",
+    "Communicate Findings Efficiently",
+  ]);
+  assert.match(css, /\.feedback-pipeline-grid\{[^}]*display:\s*grid[^}]*\}/);
+  assert.match(css, /@media\s*\(max-width:\s*900px\)\{[\s\S]*?\.feedback-pipeline-grid\{[^}]*grid-template-columns:\s*1fr[^}]*\}/);
   for (const sectionId of ["projected-impact", "demonstrated-skills"]) {
     const section = html.match(new RegExp(`<section id="${sectionId}"[\\s\\S]*?<\\/section>`))?.[0] ?? "";
     assert.match(section, /<ul class="simple-list">/);
   }
+  const simpleListRule = css.match(/\.simple-list\{([^}]*)\}/)?.[1] ?? "";
+  const simpleListItemRule = css.match(/\.simple-list li\{([^}]*)\}/)?.[1] ?? "";
+  assert.match(simpleListRule, /display:\s*block/);
+  assert.match(simpleListRule, /list-style(?:-type)?:\s*(?:disc|initial)/);
+  assert.match(simpleListItemRule, /background:\s*(?:none|transparent)/);
+  assert.match(simpleListItemRule, /border:\s*0/);
+  assert.match(simpleListItemRule, /border-radius:\s*0/);
 });
 
 test("case-study captions and h3 headings have the approved spacing and accent color", async () => {
   const { readFile } = await import("node:fs/promises");
   const css = await readFile(new URL("../app/case-study.css", import.meta.url), "utf8");
-  assert.match(css, /\.case-media figcaption\{[^}]*margin:\s*12px\s+16px\s+12px;/);
+  const captionRule = css.match(/\.case-media figcaption\{([^}]*)\}/)?.[1] ?? "";
+  assert.ok(
+    /margin-bottom:\s*12px/.test(captionRule)
+      || /margin:\s*12px\s+[^;\s]+\s+12px(?:\s+[^;\s]+)?\s*;/.test(captionRule)
+      || /margin:\s*12px\s+[^;\s]+\s*;/.test(captionRule)
+      || /margin:\s*12px\s*;/.test(captionRule),
+    "case-media figcaptions must have a 12px bottom margin",
+  );
   assert.match(css, /\.case-section h3\{[^}]*color:\s*var\(--purple\)[^}]*\}/);
 });
