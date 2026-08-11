@@ -11,6 +11,7 @@ type CaseStudyHeroProps = {
   metadataClassName?: string;
   mediaSlots?: ReactNode;
   className?: string;
+  headingLevel?: "h1" | "h2";
 };
 
 export function CaseStudyHero({
@@ -23,11 +24,13 @@ export function CaseStudyHero({
   metadataClassName,
   mediaSlots,
   className = "case-hero case-shell",
+  headingLevel = "h1",
 }: CaseStudyHeroProps) {
+  const Heading = headingLevel;
   return <header className={className} data-component="CaseStudyHero">
     {backLink}
     <p className="eyebrow">{eyebrow}</p>
-    <h1>{title}</h1>
+    <Heading>{title}</Heading>
     <p className="case-deck">{deck}</p>
     {overview}
     <CaseStudyMetadata items={metadataItems} className={metadataClassName} />

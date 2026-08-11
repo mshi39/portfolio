@@ -19,7 +19,7 @@ type Props = ImageMediaProps | VideoMediaProps;
 
 export function CaseStudyMedia(props: Props) {
   return (
-    <figure className={`case-media case-media-${props.kind}`}>
+    <figure className={`case-media case-media-${props.kind}`} data-component="CaseStudyMedia">
       <div className="case-media-frame">
         {props.kind === "video" ? (
           <video src={props.src} autoPlay loop muted controls playsInline preload="metadata">

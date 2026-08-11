@@ -173,7 +173,7 @@ test("shared case-study media renders semantic image markup", async () => {
   const { html } = await render("/work/enterprise-search-generative-ai");
   assert.match(
     html,
-    /<figure class="case-media case-media-image">[\s\S]*?<img[^>]+enterprise-search-question-consolidation[^>]*>[\s\S]*?<figcaption>/,
+    /<figure class="case-media case-media-image"[^>]*>[\s\S]*?<img[^>]+enterprise-search-question-consolidation[^>]*>[\s\S]*?<figcaption>/,
   );
 });
 test("renders the complete feedback intelligence case study", async () => {
@@ -607,4 +607,92 @@ test("workflow question, quotes, and media frames use approved styling", async (
   assert.match(css, /\.feedback-workflow-question\{[^}]*background:\s*var\(--purple-dark\)/s);
   assert.match(css, /\.case-quote\{[^}]*font-style:\s*italic/s);
   assert.match(css, /\.case-media-frame\{[^}]*padding:\s*0(?:px)?(?:;|})/s);
+});
+
+test("component library documents each production component once", async () => {
+  const { response, html } = await render("/component-library");
+  assert.equal(response.status, 200);
+  assert.equal((html.match(/<h1[ >]/g) ?? []).length, 1, "component library must have exactly one h1");
+
+  const categories = ["foundations", "navigation-actions", "home", "case-studies", "utility"];
+  for (const id of categories) {
+    assert.match(html, new RegExp(`<section[^>]+id="${id}"`), `expected ${id} category section`);
+    assert.match(html, new RegExp(`<a[^>]+href="#${id}"`), `expected ${id} category link`);
+  }
+
+  const requiredNames = [
+    "PortfolioHeader",
+    "ActionLink",
+    "ChapterRail",
+    "ScrollCue",
+    "PortfolioHero",
+    "PortraitStage",
+    "SectionIntro",
+    "ProjectPreviewCard",
+    "ContactCallout",
+    "PortfolioFooter",
+    "ScrollReveal",
+    "CaseStudyHero",
+    "CaseStudyMetadata",
+    "CaseStudySection",
+    "CaseStudyMedia",
+    "CaseStudyQuote",
+    "WorkflowQuestion",
+    "ContentBlockRenderer",
+    "InsightCard",
+    "InsightGrid",
+    "RecommendationCard",
+    "RecommendationList",
+    "SimpleContentList",
+    "Tag",
+  ];
+  const names = [...html.matchAll(/data-component-name="([^"]+)"/g)].map((match) => match[1]);
+  const descriptions = [...html.matchAll(/data-component-description="(Use when [^"]+)"/g)].map((match) => match[1]);
+  assert.ok(names.length >= 27, `expected at least 27 catalog entries, received ${names.length}`);
+  assert.equal(new Set(names).size, names.length, "component catalog names must be unique");
+  assert.equal(descriptions.length, names.length, "every catalog entry needs one Use when description");
+  for (const name of requiredNames) assert.equal(names.filter((candidate) => candidate === name).length, 1, `expected ${name} exactly once`);
+});
+
+test("component library renders production identities and semantic previews", async () => {
+  const { html } = await render("/component-library");
+  const productionNames = [
+    "PortfolioHeader", "ActionLink", "ChapterRail", "ScrollCue", "PortfolioHero", "PortraitStage",
+    "SectionIntro", "ProjectPreviewCard", "ContactCallout", "PortfolioFooter", "ScrollReveal",
+    "CaseStudyHero", "CaseStudyMetadata", "CaseStudySection", "CaseStudyMedia", "CaseStudyQuote",
+    "WorkflowQuestion", "ContentBlockRenderer", "InsightCard", "InsightGrid", "RecommendationCard",
+    "RecommendationList", "SimpleContentList", "Tag",
+  ];
+  for (const name of productionNames) {
+    const article = html.match(new RegExp(`<article[^>]+data-component-name="${name}"[\\s\\S]*?<\\/article>`))?.[0] ?? "";
+    assert.match(article, new RegExp(`data-component="${name}"`), `expected ${name} production identity in its preview`);
+  }
+
+  assert.match(html, /<nav[^>]+aria-label="Component categories"[\s\S]*?Foundations[\s\S]*?Navigation &amp; actions[\s\S]*?Home[\s\S]*?Case studies[\s\S]*?Utility[\s\S]*?<\/nav>/);
+  const mediaArticle = html.match(/<article[^>]+data-component-name="CaseStudyMedia"[\s\S]*?<\/article>/)?.[0] ?? "";
+  assert.match(mediaArticle, /<figure[^>]*>[\s\S]*?<figcaption>[^<]+<\/figcaption>[\s\S]*?<\/figure>/);
+  assert.match(mediaArticle, /<img[^>]+alt="[^"]+"[^>]*>/);
+  const video = mediaArticle.match(/<video\b[^>]*>/i)?.[0] ?? "";
+  for (const attribute of ["autoplay", "loop", "muted", "controls", "playsinline"]) assert.match(video, new RegExp(`\\b${attribute}(?:\\s|=|>)`, "i"));
+  assert.match(video, /\bpreload="metadata"/i);
+  assert.match(mediaArticle, /Your browser does not support this video\./);
+  assert.match(html, /<blockquote[^>]+data-component="CaseStudyQuote"[\s\S]*?<footer><cite>[^<]+<\/cite><\/footer>[\s\S]*?<\/blockquote>/);
+  assert.equal((html.match(/<h1[ >]/g) ?? []).length, 1, "gallery previews must not add an h1");
+});
+
+test("component library keeps contained navigation interactive and sticky", async () => {
+  const { readFile } = await import("node:fs/promises");
+  const css = await readFile(new URL("../app/component-library/component-library.css", import.meta.url), "utf8");
+  const pageRule = [...css.matchAll(/\.component-library-page\{([^}]*)\}/g)].map((match) => match[1]).join(";");
+  const headerRule = [...css.matchAll(/\.component-library-page \.component-library-preview \.site-header\{([^}]*)\}/g)].map((match) => match[1]).join(";");
+
+  assert.match(pageRule, /overflow-x:\s*clip/, "page containment must not create a sticky-nav scroll container");
+  assert.match(headerRule, /pointer-events:\s*auto/, "contained header must remain interactive after its production scroll state changes");
+});
+
+test("component library remains unlinked from public portfolio routes", async () => {
+  for (const route of ["/", "/about", "/work/enterprise-search-generative-ai", "/work/ai-powered-feedback-intelligence-platform"]) {
+    const { html } = await render(route);
+    assert.doesNotMatch(html, /href="\/component-library"/, `expected ${route} to keep the gallery unlinked`);
+  }
 });
