@@ -924,6 +924,51 @@ test("gallery documents HeroOverview and MetricCard production identities", asyn
   assert.equal((enterprise.match(/<article class="metric-card" data-component="MetricCard">/g) ?? []).length, 4);
 });
 
+test("gallery CaseStudyHero containment preserves HeroOverview heading styles", async () => {
+  const { readFile } = await import("node:fs/promises");
+  const [{ html }, galleryCss, caseStudyCss] = await Promise.all([
+    render("/component-library"),
+    readFile(new URL("../app/component-library/component-library.css", import.meta.url), "utf8"),
+    readFile(new URL("../app/case-study.css", import.meta.url), "utf8"),
+  ]);
+  const caseStudyHeroEntry = html.match(/<article[^>]+data-component-name="CaseStudyHero"[\s\S]*?<\/article>/)?.[0] ?? "";
+  const productionPanelRule = caseStudyCss.match(/\.feedback-hero-overview h2\{([^}]*)\}/)?.[1] ?? "";
+
+  assert.match(caseStudyHeroEntry, /<header class="case-hero case-shell" data-component="CaseStudyHero">[\s\S]*?<h2>A clear case-study opening<\/h2>[\s\S]*?<div class="feedback-hero-overview" data-component="HeroOverview">[\s\S]*?<h2>Overview<\/h2>/);
+  assert.match(galleryCss, /\.component-library-page \.component-library-preview \.case-hero>h2\s*\{/);
+  assert.doesNotMatch(galleryCss, /\.component-library-page \.component-library-preview \.case-hero\s+h2\s*\{/, "gallery title containment must not match nested HeroOverview headings");
+  assert.match(productionPanelRule, /margin:\s*0 0 16px/);
+  assert.match(productionPanelRule, /font-size:\s*1\.8rem/);
+});
+
+test("HeroOverview renders repeated headings in order with unique keys", async () => {
+  const previousNoDeprecation = process.noDeprecation;
+  process.noDeprecation = true;
+  try {
+    const [{ createElement }, { renderToStaticMarkup }, { tsImport }] = await Promise.all([
+      import("react"),
+      import("react-dom/server"),
+      import("tsx/esm/api"),
+    ]);
+    const { HeroOverview } = await tsImport(
+      "../app/components/case-study/HeroOverview.tsx",
+      import.meta.url,
+    );
+    const panels = [
+      { heading: "Overview", content: createElement("p", null, "First panel") },
+      { heading: "Overview", content: createElement("p", null, "Second panel") },
+    ];
+    const rendered = HeroOverview({ panels });
+    const panelElements = rendered.props.children;
+    const html = renderToStaticMarkup(createElement(HeroOverview, { panels }));
+
+    assert.match(html, /<h2>Overview<\/h2><p>First panel<\/p>[\s\S]*?<h2>Overview<\/h2><p>Second panel<\/p>/);
+    assert.equal(new Set(panelElements.map((panel) => panel.key)).size, 2, "repeated headings must still receive unique React keys");
+  } finally {
+    process.noDeprecation = previousNoDeprecation;
+  }
+});
+
 test("typography foundations render eight named specimens without extra h1", async () => {
   const { html } = await render("/component-library");
   const typeSpecimenEntry = html.match(/<article[^>]+data-component-name="TypeSpecimen"[\s\S]*?<\/article>/)?.[0] ?? "";

@@ -373,7 +373,7 @@
   padding: 12px 0
 }
 
-.component-library-page .component-library-preview .case-hero h2 {
+.component-library-page .component-library-preview .case-hero>h2 {
   max-width: 900px;
   margin: 0;
   font-family: "Fredoka",sans-serif;
