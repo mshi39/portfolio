@@ -11,6 +11,7 @@ import { ScrollReveal } from "../components/ScrollReveal";
 import { SectionIntro } from "../components/SectionIntro";
 import { Tag } from "../components/Tag";
 import { CaseStudyHero } from "../components/case-study/CaseStudyHero";
+import { HeroOverview } from "../components/case-study/HeroOverview";
 import { CaseStudyMedia } from "../components/case-study/CaseStudyMedia";
 import { CaseStudyMetadata } from "../components/case-study/CaseStudyMetadata";
 import { CaseStudyQuote } from "../components/case-study/CaseStudyQuote";
@@ -22,6 +23,7 @@ import { InsightGrid } from "../components/case-study/InsightGrid";
 import { RecommendationCard } from "../components/case-study/RecommendationCard";
 import { RecommendationList } from "../components/case-study/RecommendationList";
 import { SimpleContentList } from "../components/case-study/SimpleContentList";
+import { MetricCard } from "../components/case-study/MetricCard";
 import { WorkflowQuestion } from "../components/case-study/WorkflowQuestion";
 
 export type CatalogCategory = "Foundations" | "Navigation & actions" | "Home" | "Case studies" | "Utility";
@@ -42,8 +44,23 @@ export function BrandColorSwatch({ name, value }: { name: string; value: string 
 
 export function TypeSpecimen() {
   return <div className="component-library-type-specimen" data-component="TypeSpecimen">
-    <p className="component-library-display-type">Research turns complexity into clarity.</p>
-    <p>Product decisions stay legible, useful, and grounded in evidence.</p>
+    {[
+      { name: "Portfolio display h1", sample: "Research turns complexity into clarity.", className: "component-library-type-portfolio-display", use: "Primary portfolio page introductions.", source: ".hero h1" },
+      { name: "Case-study h1", sample: "Evidence shapes a clearer product direction.", className: "component-library-type-case-study-display", use: "Case-study titles and research narratives.", source: ".case-hero h1" },
+      { name: "Section h2", sample: "A focused chapter in the story", className: "component-library-type-section-heading", use: "Major portfolio and case-study sections.", source: ".case-section h2" },
+      { name: "Content h3", sample: "The evidence behind the decision", className: "component-library-type-content-heading", use: "Subsections within long-form content.", source: ".case-section h3" },
+      { name: "Article/card h4", sample: "One scannable insight", className: "component-library-type-card-heading", use: "Titles inside insight and recommendation cards.", source: ".insight-card h4" },
+      { name: "Eyebrow", sample: "Research and product strategy", className: "eyebrow", use: "Short labels that orient a page or section.", source: ".eyebrow" },
+      { name: "Body", sample: "Product decisions stay legible, useful, and grounded in evidence.", className: "component-library-type-body", use: "Primary explanatory copy.", source: "body" },
+      { name: "Muted body", sample: "Supporting detail adds context without competing with the main message.", className: "component-library-type-muted-body", use: "Secondary and supporting explanation.", source: ".prose p" },
+    ].map((specimen) => <section className="component-library-type-row" data-typography-specimen={specimen.name} key={specimen.name}>
+      <div className="component-library-type-metadata">
+        <strong>{specimen.name}</strong>
+        <p className="component-library-type-use">Use: {specimen.use}</p>
+        <code className="component-library-type-source">Style: {specimen.source}</code>
+      </div>
+      <h4 className={specimen.className}>{specimen.sample}</h4>
+    </section>)}
   </div>;
 }
 
@@ -158,7 +175,19 @@ export const catalog: CatalogEntry[] = [
     name: "CaseStudyHero",
     description: "Use when opening a case study with context, summary, metadata, and optional media.",
     category: "Case studies",
-    preview: <CaseStudyHero headingLevel="h2" backLink={<a className="case-back" href="#home">← Back to Home components</a>} eyebrow="Product strategy · Research" title="A clear case-study opening" deck="A concise deck frames the work before readers explore the details." overview={<p>Representative, non-project-specific overview content.</p>} metadataItems={[{ label: "Role", value: "Product designer" }, { label: "Timeline", value: "Six weeks" }]} />,
+    preview: <CaseStudyHero headingLevel="h2" backLink={<a className="case-back" href="#home">← Back to Home components</a>} eyebrow="Product strategy · Research" title="A clear case-study opening" deck="A concise deck frames the work before readers explore the details." overviewPanels={[{ heading: "Overview", content: <p>Representative, non-project-specific overview content.</p> }, { heading: "Projected impact", content: <p>A concise statement of the outcome this work supports.</p> }]} metadataItems={[{ label: "Role", value: "Product designer" }, { label: "Timeline", value: "Six weeks" }]} />,
+  },
+  {
+    name: "HeroOverview",
+    description: "Use when a case-study hero needs ordered overview and impact panels.",
+    category: "Case studies",
+    preview: <HeroOverview panels={[{ heading: "Overview", content: <p>A concise summary of the project context and direction.</p> }, { heading: "Projected impact", content: <p>The outcome the work is designed to create.</p> }]} />,
+  },
+  {
+    name: "MetricCard",
+    description: "Use when a case study needs to emphasize one research metric and its meaning.",
+    category: "Case studies",
+    preview: <MetricCard value="87%" label="reported success with other tools" />,
   },
   {
     name: "CaseStudyMetadata",

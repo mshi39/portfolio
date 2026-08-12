@@ -170,7 +170,10 @@ export default function FeedbackIntelligenceCaseStudy() {
       eyebrow="AI product design · Feedback intelligence"
       title={feedbackContent[0].type === "heading" ? feedbackContent[0].text : ""}
       deck={feedbackContent[1].type === "heading" ? feedbackContent[1].text : ""}
-      overview={<div className="feedback-hero-overview"><div><h2>Overview</h2><ContentBlockRenderer blocks={heroOverview} renderMedia={mediaBlock} /></div><div><h2>Projected Impact</h2><ContentBlockRenderer blocks={heroImpact} renderMedia={mediaBlock} /></div></div>}
+      overviewPanels={[
+        { heading: "Overview", content: <ContentBlockRenderer blocks={heroOverview} renderMedia={mediaBlock} /> },
+        { heading: "Projected Impact", content: <ContentBlockRenderer blocks={heroImpact} renderMedia={mediaBlock} /> },
+      ]}
       metadataItems={metadataItems}
       metadataClassName="feedback-source-meta"
       mediaSlots={heroVideo?.type === "media" ? mediaBlock(heroVideo.key, 0) : undefined}

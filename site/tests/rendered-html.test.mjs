@@ -871,6 +871,83 @@ test("component library renders production identities and semantic previews", as
   assert.equal((html.match(/<h1[ >]/g) ?? []).length, 1, "gallery previews must not add an h1");
 });
 
+test("Feedback CaseStudyHero renders canonical HeroOverview panels in content order", async () => {
+  const { html } = await render("/work/ai-powered-feedback-intelligence-platform");
+  const heroStart = html.indexOf('<header class="case-hero case-shell feedback-hero" data-component="CaseStudyHero">');
+  const heroEnd = html.indexOf('class="vertical-chapter-nav"', heroStart);
+  const hero = html.slice(heroStart, heroEnd);
+
+  assert.ok(heroStart >= 0, "expected Feedback to render CaseStudyHero");
+  assert.equal((hero.match(/data-component="HeroOverview"/g) ?? []).length, 1, "Feedback must render exactly one HeroOverview");
+  assert.match(hero, /<div class="feedback-hero-overview" data-component="HeroOverview">/);
+
+  const overviewStart = hero.indexOf('<div class="feedback-hero-overview" data-component="HeroOverview">');
+  const overviewEnd = hero.indexOf('<div class="case-meta', overviewStart);
+  const overview = hero.slice(overviewStart, overviewEnd);
+  const orderedContent = [
+    "<h2>Overview</h2>",
+    "Voice of the Customer (VOC) enables product teams to collect and analyze feedback",
+    "This project expanded VOC into an end-to-end feedback intelligence platform",
+    "<h2>Projected Impact</h2>",
+    "Save product managers more than 20 hours per testing program",
+    "Increase captured customer feedback by approximately 3×",
+    "Connect feedback directly to prioritization, Jira execution, and outcome tracking",
+  ];
+  let cursor = -1;
+  for (const value of orderedContent) {
+    const next = overview.indexOf(value, cursor + 1);
+    assert.ok(next > cursor, `expected ${value} after the prior HeroOverview content`);
+    cursor = next;
+  }
+  assert.equal((overview.match(/<h2>/g) ?? []).length, 2, "HeroOverview must contain exactly two ordered panels");
+});
+
+test("gallery documents HeroOverview and MetricCard production identities", async () => {
+  const [{ html: gallery }, { html: feedback }, { html: enterprise }] = await Promise.all([
+    render("/component-library"),
+    render("/work/ai-powered-feedback-intelligence-platform"),
+    render("/work/enterprise-search-generative-ai"),
+  ]);
+  const names = [...gallery.matchAll(/data-component-name="([^"]+)"/g)].map((match) => match[1]);
+  for (const name of ["HeroOverview", "MetricCard"]) {
+    assert.equal(names.filter((candidate) => candidate === name).length, 1, `expected one unique ${name} catalog entry`);
+  }
+
+  const heroOverviewEntry = gallery.match(/<article[^>]+data-component-name="HeroOverview"[\s\S]*?<\/article>/)?.[0] ?? "";
+  const caseStudyHeroEntry = gallery.match(/<article[^>]+data-component-name="CaseStudyHero"[\s\S]*?<\/article>/)?.[0] ?? "";
+  assert.match(heroOverviewEntry, /<div class="feedback-hero-overview" data-component="HeroOverview">/);
+  assert.match(caseStudyHeroEntry, /<div class="feedback-hero-overview" data-component="HeroOverview">/);
+  assert.match(feedback, /<div class="feedback-hero-overview" data-component="HeroOverview">/);
+
+  const metricCardEntry = gallery.match(/<article[^>]+data-component-name="MetricCard"[\s\S]*?<\/article>/)?.[0] ?? "";
+  assert.match(metricCardEntry, /<article class="metric-card" data-component="MetricCard">/);
+  assert.equal((enterprise.match(/<article class="metric-card" data-component="MetricCard">/g) ?? []).length, 4);
+});
+
+test("typography foundations render eight named specimens without extra h1", async () => {
+  const { html } = await render("/component-library");
+  const typeSpecimenEntry = html.match(/<article[^>]+data-component-name="TypeSpecimen"[\s\S]*?<\/article>/)?.[0] ?? "";
+  const specimenNames = [
+    "Portfolio display h1",
+    "Case-study h1",
+    "Section h2",
+    "Content h3",
+    "Article/card h4",
+    "Eyebrow",
+    "Body",
+    "Muted body",
+  ];
+
+  assert.equal((typeSpecimenEntry.match(/data-typography-specimen=/g) ?? []).length, 8);
+  for (const name of specimenNames) {
+    const specimen = typeSpecimenEntry.match(new RegExp(`<section[^>]+data-typography-specimen="${name}"[\\s\\S]*?<\\/section>`))?.[0] ?? "";
+    assert.match(specimen, new RegExp(`<strong[^>]*>${name}<\\/strong>`));
+    assert.match(specimen, /<p class="component-library-type-use">Use: (?:<!-- -->)?[^<]+<\/p>/);
+    assert.match(specimen, /<code class="component-library-type-source">Style: (?:<!-- -->)?[^<]+<\/code>/);
+  }
+  assert.equal((html.match(/<h1[ >]/g) ?? []).length, 1, "typography specimens must not add another page-level h1");
+});
+
 test("component library keeps contained navigation interactive and sticky", async () => {
   const { readFile } = await import("node:fs/promises");
   const css = await readFile(new URL("../app/component-library/component-library.css", import.meta.url), "utf8");

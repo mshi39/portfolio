@@ -1,3 +1,3 @@
 export function MetricCard({ value, label }: { value: string; label: string }) {
-  return <article className="metric-card"><strong>{value}</strong><span>{label}</span></article>;
+  return <article className="metric-card" data-component="MetricCard"><strong>{value}</strong><span>{label}</span></article>;
 }

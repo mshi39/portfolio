@@ -167,21 +167,87 @@
   overflow-wrap: anywhere
 }
 
-.component-library-type-specimen p {
+.component-library-type-specimen {
+  display: grid;
+  gap: 18px
+}
+
+.component-library-type-row {
+  display: grid;
+  grid-template-columns: minmax(150px,.45fr) minmax(0,1fr);
+  gap: 20px;
+  align-items: center;
+  padding: 20px;
+  background: #fff;
+  border: 1px solid var(--line);
+  border-radius: 18px
+}
+
+.component-library-type-metadata strong,
+.component-library-type-metadata code {
+  display: block
+}
+
+.component-library-type-use {
+  margin: 8px 0;
+  color: var(--muted);
+  font-size: .9rem;
+  line-height: 1.45
+}
+
+.component-library-type-source {
+  color: var(--purple-dark);
+  font-size: .78rem;
+  overflow-wrap: anywhere
+}
+
+.component-library-type-row>h4 {
   margin: 0
 }
 
-.component-library-type-specimen p+p {
-  margin-top: 18px;
-  color: var(--muted);
-  line-height: 1.6
+.component-library-type-portfolio-display {
+  font-family: "Fredoka",sans-serif;
+  font-size: clamp(3.8rem,6.6vw,6rem);
+  line-height: .98
 }
 
-.component-library-display-type {
+.component-library-type-case-study-display {
   font-family: "Fredoka",sans-serif;
-  font-size: clamp(1.8rem,4vw,3rem);
-  font-weight: 700;
-  line-height: 1.05
+  font-size: clamp(3.5rem,7vw,6.8rem);
+  line-height: .96
+}
+
+.component-library-type-section-heading {
+  font-family: "Fredoka",sans-serif;
+  font-size: clamp(2.7rem,5vw,4.7rem);
+  line-height: 1.02
+}
+
+.component-library-type-content-heading {
+  color: var(--purple);
+  font-family: "Fredoka",sans-serif;
+  font-size: 1.55rem
+}
+
+.component-library-type-card-heading {
+  color: #17121d;
+  font-family: "Fredoka",sans-serif;
+  font-size: 20px;
+  line-height: 1.35
+}
+
+.component-library-type-body {
+  color: var(--ink);
+  font-size: 1rem;
+  font-weight: 400;
+  line-height: 1.65
+}
+
+.component-library-type-muted-body {
+  color: var(--muted);
+  font-size: 1.13rem;
+  font-weight: 400;
+  line-height: 1.78
 }
 
 .component-library-surface-samples {
@@ -409,6 +475,10 @@
   .component-library-inline-grid,
   .component-library-media-grid,
   .component-library-surface-samples {
+    grid-template-columns: 1fr
+  }
+
+  .component-library-type-row {
     grid-template-columns: 1fr
   }
 

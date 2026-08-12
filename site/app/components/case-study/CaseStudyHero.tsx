@@ -1,12 +1,13 @@
 import type { ReactNode } from "react";
 import { CaseStudyMetadata, type CaseStudyMetadataItem } from "./CaseStudyMetadata";
+import { HeroOverview, type HeroOverviewPanel } from "./HeroOverview";
 
 type CaseStudyHeroProps = {
   backLink: ReactNode;
   eyebrow: ReactNode;
   title: ReactNode;
   deck: ReactNode;
-  overview: ReactNode;
+  overviewPanels?: HeroOverviewPanel[];
   metadataItems: CaseStudyMetadataItem[];
   metadataClassName?: string;
   mediaSlots?: ReactNode;
@@ -19,7 +20,7 @@ export function CaseStudyHero({
   eyebrow,
   title,
   deck,
-  overview,
+  overviewPanels,
   metadataItems,
   metadataClassName,
   mediaSlots,
@@ -32,7 +33,7 @@ export function CaseStudyHero({
     <p className="eyebrow">{eyebrow}</p>
     <Heading>{title}</Heading>
     <p className="case-deck">{deck}</p>
-    {overview}
+    {overviewPanels?.length ? <HeroOverview panels={overviewPanels} /> : null}
     <CaseStudyMetadata items={metadataItems} className={metadataClassName} />
     {mediaSlots}
   </header>;
