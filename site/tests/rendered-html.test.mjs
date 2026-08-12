@@ -367,8 +367,16 @@ test("self-contained case study cards match production", async () => {
   assert.match(insightPreview, /<article class="insight-card" data-component="InsightCard">/);
   assert.match(recommendationPreview, /<article class="recommendation-card" data-component="RecommendationCard">/);
   assert.doesNotMatch(recommendationPreview, /<figure\b|<img\b|<video\b/, "standalone RecommendationCard preview must stay text-only");
-  assert.match(feedback, /<article class="insight-card insight-card-highlighted" data-component="InsightCard">/);
-  assert.match(feedback, /<article class="insight-card" data-component="InsightCard">/);
+  assert.match(feedback, /<div class="feedback-comparison-grid" data-component="InsightGrid"><article class="insight-card insight-card-highlighted" data-component="InsightCard">/);
+  const insightGridStarts = [...feedback.matchAll(/<div class="feedback-(?:comparison|insights|outcomes)-grid" data-component="InsightGrid">/g)];
+  const comparisonStart = insightGridStarts.find((match) => match[0].includes("feedback-comparison-grid"))?.index ?? -1;
+  const comparisonEnd = insightGridStarts.find((match) => (match.index ?? -1) > comparisonStart)?.index ?? feedback.length;
+  const comparisonGrid = comparisonStart >= 0 ? feedback.slice(comparisonStart, comparisonEnd) : "";
+  const insightCardClasses = [...comparisonGrid.matchAll(/<article class="(insight-card(?: insight-card-highlighted)?)" data-component="InsightCard">/g)]
+    .map((match) => match[1]);
+  assert.ok(insightCardClasses.length > 1, "expected multiple comparison insight cards");
+  assert.equal(insightCardClasses[0], "insight-card insight-card-highlighted", "the first comparison card must be highlighted");
+  assert.deepEqual(insightCardClasses.slice(1), Array(insightCardClasses.length - 1).fill("insight-card"), "no later comparison card may be highlighted");
   assert.equal((feedback.match(/data-component="RecommendationCard"/g) ?? []).length, 8);
   assert.match(feedback, /<article class="recommendation-card" data-component="RecommendationCard">/);
   assert.match(feedback, /<article class="recommendation-card feedback-customer-card" data-component="RecommendationCard">/);
@@ -393,6 +401,7 @@ test("self-contained case study cards match production", async () => {
     /line-height:\s*1\.35/,
   ]);
   assertDeclarations(".insight-card p", [
+    /max-width:\s*790px/,
     /margin:\s*0 0 22px/,
     /color:\s*var\(--muted\)/,
     /font-size:\s*1rem/,
@@ -423,6 +432,8 @@ test("self-contained case study cards match production", async () => {
     /line-height:\s*1\.35/,
   ]);
   assertDeclarations(".recommendation-card p", [
+    /max-width:\s*790px/,
+    /margin:\s*0 0 22px/,
     /color:\s*var\(--muted\)/,
     /font-size:\s*1\.08rem/,
     /line-height:\s*1\.78/,
