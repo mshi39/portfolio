@@ -15,7 +15,7 @@ import { CaseStudyMedia } from "../components/case-study/CaseStudyMedia";
 import { CaseStudyMetadata } from "../components/case-study/CaseStudyMetadata";
 import { CaseStudyQuote } from "../components/case-study/CaseStudyQuote";
 import { CaseStudySection } from "../components/case-study/CaseStudySection";
-import { ChapterRail } from "../components/case-study/ChapterNav";
+import { VerticalChapterNav } from "../components/case-study/VerticalChapterNav";
 import { ContentBlockRenderer } from "../components/case-study/ContentBlockRenderer";
 import { InsightCard } from "../components/case-study/InsightCard";
 import { InsightGrid } from "../components/case-study/InsightGrid";
@@ -107,10 +107,10 @@ export const catalog: CatalogEntry[] = [
     preview: <div className="component-library-actions"><ActionLink href="#home">Primary action</ActionLink><ActionLink href="#case-studies" variant="secondary">Secondary action</ActionLink></div>,
   },
   {
-    name: "ChapterRail",
+    name: "VerticalChapterNav",
     description: "Use when readers need direct access to long-form case-study chapters.",
     category: "Navigation & actions",
-    preview: <div className="component-library-stack"><ChapterRail chapters={sampleChapters} /><ChapterRail chapters={sampleChapters} variant="feedback-rail" /></div>,
+    preview: <div className="component-library-nav-containment"><VerticalChapterNav chapters={sampleChapters} /></div>,
   },
   {
     name: "ScrollCue",

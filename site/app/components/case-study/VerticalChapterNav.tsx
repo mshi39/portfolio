@@ -4,18 +4,10 @@ import { useEffect, useState } from "react";
 
 export type Chapter = { id: string; label: string };
 
-type ChapterRailProps = {
-  chapters: Chapter[];
-  variant?: "default" | "feedback-rail";
-};
-
-export function ChapterRail({ chapters, variant = "default" }: ChapterRailProps) {
-  const isFeedbackRail = variant === "feedback-rail";
+export function VerticalChapterNav({ chapters }: { chapters: Chapter[] }) {
   const [activeId, setActiveId] = useState(chapters[0]?.id ?? "");
 
   useEffect(() => {
-    if (!isFeedbackRail) return;
-
     const sections = chapters
       .map(({ id }) => document.getElementById(id))
       .filter((section): section is HTMLElement => section !== null);
@@ -41,18 +33,16 @@ export function ChapterRail({ chapters, variant = "default" }: ChapterRailProps)
       observer.disconnect();
       window.removeEventListener("hashchange", updateFromHash);
     };
-  }, [chapters, isFeedbackRail]);
-
-  const className = isFeedbackRail ? "chapter-nav feedback-chapter-nav" : "chapter-nav";
+  }, [chapters]);
 
   return (
-    <nav className={className} aria-label="Case study chapters" data-component="ChapterRail">
+    <nav className="vertical-chapter-nav" aria-label="Case study chapters" data-component="VerticalChapterNav">
       {chapters.map(({ id, label }) => (
         <a
           key={id}
           href={`#${id}`}
-          aria-current={isFeedbackRail && activeId === id ? "location" : undefined}
-          onClick={isFeedbackRail ? () => setActiveId(id) : undefined}
+          aria-current={activeId === id ? "location" : undefined}
+          onClick={() => setActiveId(id)}
         >
           {label}
         </a>
@@ -60,5 +50,3 @@ export function ChapterRail({ chapters, variant = "default" }: ChapterRailProps)
     </nav>
   );
 }
-
-export const ChapterNav = ChapterRail;

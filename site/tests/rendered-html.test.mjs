@@ -275,7 +275,7 @@ test("case study preserves key metrics and outcomes", async () => {
 test("feedback intelligence hero preserves source order without invented metadata", async () => {
   const { html } = await render("/work/ai-powered-feedback-intelligence-platform");
   const heroStart = html.indexOf('<header class="case-hero');
-  const heroEnd = html.indexOf('class="chapter-nav"', heroStart);
+  const heroEnd = html.indexOf('class="vertical-chapter-nav"', heroStart);
   assert.ok(heroStart >= 0, "expected the visible case-study hero");
   const hero = html.slice(heroStart, heroEnd);
   const ordered = [
@@ -305,7 +305,7 @@ test("feedback case study composes production-backed library components", async 
   for (const name of [
     "CaseStudyHero",
     "CaseStudyMetadata",
-    "ChapterRail",
+    "VerticalChapterNav",
     "ContentBlockRenderer",
     "InsightCard",
     "InsightGrid",
@@ -321,7 +321,7 @@ test("feedback case study composes production-backed library components", async 
   const count = (name) => (html.match(new RegExp(`data-component="${name}"`, "g")) ?? []).length;
   assert.equal(count("CaseStudyHero"), 1);
   assert.equal(count("CaseStudyMetadata"), 1);
-  assert.equal(count("ChapterRail"), 1);
+  assert.equal(count("VerticalChapterNav"), 1);
   assert.equal(count("SimpleContentList"), 2);
   assert.equal(count("CaseStudyQuote"), 3, "expected two validation quotes plus the workflow question");
   assert.equal(count("RecommendationCard"), 8, "expected seven primary recommendations plus the customer card");
@@ -358,33 +358,57 @@ test("feedback intelligence images render their real intrinsic dimensions", asyn
 test("feedback hero removes its thumbnail while retaining the hero video", async () => {
   const { html } = await render("/work/ai-powered-feedback-intelligence-platform");
   const heroStart = html.indexOf('<header class="case-hero');
-  const heroEnd = html.indexOf('class="chapter-nav', heroStart);
+  const heroEnd = html.indexOf('class="vertical-chapter-nav', heroStart);
   const hero = html.slice(heroStart, heroEnd);
   assert.ok(heroStart >= 0 && heroEnd > heroStart, "expected the visible case-study hero and chapter navigation");
   assert.doesNotMatch(hero, /feedback-intelligence-thumbnail/);
   assert.match(hero, /<video[^>]+feedback-intelligence-hero-insights[^>]*>/);
 });
 
-test("feedback intelligence uses the fixed desktop chapter rail and hides it on mobile", async () => {
-  const { html } = await render("/work/ai-powered-feedback-intelligence-platform");
+test("both case studies render one fixed vertical chapter navigation with their own chapters", async () => {
   const { readFile } = await import("node:fs/promises");
-  const chapterNavSource = await readFile(new URL("../app/components/case-study/ChapterNav.tsx", import.meta.url), "utf8");
+  const chapterNavSource = await readFile(new URL("../app/components/case-study/VerticalChapterNav.tsx", import.meta.url), "utf8");
   const css = await readFile(new URL("../app/case-study.css", import.meta.url), "utf8");
 
-  assert.match(html, /<nav class="chapter-nav feedback-chapter-nav" aria-label="Case study chapters"[^>]*>/);
-  assert.equal((html.match(/<nav class="chapter-nav feedback-chapter-nav"[\s\S]*?<\/nav>/)?.[0].match(/href="#/g) ?? []).length, 9);
-  assert.match(html, /<a[^>]+href="#opportunity"[^>]+aria-current="location"/);
+  const routeChapters = [
+    ["/work/ai-powered-feedback-intelligence-platform", ["opportunity", "workflow-research", "product-architecture", "concept-validation", "feedback-pipeline", "trust-in-ai", "collaboration", "projected-impact", "demonstrated-skills"]],
+    ["/work/enterprise-search-generative-ai", ["background", "goals-methods", "survey-findings", "interviews", "key-insights", "future-state", "ai-attitudes", "recommendations", "outcomes"]],
+  ];
+  for (const [route, expectedChapters] of routeChapters) {
+    const { html } = await render(route);
+    const navs = html.match(/<nav class="vertical-chapter-nav" aria-label="Case study chapters" data-component="VerticalChapterNav">[\s\S]*?<\/nav>/g) ?? [];
+    assert.equal(navs.length, 1, `expected exactly one VerticalChapterNav on ${route}`);
+    const links = [...navs[0].matchAll(/<a[^>]+href="#([^"]+)"[^>]*>/g)].map((match) => match[1]);
+    assert.deepEqual(links, expectedChapters, `expected ${route} chapter links in source order`);
+    assert.match(navs[0], new RegExp(`<a[^>]+href="#${expectedChapters[0]}"[^>]+aria-current="location"`));
+    assert.equal((navs[0].match(/aria-current="location"/g) ?? []).length, 1);
+    assert.doesNotMatch(navs[0], /data-component="(?:ChapterRail|ChapterNav)"|class="(?:chapter-nav|feedback-chapter-nav)"/);
+  }
   assert.match(chapterNavSource, /["']use client["']/);
   assert.match(chapterNavSource, /IntersectionObserver/);
   assert.match(chapterNavSource, /aria-current=\{[^}]*\?\s*["']location["']/);
-  const railRule = css.match(/\.feedback-chapter-nav\{([^}]*)\}/)?.[1] ?? "";
+  const railRule = css.match(/\.vertical-chapter-nav\{([^}]*)\}/)?.[1] ?? "";
   assert.match(railRule, /position:\s*fixed/);
   assert.match(railRule, /left:\s*[^;]+/);
   assert.match(railRule, /top:\s*50%/);
   assert.match(railRule, /transform:\s*translateY\(-50%\)/);
   assert.match(railRule, /flex-direction:\s*column/);
-  assert.match(css, /\.feedback-chapter-nav a\[aria-current="location"\]\{[^}]*color:\s*var\(--purple-dark\)[^}]*\}/);
-  assert.match(css, /@media\s*\(max-width:\s*900px\)\{[\s\S]*?\.feedback-chapter-nav\{[^}]*display:\s*none[^}]*\}/);
+  assert.match(css, /\.vertical-chapter-nav a\[aria-current="location"\]\{[^}]*color:\s*var\(--purple-dark\)[^}]*\}/);
+  assert.match(css, /@media\s*\(max-width:\s*900px\)\{[\s\S]*?\.vertical-chapter-nav\{[^}]*display:\s*none[^}]*\}/);
+});
+
+test("retired chapter navigation module and export names are absent", async () => {
+  const { access } = await import("node:fs/promises");
+  await assert.rejects(
+    access(new URL("../app/components/case-study/ChapterNav.tsx", import.meta.url)),
+    (error) => error?.code === "ENOENT",
+  );
+
+  const { tsImport } = await import("tsx/esm/api");
+  const navigationModule = await tsImport("../app/components/case-study/VerticalChapterNav.tsx", import.meta.url);
+  assert.deepEqual(Object.keys(navigationModule).sort(), ["VerticalChapterNav"]);
+  assert.equal("ChapterRail" in navigationModule, false);
+  assert.equal("ChapterNav" in navigationModule, false);
 });
 
 test("feedback articles use h4 headings while the standalone Outcome remains h3", async () => {
@@ -442,19 +466,19 @@ test("desired workflow PNG preserves dimensions and transparent outer corners", 
   assert.ok(png.pixels.some((value, index) => index % png.channels === alphaOffset && value > 0), "expected the workflow artwork to retain visible pixels");
 });
 
-test("feedback chapter navigation is a connected rail with locally thickened interaction segments", async () => {
+test("vertical chapter navigation is a connected rail with locally thickened interaction segments", async () => {
   const { readFile } = await import("node:fs/promises");
   const css = await readFile(new URL("../app/case-study.css", import.meta.url), "utf8");
-  const railRule = css.match(/\.feedback-chapter-nav\{([^}]*)\}/)?.[1] ?? "";
+  const railRule = css.match(/\.vertical-chapter-nav\{([^}]*)\}/)?.[1] ?? "";
   assert.match(railRule, /background:\s*transparent/);
   assert.match(railRule, /border:\s*0/);
   assert.match(railRule, /border-radius:\s*0/);
   assert.match(railRule, /box-shadow:\s*none/);
   assert.match(railRule, /backdrop-filter:\s*none/);
-  assert.match(css, /\.feedback-chapter-nav::before\{[^}]*position:\s*absolute[^}]*top:\s*0[^}]*bottom:\s*0[^}]*width:\s*\d+(?:\.\d+)?px[^}]*background:\s*(?!transparent|none)[^;}]+[^}]*\}/);
-  const baseSegment = css.match(/\.feedback-chapter-nav a::before\{[^}]*position:\s*absolute[^}]*width:\s*(\d+(?:\.\d+)?)(px)[^}]*background:\s*(?!transparent|none)[^;}]+[^}]*\}/);
+  assert.match(css, /\.vertical-chapter-nav::before\{[^}]*position:\s*absolute[^}]*top:\s*0[^}]*bottom:\s*0[^}]*width:\s*\d+(?:\.\d+)?px[^}]*background:\s*(?!transparent|none)[^;}]+[^}]*\}/);
+  const baseSegment = css.match(/\.vertical-chapter-nav a::before\{[^}]*position:\s*absolute[^}]*width:\s*(\d+(?:\.\d+)?)(px)[^}]*background:\s*(?!transparent|none)[^;}]+[^}]*\}/);
   assert.ok(baseSegment, "expected every navigation link to have a visible local rail segment");
-  for (const selector of [".feedback-chapter-nav a:hover::before", ".feedback-chapter-nav a:focus-visible::before", '.feedback-chapter-nav a[aria-current="location"]::before']) {
+  for (const selector of [".vertical-chapter-nav a:hover::before", ".vertical-chapter-nav a:focus-visible::before", '.vertical-chapter-nav a[aria-current="location"]::before']) {
     const interactionSegment = css.match(new RegExp(`${selector.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}\\{[^}]*width:\\s*(\\d+(?:\\.\\d+)?)(px)[^}]*\\}`));
     assert.ok(interactionSegment, `expected ${selector} to define a local rail segment width`);
     assert.equal(interactionSegment[2], baseSegment[2]);
@@ -462,36 +486,23 @@ test("feedback chapter navigation is a connected rail with locally thickened int
   }
 });
 
-test("feedback rail reserves a reading gutter across intermediate desktop widths", async () => {
+test("both case studies reserve a reading gutter beside the vertical navigation", async () => {
   const { readFile } = await import("node:fs/promises");
   const css = await readFile(new URL("../app/case-study.css", import.meta.url), "utf8");
-  const gutterRule = css.match(/@media\s*\(min-width:\s*901px\)\s*and\s*\(max-width:\s*1439px\)\{[\s\S]*?\.feedback-case-study \.case-shell\{([^}]*)\}/)?.[1] ?? "";
+  const gutterRule = css.match(/@media\s*\(min-width:\s*901px\)\s*and\s*\(max-width:\s*1439px\)\{[\s\S]*?\.case-study \.case-shell\{([^}]*)\}/)?.[1] ?? "";
 
   assert.match(gutterRule, /width:\s*min\(1040px,calc\(100%\s*-\s*224px\)\)/);
   assert.match(gutterRule, /margin-left:\s*208px/);
   assert.match(gutterRule, /margin-right:\s*16px/);
   assert.match(gutterRule, /box-sizing:\s*border-box/);
   const railRight = 24 + 160;
-  for (const viewport of [901, 1200, 1439]) {
-    const shellLeft = 208;
-    const shellWidth = Math.min(1040, viewport - 224);
+  for (const viewport of [901, 1200, 1600]) {
+    const shellLeft = viewport >= 1440 ? (viewport - 1040) / 2 : 208;
+    const shellWidth = viewport >= 1440 ? 1040 : Math.min(1040, viewport - 224);
     assert.ok(shellLeft > railRight, `expected a rail gap at ${viewport}px`);
     assert.ok(shellWidth >= 677, `expected a readable shell width at ${viewport}px`);
     assert.ok(shellLeft + shellWidth <= viewport, `expected the shell to stay in bounds at ${viewport}px`);
   }
-});
-
-test("enterprise search keeps the default horizontal sticky chapter navigation", async () => {
-  const { html } = await render("/work/enterprise-search-generative-ai");
-  const { readFile } = await import("node:fs/promises");
-  const css = await readFile(new URL("../app/case-study.css", import.meta.url), "utf8");
-  const defaultNavRule = css.match(/\.chapter-nav\{([^}]*)\}/)?.[1] ?? "";
-
-  assert.match(html, /<nav class="chapter-nav" aria-label="Case study chapters"[^>]*>/);
-  assert.doesNotMatch(html, /feedback-chapter-nav/);
-  assert.match(defaultNavRule, /position:\s*sticky/);
-  assert.match(defaultNavRule, /display:\s*flex/);
-  assert.doesNotMatch(defaultNavRule, /flex-direction:\s*column/);
 });
 
 test("feedback section headings are unnumbered", async () => {
@@ -676,7 +687,7 @@ test("component library documents each production component once", async () => {
   const requiredNames = [
     "PortfolioHeader",
     "ActionLink",
-    "ChapterRail",
+    "VerticalChapterNav",
     "ScrollCue",
     "PortfolioHero",
     "PortraitStage",
@@ -710,7 +721,7 @@ test("component library documents each production component once", async () => {
 test("component library renders production identities and semantic previews", async () => {
   const { html } = await render("/component-library");
   const productionNames = [
-    "PortfolioHeader", "ActionLink", "ChapterRail", "ScrollCue", "PortfolioHero", "PortraitStage",
+    "PortfolioHeader", "ActionLink", "VerticalChapterNav", "ScrollCue", "PortfolioHero", "PortraitStage",
     "SectionIntro", "ProjectPreviewCard", "ContactCallout", "PortfolioFooter", "ScrollReveal",
     "CaseStudyHero", "CaseStudyMetadata", "CaseStudySection", "CaseStudyMedia", "CaseStudyQuote",
     "WorkflowQuestion", "ContentBlockRenderer", "InsightCard", "InsightGrid", "RecommendationCard",
@@ -741,6 +752,19 @@ test("component library keeps contained navigation interactive and sticky", asyn
 
   assert.match(pageRule, /overflow-x:\s*clip/, "page containment must not create a sticky-nav scroll container");
   assert.match(headerRule, /pointer-events:\s*auto/, "contained header must remain interactive after its production scroll state changes");
+});
+
+test("component library contains the production vertical navigation without restyling it", async () => {
+  const { html } = await render("/component-library");
+  const { readFile } = await import("node:fs/promises");
+  const css = await readFile(new URL("../app/component-library/component-library.css", import.meta.url), "utf8");
+  const article = html.match(/<article[^>]+data-component-name="VerticalChapterNav"[\s\S]*?<\/article>/)?.[0] ?? "";
+  const containmentRule = css.match(/\.component-library-nav-containment\s*\{([^}]*)\}/)?.[1] ?? "";
+
+  assert.match(article, /class="component-library-nav-containment"/);
+  assert.match(article, /<nav class="vertical-chapter-nav"[^>]+data-component="VerticalChapterNav">/);
+  assert.match(containmentRule, /contain:\s*layout paint/);
+  assert.doesNotMatch(css, /\.vertical-chapter-nav/);
 });
 
 test("component library remains unlinked from public portfolio routes", async () => {

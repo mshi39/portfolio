@@ -235,23 +235,10 @@
   opacity: 1!important
 }
 
-.component-library-page .component-library-preview .chapter-nav,
-.component-library-page .component-library-preview .feedback-chapter-nav {
-  position: relative;
-  top: auto;
-  left: auto;
-  z-index: 1;
-  width: 100%;
-  display: flex!important;
-  flex-flow: row wrap;
-  margin: 0;
+.component-library-nav-containment {
+  min-height: 320px;
   overflow: hidden;
-  transform: none
-}
-
-.component-library-page .component-library-preview .feedback-chapter-nav::before,
-.component-library-page .component-library-preview .feedback-chapter-nav a::before {
-  display: none
+  contain: layout paint
 }
 
 .component-library-page .component-library-preview .hero {

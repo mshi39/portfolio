@@ -6,7 +6,7 @@ import { SiteHeader } from "../../components/SiteHeader";
 import { CaseStudyHero } from "../../components/case-study/CaseStudyHero";
 import { CaseStudyMedia } from "../../components/case-study/CaseStudyMedia";
 import { CaseStudySection } from "../../components/case-study/CaseStudySection";
-import { ChapterRail } from "../../components/case-study/ChapterNav";
+import { VerticalChapterNav } from "../../components/case-study/VerticalChapterNav";
 import { ContentBlockRenderer } from "../../components/case-study/ContentBlockRenderer";
 import { InsightGrid } from "../../components/case-study/InsightGrid";
 import { RecommendationList } from "../../components/case-study/RecommendationList";
@@ -175,7 +175,7 @@ export default function FeedbackIntelligenceCaseStudy() {
       metadataClassName="feedback-source-meta"
       mediaSlots={heroVideo?.type === "media" ? mediaBlock(heroVideo.key, 0) : undefined}
     />
-    <ChapterRail chapters={chapters} variant="feedback-rail" />
+    <VerticalChapterNav chapters={chapters} />
 
     <CaseStudySection id="opportunity" eyebrow="01 · Opportunity" title="The Opportunity">
       <ContentBlockRenderer blocks={chapterSlice(chapterStarts.opportunity, chapterStarts.workflow)} renderMedia={mediaBlock} />
