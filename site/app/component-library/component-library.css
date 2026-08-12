@@ -359,15 +359,6 @@
   margin-top: 0
 }
 
-.component-library-page .component-library-preview .feedback-pipeline-grid .recommendation-card {
-  grid-template-columns: 36px minmax(0,1fr);
-  padding: 22px
-}
-
-.component-library-page .component-library-preview .feedback-pipeline-grid .recommendation-card>.feedback-blocks {
-  grid-column: 2
-}
-
 .component-library-page .component-library-preview :focus-visible {
   outline: 4px solid rgba(167,78,247,.35);
   outline-offset: 3px

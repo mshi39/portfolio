@@ -330,6 +330,122 @@ test("feedback case study composes production-backed library components", async 
   assert.equal(cardClasses.filter((className) => className === "recommendation-card feedback-customer-card").length, 1);
 });
 
+test("self-contained case study cards match production", async () => {
+  const { readFile } = await import("node:fs/promises");
+  const [{ html: gallery }, { html: feedback }, css, galleryCss] = await Promise.all([
+    render("/component-library"),
+    render("/work/ai-powered-feedback-intelligence-platform"),
+    readFile(new URL("../app/case-study.css", import.meta.url), "utf8"),
+    readFile(new URL("../app/component-library/component-library.css", import.meta.url), "utf8"),
+  ]);
+  const escapeSelector = (selector) => selector.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+  const rule = (selector) => css.match(new RegExp(`(?:^|})\\s*${escapeSelector(selector)}\\{([^}]*)\\}`))?.[1] ?? "";
+  const mediaRule = (query, selector) => {
+    const starts = [...css.matchAll(new RegExp(`@media\\s*\\(${query}\\)\\{`, "g"))];
+    for (const start of starts) {
+      let depth = 1;
+      let cursor = start.index + start[0].length;
+      while (depth > 0 && cursor < css.length) {
+        if (css[cursor] === "{") depth += 1;
+        if (css[cursor] === "}") depth -= 1;
+        cursor += 1;
+      }
+      const body = css.slice(start.index + start[0].length, cursor - 1);
+      const declaration = body.match(new RegExp(`(?:^|})\\s*${escapeSelector(selector)}\\{([^}]*)\\}`))?.[1];
+      if (declaration) return declaration;
+    }
+    return "";
+  };
+  const assertDeclarations = (selector, declarations) => {
+    const body = rule(selector);
+    assert.ok(body, `expected a standalone ${selector} rule`);
+    for (const declaration of declarations) assert.match(body, declaration, `expected ${selector} to own ${declaration}`);
+  };
+
+  const insightPreview = gallery.match(/<article[^>]+data-component-name="InsightCard"[\s\S]*?<\/article>/)?.[0] ?? "";
+  const recommendationPreview = gallery.match(/<article[^>]+data-component-name="RecommendationCard"[\s\S]*?<\/article>/)?.[0] ?? "";
+  assert.match(insightPreview, /<article class="insight-card" data-component="InsightCard">/);
+  assert.match(recommendationPreview, /<article class="recommendation-card" data-component="RecommendationCard">/);
+  assert.doesNotMatch(recommendationPreview, /<figure\b|<img\b|<video\b/, "standalone RecommendationCard preview must stay text-only");
+  assert.match(feedback, /<article class="insight-card insight-card-highlighted" data-component="InsightCard">/);
+  assert.match(feedback, /<article class="insight-card" data-component="InsightCard">/);
+  assert.equal((feedback.match(/data-component="RecommendationCard"/g) ?? []).length, 8);
+  assert.match(feedback, /<article class="recommendation-card" data-component="RecommendationCard">/);
+  assert.match(feedback, /<article class="recommendation-card feedback-customer-card" data-component="RecommendationCard">/);
+
+  assertDeclarations(".insight-card", [
+    /min-width:\s*0/,
+    /padding:\s*26px/,
+    /background:\s*#fff/,
+    /border:\s*1px solid var\(--line\)/,
+    /border-radius:\s*26px/,
+    /box-shadow:\s*var\(--shadow\)/,
+  ]);
+  assertDeclarations(".insight-card-highlighted", [
+    /background:\s*var\(--pink\)/,
+    /border:\s*2px solid var\(--purple\)/,
+  ]);
+  assertDeclarations(".insight-card h4", [
+    /margin:\s*0 0 12px/,
+    /color:\s*#17121d/,
+    /font-family:\s*"Fredoka",sans-serif/,
+    /font-size:\s*20px/,
+    /line-height:\s*1\.35/,
+  ]);
+  assertDeclarations(".insight-card p", [
+    /margin:\s*0 0 22px/,
+    /color:\s*var\(--muted\)/,
+    /font-size:\s*1rem/,
+    /line-height:\s*1\.78/,
+  ]);
+
+  assertDeclarations(".recommendation-card", [
+    /display:\s*grid/,
+    /min-width:\s*0/,
+    /grid-template-columns:\s*48px minmax\(0,\.75fr\) minmax\(0,1\.25fr\)/,
+    /gap:\s*20px/,
+    /align-items:\s*start/,
+    /padding:\s*28px/,
+    /background:\s*#fff/,
+    /border:\s*1px solid var\(--line\)/,
+    /border-radius:\s*30px/,
+    /box-shadow:\s*var\(--shadow\)/,
+  ]);
+  assertDeclarations(".recommendation-card>span", [/color:\s*var\(--purple-dark\)/, /font-weight:\s*900/]);
+  assertDeclarations(".recommendation-card>.feedback-blocks", [/grid-column:\s*2/]);
+  assertDeclarations(".recommendation-card>.case-media", [/grid-column:\s*3/, /margin:\s*0/]);
+  assertDeclarations(".recommendation-card>.case-media~.feedback-blocks", [/grid-column:\s*2\/-1/]);
+  assertDeclarations(".recommendation-card h4", [
+    /margin:\s*0 0 12px/,
+    /color:\s*#17121d/,
+    /font-family:\s*"Fredoka",sans-serif/,
+    /font-size:\s*20px/,
+    /line-height:\s*1\.35/,
+  ]);
+  assertDeclarations(".recommendation-card p", [
+    /color:\s*var\(--muted\)/,
+    /font-size:\s*1\.08rem/,
+    /line-height:\s*1\.78/,
+  ]);
+
+  assert.match(rule(".feedback-comparison-grid"), /grid-template-columns:\s*repeat\(3,minmax\(0,1fr\)\)/);
+  assert.match(rule(".feedback-insights-grid"), /grid-template-columns:\s*repeat\(2,minmax\(0,1fr\)\)/);
+  assert.match(rule(".feedback-outcomes-grid"), /grid-template-columns:\s*repeat\(3,minmax\(0,1fr\)\)/);
+  assert.match(rule(".feedback-pipeline-grid"), /grid-template-columns:\s*1fr/);
+  assert.match(rule(".feedback-pipeline-grid"), /gap:\s*30px/);
+  assert.match(mediaRule("max-width:\\s*900px", ".recommendation-card"), /grid-template-columns:\s*40px 1fr/);
+  assert.match(mediaRule("max-width:\\s*900px", ".recommendation-card>.case-media"), /grid-column:\s*2/);
+  assert.match(mediaRule("max-width:\\s*600px", ".insight-card"), /padding:\s*22px/);
+  assert.match(mediaRule("max-width:\\s*600px", ".recommendation-card"), /padding:\s*24px/);
+  assert.match(mediaRule("max-width:\\s*600px", ".recommendation-card>.case-media"), /grid-column:\s*1\/-1/);
+
+  const ancestralCardSelectors = [...css.matchAll(/([^{}]+)\{[^{}]*\}/g)]
+    .map((match) => match[1].trim())
+    .filter((selector) => selector.includes(".feedback-case-study") && /\.(?:insight|recommendation)-card\b/.test(selector));
+  assert.deepEqual(ancestralCardSelectors, [], "core card rules must not require Feedback page ancestry");
+  assert.doesNotMatch(galleryCss, /\.component-library[^{}]*\.(?:insight|recommendation)-card\b/, "gallery wrappers must not restyle production cards");
+});
+
 test("case-study media and grid items can shrink below intrinsic media width", async () => {
   const { readFile } = await import("node:fs/promises");
   const css = await readFile(new URL("../app/case-study.css", import.meta.url), "utf8");
@@ -338,7 +454,7 @@ test("case-study media and grid items can shrink below intrinsic media width", a
     assert.match(rule(selector), /min-width:\s*0/, `${selector} must allow intrinsic content to shrink`);
     assert.match(rule(selector), /max-width:\s*100%/, `${selector} must stay within its containing block`);
   }
-  for (const selector of [".feedback-comparison-grid article", ".feedback-insights-grid article", ".feedback-outcomes-grid article", ".feedback-pipeline-grid article"]) {
+  for (const selector of [".insight-card", ".recommendation-card"]) {
     assert.match(rule(selector), /min-width:\s*0/, `${selector} must not impose an intrinsic grid minimum`);
   }
 });
@@ -429,18 +545,18 @@ test("feedback articles use h4 headings while the standalone Outcome remains h3"
   assert.doesNotMatch(workflowSection.match(/<article\b[\s\S]*?<\/article>/g)?.join("") ?? "", /<h3>Outcome<\/h3>/);
 });
 
-test("feedback article h4 headings use the approved ink and size", async () => {
+test("case-study card h4 headings use the approved production typography", async () => {
   const { readFile } = await import("node:fs/promises");
   const css = await readFile(new URL("../app/case-study.css", import.meta.url), "utf8");
-  const feedbackGrids = ["comparison", "insights", "outcomes", "pipeline"];
-  const articleH4Rules = [...css.matchAll(/([^{}]+)\{([^{}]*)\}/g)];
-  const articleH4Rule = articleH4Rules.find(([, selector]) =>
-    selector.includes(".feedback-case-study article h4")
-    || feedbackGrids.every((grid) => selector.includes(`.feedback-${grid}-grid article h4`)),
-  )?.[2] ?? "";
-  assert.ok(articleH4Rule, "expected a Feedback-scoped h4 rule that covers every article grid");
-  assert.match(articleH4Rule, /color:\s*#17121d/);
-  assert.match(articleH4Rule, /font-size:\s*20px/);
+  for (const selector of [".insight-card h4", ".recommendation-card h4"]) {
+    const escaped = selector.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+    const cardH4Rule = css.match(new RegExp(`(?:^|})\\s*${escaped}\\{([^}]*)\\}`))?.[1] ?? "";
+    assert.ok(cardH4Rule, `expected ${selector} to own its typography`);
+    assert.match(cardH4Rule, /color:\s*#17121d/);
+    assert.match(cardH4Rule, /font-family:\s*"Fredoka",sans-serif/);
+    assert.match(cardH4Rule, /font-size:\s*20px/);
+    assert.match(cardH4Rule, /line-height:\s*1\.35/);
+  }
 });
 
 test("concept-validation quotes own their cite attribution without external speaker paragraphs", async () => {
