@@ -970,10 +970,10 @@ test("HeroOverview renders repeated headings in order with unique keys", async (
 });
 
 const typographySpecimens = [
-  { name: "Portfolio display h1", element: "h2", className: "typography-portfolio-display", selector: ".hero h1", source: ".hero h1", declarations: [/font-family:\s*"Fredoka",sans-serif/, /font-size:\s*clamp\(3\.8rem,6\.6vw,6rem\)/, /line-height:\s*\.98/] },
-  { name: "Case-study h1", element: "h2", className: "typography-case-study-display", selector: ".case-hero h1", source: ".case-hero h1", declarations: [/font-family:\s*"Fredoka",sans-serif/, /font-size:\s*clamp\(3\.5rem,7vw,6\.8rem\)/, /line-height:\s*\.96/] },
-  { name: "Section h2", element: "h2", className: "typography-section-heading", selector: ".case-section h2", source: ".case-section h2", declarations: [/font-family:\s*"Fredoka",sans-serif/, /font-size:\s*clamp\(2\.7rem,5vw,4\.7rem\)/, /line-height:\s*1\.02/] },
-  { name: "Content h3", element: "h3", className: "typography-content-heading", selector: ".case-section h3", source: ".case-section h3", declarations: [/color:\s*var\(--purple\)/, /font-family:\s*"Fredoka",sans-serif/, /font-size:\s*1\.55rem/] },
+  { name: "Portfolio display h1", element: "h4", className: "typography-portfolio-display", selector: ".hero h1", source: ".hero h1", declarations: [/font-family:\s*"Fredoka",sans-serif/, /font-size:\s*clamp\(3\.8rem,6\.6vw,6rem\)/, /line-height:\s*\.98/] },
+  { name: "Case-study h1", element: "h4", className: "typography-case-study-display", selector: ".case-hero h1", source: ".case-hero h1", declarations: [/font-family:\s*"Fredoka",sans-serif/, /font-size:\s*clamp\(3\.5rem,7vw,6\.8rem\)/, /line-height:\s*\.96/] },
+  { name: "Section h2", element: "h4", className: "typography-section-heading", selector: ".case-section h2", source: ".case-section h2", declarations: [/font-family:\s*"Fredoka",sans-serif/, /font-size:\s*clamp\(2\.7rem,5vw,4\.7rem\)/, /line-height:\s*1\.02/] },
+  { name: "Content h3", element: "h4", className: "typography-content-heading", selector: ".case-section h3", source: ".case-section h3", declarations: [/color:\s*var\(--purple\)/, /font-family:\s*"Fredoka",sans-serif/, /font-size:\s*1\.55rem/] },
   { name: "Article/card h4", element: "h4", className: "typography-card-heading", selector: ".insight-card h4", source: ".insight-card h4", declarations: [/color:\s*#17121d/, /font-family:\s*"Fredoka",sans-serif/, /font-size:\s*20px/, /line-height:\s*1\.35/] },
   { name: "Eyebrow", element: "p", className: "typography-eyebrow", selector: ".eyebrow", source: ".eyebrow", declarations: [/color:\s*var\(--purple-dark\)/, /font-size:\s*\.78rem/, /font-weight:\s*800/, /letter-spacing:\s*\.13em/, /text-transform:\s*uppercase/] },
   { name: "Body", element: "p", className: "typography-body", selector: "body", source: "body", declarations: [/color:\s*var\(--ink\)/, /font-family:\s*"Nunito Sans","Segoe UI",sans-serif/, /font-size:\s*1rem/, /font-weight:\s*400/, /line-height:\s*normal/] },
@@ -985,6 +985,7 @@ test("typography foundations render semantic production-class specimens", async 
   const typeSpecimenEntry = html.match(/<article[^>]+data-component-name="TypeSpecimen"[\s\S]*?<\/article>/)?.[0] ?? "";
   const renderedSpecimens = [...typeSpecimenEntry.matchAll(/<section[^>]+data-typography-specimen="([^"]+)"[\s\S]*?<\/div><(h[1-6]|p) class="([^"]+)">[^<]+<\/\2><\/section>/g)]
     .map(([, name, element, className]) => ({ name, element, className }));
+  const typographyPreview = typeSpecimenEntry.match(/<div class="component-library-preview"[^>]*>([\s\S]*)<\/div>\s*<\/article>/)?.[1] ?? "";
 
   assert.deepEqual(renderedSpecimens, typographySpecimens.map(({ name, element, className }) => ({ name, element, className })));
   for (const { name, source } of typographySpecimens) {
@@ -995,6 +996,7 @@ test("typography foundations render semantic production-class specimens", async 
   }
   assert.doesNotMatch(typeSpecimenEntry, /component-library-type-/);
   assert.equal((html.match(/<h1[ >]/g) ?? []).length, 1, "typography specimens must not add another page-level h1");
+  assert.doesNotMatch(typographyPreview, /<h[23]\b/, "foundation specimen previews must not skip below their gallery entry h3 heading");
 });
 
 test("typography foundations are owned by production CSS", async () => {

@@ -52,10 +52,10 @@ type TypeSpecimenProps = {
 };
 
 const typographySpecimens: TypeSpecimenProps[] = [
-  { name: "Portfolio display h1", sample: "Research turns complexity into clarity.", element: "h2", className: "typography-portfolio-display", use: "Primary portfolio page introductions.", source: ".hero h1" },
-  { name: "Case-study h1", sample: "Evidence shapes a clearer product direction.", element: "h2", className: "typography-case-study-display", use: "Case-study titles and research narratives.", source: ".case-hero h1" },
-  { name: "Section h2", sample: "A focused chapter in the story", element: "h2", className: "typography-section-heading", use: "Major portfolio and case-study sections.", source: ".case-section h2" },
-  { name: "Content h3", sample: "The evidence behind the decision", element: "h3", className: "typography-content-heading", use: "Subsections within long-form content.", source: ".case-section h3" },
+  { name: "Portfolio display h1", sample: "Research turns complexity into clarity.", element: "h4", className: "typography-portfolio-display", use: "Primary portfolio page introductions.", source: ".hero h1" },
+  { name: "Case-study h1", sample: "Evidence shapes a clearer product direction.", element: "h4", className: "typography-case-study-display", use: "Case-study titles and research narratives.", source: ".case-hero h1" },
+  { name: "Section h2", sample: "A focused chapter in the story", element: "h4", className: "typography-section-heading", use: "Major portfolio and case-study sections.", source: ".case-section h2" },
+  { name: "Content h3", sample: "The evidence behind the decision", element: "h4", className: "typography-content-heading", use: "Subsections within long-form content.", source: ".case-section h3" },
   { name: "Article/card h4", sample: "One scannable insight", element: "h4", className: "typography-card-heading", use: "Titles inside insight and recommendation cards.", source: ".insight-card h4" },
   { name: "Eyebrow", sample: "Research and product strategy", element: "p", className: "typography-eyebrow", use: "Short labels that orient a page or section.", source: ".eyebrow" },
   { name: "Body", sample: "Product decisions stay legible, useful, and grounded in evidence.", element: "p", className: "typography-body", use: "Primary explanatory copy.", source: "body" },
