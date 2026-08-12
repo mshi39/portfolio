@@ -211,4 +211,3 @@ Confirm Feedback still renders eight recommendation cards and all media in sourc
 - [ ] **Step 6: Record verification and final review**
 
 Write an ignored task report with exact automated/live evidence, screenshots, warnings, and cleanup. Stop on a real defect, route it through a focused fix/re-review, then request broad final review of the full alignment range.
-
