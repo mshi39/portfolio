@@ -1,4 +1,4 @@
-import type { ReactNode } from "react";
+import type { ElementType, ReactNode } from "react";
 import { ActionLink } from "../components/ActionLink";
 import { ContactCallout } from "../components/ContactCallout";
 import { PortfolioFooter } from "../components/PortfolioFooter";
@@ -42,26 +42,35 @@ export function BrandColorSwatch({ name, value }: { name: string; value: string 
   </div>;
 }
 
-export function TypeSpecimen() {
-  return <div className="component-library-type-specimen" data-component="TypeSpecimen">
-    {[
-      { name: "Portfolio display h1", sample: "Research turns complexity into clarity.", className: "component-library-type-portfolio-display", use: "Primary portfolio page introductions.", source: ".hero h1" },
-      { name: "Case-study h1", sample: "Evidence shapes a clearer product direction.", className: "component-library-type-case-study-display", use: "Case-study titles and research narratives.", source: ".case-hero h1" },
-      { name: "Section h2", sample: "A focused chapter in the story", className: "component-library-type-section-heading", use: "Major portfolio and case-study sections.", source: ".case-section h2" },
-      { name: "Content h3", sample: "The evidence behind the decision", className: "component-library-type-content-heading", use: "Subsections within long-form content.", source: ".case-section h3" },
-      { name: "Article/card h4", sample: "One scannable insight", className: "component-library-type-card-heading", use: "Titles inside insight and recommendation cards.", source: ".insight-card h4" },
-      { name: "Eyebrow", sample: "Research and product strategy", className: "eyebrow", use: "Short labels that orient a page or section.", source: ".eyebrow" },
-      { name: "Body", sample: "Product decisions stay legible, useful, and grounded in evidence.", className: "component-library-type-body", use: "Primary explanatory copy.", source: "body" },
-      { name: "Muted body", sample: "Supporting detail adds context without competing with the main message.", className: "component-library-type-muted-body", use: "Secondary and supporting explanation.", source: ".prose p" },
-    ].map((specimen) => <section className="component-library-type-row" data-typography-specimen={specimen.name} key={specimen.name}>
-      <div className="component-library-type-metadata">
-        <strong>{specimen.name}</strong>
-        <p className="component-library-type-use">Use: {specimen.use}</p>
-        <code className="component-library-type-source">Style: {specimen.source}</code>
-      </div>
-      <h4 className={specimen.className}>{specimen.sample}</h4>
-    </section>)}
-  </div>;
+type TypeSpecimenProps = {
+  name: string;
+  sample: string;
+  element: ElementType;
+  className: string;
+  use: string;
+  source: string;
+};
+
+const typographySpecimens: TypeSpecimenProps[] = [
+  { name: "Portfolio display h1", sample: "Research turns complexity into clarity.", element: "h2", className: "typography-portfolio-display", use: "Primary portfolio page introductions.", source: ".hero h1" },
+  { name: "Case-study h1", sample: "Evidence shapes a clearer product direction.", element: "h2", className: "typography-case-study-display", use: "Case-study titles and research narratives.", source: ".case-hero h1" },
+  { name: "Section h2", sample: "A focused chapter in the story", element: "h2", className: "typography-section-heading", use: "Major portfolio and case-study sections.", source: ".case-section h2" },
+  { name: "Content h3", sample: "The evidence behind the decision", element: "h3", className: "typography-content-heading", use: "Subsections within long-form content.", source: ".case-section h3" },
+  { name: "Article/card h4", sample: "One scannable insight", element: "h4", className: "typography-card-heading", use: "Titles inside insight and recommendation cards.", source: ".insight-card h4" },
+  { name: "Eyebrow", sample: "Research and product strategy", element: "p", className: "typography-eyebrow", use: "Short labels that orient a page or section.", source: ".eyebrow" },
+  { name: "Body", sample: "Product decisions stay legible, useful, and grounded in evidence.", element: "p", className: "typography-body", use: "Primary explanatory copy.", source: "body" },
+  { name: "Muted body", sample: "Supporting detail adds context without competing with the main message.", element: "p", className: "typography-muted-body", use: "Secondary and supporting explanation.", source: ".prose p" },
+];
+
+export function TypeSpecimen({ name, sample, element: Element, className, use, source }: TypeSpecimenProps) {
+  return <section className="component-library-typography-row" data-typography-specimen={name}>
+    <div className="component-library-typography-metadata">
+      <strong>{name}</strong>
+      <p className="component-library-typography-use">Use: {use}</p>
+      <code className="component-library-typography-source">Style: {source}</code>
+    </div>
+    <Element className={className}>{sample}</Element>
+  </section>;
 }
 
 export function SurfaceTokenSample() {
@@ -97,7 +106,9 @@ export const catalog: CatalogEntry[] = [
     name: "TypeSpecimen",
     description: "Use when comparing the portfolio display and body typography.",
     category: "Foundations",
-    preview: <TypeSpecimen />,
+    preview: <div className="component-library-typography-specimens" data-component="TypeSpecimen">
+      {typographySpecimens.map((specimen) => <TypeSpecimen {...specimen} key={specimen.name} />)}
+    </div>,
   },
   {
     name: "SurfaceTokenSample",

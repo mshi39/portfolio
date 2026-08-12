@@ -969,28 +969,51 @@ test("HeroOverview renders repeated headings in order with unique keys", async (
   }
 });
 
-test("typography foundations render eight named specimens without extra h1", async () => {
+const typographySpecimens = [
+  { name: "Portfolio display h1", element: "h2", className: "typography-portfolio-display", selector: ".hero h1", source: ".hero h1", declarations: [/font-family:\s*"Fredoka",sans-serif/, /font-size:\s*clamp\(3\.8rem,6\.6vw,6rem\)/, /line-height:\s*\.98/] },
+  { name: "Case-study h1", element: "h2", className: "typography-case-study-display", selector: ".case-hero h1", source: ".case-hero h1", declarations: [/font-family:\s*"Fredoka",sans-serif/, /font-size:\s*clamp\(3\.5rem,7vw,6\.8rem\)/, /line-height:\s*\.96/] },
+  { name: "Section h2", element: "h2", className: "typography-section-heading", selector: ".case-section h2", source: ".case-section h2", declarations: [/font-family:\s*"Fredoka",sans-serif/, /font-size:\s*clamp\(2\.7rem,5vw,4\.7rem\)/, /line-height:\s*1\.02/] },
+  { name: "Content h3", element: "h3", className: "typography-content-heading", selector: ".case-section h3", source: ".case-section h3", declarations: [/color:\s*var\(--purple\)/, /font-family:\s*"Fredoka",sans-serif/, /font-size:\s*1\.55rem/] },
+  { name: "Article/card h4", element: "h4", className: "typography-card-heading", selector: ".insight-card h4", source: ".insight-card h4", declarations: [/color:\s*#17121d/, /font-family:\s*"Fredoka",sans-serif/, /font-size:\s*20px/, /line-height:\s*1\.35/] },
+  { name: "Eyebrow", element: "p", className: "typography-eyebrow", selector: ".eyebrow", source: ".eyebrow", declarations: [/color:\s*var\(--purple-dark\)/, /font-size:\s*\.78rem/, /font-weight:\s*800/, /letter-spacing:\s*\.13em/, /text-transform:\s*uppercase/] },
+  { name: "Body", element: "p", className: "typography-body", selector: "body", source: "body", declarations: [/color:\s*var\(--ink\)/, /font-family:\s*"Nunito Sans","Segoe UI",sans-serif/, /font-size:\s*1rem/, /font-weight:\s*400/, /line-height:\s*normal/] },
+  { name: "Muted body", element: "p", className: "typography-muted-body", selector: ".prose p", source: ".prose p", declarations: [/color:\s*var\(--muted\)/, /font-family:\s*"Nunito Sans","Segoe UI",sans-serif/, /font-size:\s*1\.13rem/, /font-weight:\s*400/, /line-height:\s*1\.78/] },
+];
+
+test("typography foundations render semantic production-class specimens", async () => {
   const { html } = await render("/component-library");
   const typeSpecimenEntry = html.match(/<article[^>]+data-component-name="TypeSpecimen"[\s\S]*?<\/article>/)?.[0] ?? "";
-  const specimenNames = [
-    "Portfolio display h1",
-    "Case-study h1",
-    "Section h2",
-    "Content h3",
-    "Article/card h4",
-    "Eyebrow",
-    "Body",
-    "Muted body",
-  ];
+  const renderedSpecimens = [...typeSpecimenEntry.matchAll(/<section[^>]+data-typography-specimen="([^"]+)"[\s\S]*?<\/div><(h[1-6]|p) class="([^"]+)">[^<]+<\/\2><\/section>/g)]
+    .map(([, name, element, className]) => ({ name, element, className }));
 
-  assert.equal((typeSpecimenEntry.match(/data-typography-specimen=/g) ?? []).length, 8);
-  for (const name of specimenNames) {
+  assert.deepEqual(renderedSpecimens, typographySpecimens.map(({ name, element, className }) => ({ name, element, className })));
+  for (const { name, source } of typographySpecimens) {
     const specimen = typeSpecimenEntry.match(new RegExp(`<section[^>]+data-typography-specimen="${name}"[\\s\\S]*?<\\/section>`))?.[0] ?? "";
     assert.match(specimen, new RegExp(`<strong[^>]*>${name}<\\/strong>`));
-    assert.match(specimen, /<p class="component-library-type-use">Use: (?:<!-- -->)?[^<]+<\/p>/);
-    assert.match(specimen, /<code class="component-library-type-source">Style: (?:<!-- -->)?[^<]+<\/code>/);
+    assert.match(specimen, /<p class="component-library-typography-use">Use: (?:<!-- -->)?[^<]+<\/p>/);
+    assert.match(specimen, new RegExp(`<code class="component-library-typography-source">Style: (?:<!-- -->)?${source.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}<\\/code>`));
   }
+  assert.doesNotMatch(typeSpecimenEntry, /component-library-type-/);
   assert.equal((html.match(/<h1[ >]/g) ?? []).length, 1, "typography specimens must not add another page-level h1");
+});
+
+test("typography foundations are owned by production CSS", async () => {
+  const { readFile } = await import("node:fs/promises");
+  const [productionCss, galleryCss] = await Promise.all([
+    readFile(new URL("../app/globals.css", import.meta.url), "utf8"),
+    readFile(new URL("../app/component-library/component-library.css", import.meta.url), "utf8"),
+  ]);
+
+  assert.doesNotMatch(galleryCss, /\.component-library-type-/);
+  for (const { className, selector, declarations } of typographySpecimens) {
+    assert.doesNotMatch(galleryCss, new RegExp(`\\.${className}\\b`), `${className} must not be defined by gallery CSS`);
+    const productionRule = [...productionCss.matchAll(/([^{}]+)\{([^{}]*)\}/g)].find(([, selectors]) => {
+      const selectorList = selectors.split(",").map((value) => value.trim());
+      return selectorList.includes(selector) && selectorList.includes(`.${className}`);
+    })?.[2] ?? "";
+    assert.ok(productionRule, `${className} must share a production CSS rule with ${selector}`);
+    for (const declaration of declarations) assert.match(productionRule, declaration, `${className} must own ${declaration}`);
+  }
 });
 
 test("component library keeps contained navigation interactive and sticky", async () => {

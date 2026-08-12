@@ -167,12 +167,12 @@
   overflow-wrap: anywhere
 }
 
-.component-library-type-specimen {
+.component-library-typography-specimens {
   display: grid;
   gap: 18px
 }
 
-.component-library-type-row {
+.component-library-typography-row {
   display: grid;
   grid-template-columns: minmax(150px,.45fr) minmax(0,1fr);
   gap: 20px;
@@ -183,71 +183,26 @@
   border-radius: 18px
 }
 
-.component-library-type-metadata strong,
-.component-library-type-metadata code {
+.component-library-typography-metadata strong,
+.component-library-typography-metadata code {
   display: block
 }
 
-.component-library-type-use {
+.component-library-typography-use {
   margin: 8px 0;
   color: var(--muted);
   font-size: .9rem;
   line-height: 1.45
 }
 
-.component-library-type-source {
+.component-library-typography-source {
   color: var(--purple-dark);
   font-size: .78rem;
   overflow-wrap: anywhere
 }
 
-.component-library-type-row>h4 {
+.component-library-typography-row>:is(h2,h3,h4,p) {
   margin: 0
-}
-
-.component-library-type-portfolio-display {
-  font-family: "Fredoka",sans-serif;
-  font-size: clamp(3.8rem,6.6vw,6rem);
-  line-height: .98
-}
-
-.component-library-type-case-study-display {
-  font-family: "Fredoka",sans-serif;
-  font-size: clamp(3.5rem,7vw,6.8rem);
-  line-height: .96
-}
-
-.component-library-type-section-heading {
-  font-family: "Fredoka",sans-serif;
-  font-size: clamp(2.7rem,5vw,4.7rem);
-  line-height: 1.02
-}
-
-.component-library-type-content-heading {
-  color: var(--purple);
-  font-family: "Fredoka",sans-serif;
-  font-size: 1.55rem
-}
-
-.component-library-type-card-heading {
-  color: #17121d;
-  font-family: "Fredoka",sans-serif;
-  font-size: 20px;
-  line-height: 1.35
-}
-
-.component-library-type-body {
-  color: var(--ink);
-  font-size: 1rem;
-  font-weight: 400;
-  line-height: 1.65
-}
-
-.component-library-type-muted-body {
-  color: var(--muted);
-  font-size: 1.13rem;
-  font-weight: 400;
-  line-height: 1.78
 }
 
 .component-library-surface-samples {
@@ -478,7 +433,7 @@
     grid-template-columns: 1fr
   }
 
-  .component-library-type-row {
+  .component-library-typography-row {
     grid-template-columns: 1fr
   }
 
