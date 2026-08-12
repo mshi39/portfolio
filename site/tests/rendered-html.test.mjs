@@ -1047,3 +1047,10 @@ test("component library remains unlinked from public portfolio routes", async ()
     assert.doesNotMatch(html, /href="\/component-library"/, `expected ${route} to keep the gallery unlinked`);
   }
 });
+
+test("enterprise search composes global case-study components", async () => {
+  const { html } = await render("/work/enterprise-search-generative-ai");
+  for (const name of ["CaseStudyHero", "CaseStudyMetadata", "CaseStudyQuote", "InsightGrid", "RecommendationList"]) {
+    assert.match(html, new RegExp(`data-component="${name}"`));
+  }
+});

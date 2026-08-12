@@ -4,7 +4,7 @@
 
 **Goal:** Make the Enterprise Search case study compose the global production component library while preserving its content and page structure.
 
-**Architecture:** Keep Enterprise page data inline. Replace only duplicated markup with existing `CaseStudyHero`, `CaseStudyMetadata`, `CaseStudyQuote`, `InsightGrid`, `InsightCard`, `RecommendationList`, `RecommendationCard`, and `SimpleContentList` components. Reuse the current shared media, section, metric, header, footer, and navigation components unchanged.
+**Architecture:** Keep Enterprise page data inline. Replace only duplicated markup with existing `CaseStudyHero`, `CaseStudyMetadata`, `CaseStudyQuote`, `InsightGrid`, `InsightCard`, `RecommendationList`, and `RecommendationCard` components. Reuse the current shared media, section, metric, header, footer, and navigation components unchanged.
 
 **Tech Stack:** Next.js, React, TypeScript, CSS, Node test runner, Vinext.
 
@@ -26,7 +26,7 @@
 ```js
 test("enterprise search composes global case-study components", async () => {
   const enterprise = await renderRoute("/work/enterprise-search-generative-ai");
-  for (const name of ["CaseStudyHero", "CaseStudyMetadata", "CaseStudyQuote", "InsightGrid", "RecommendationList", "SimpleContentList"]) {
+  for (const name of ["CaseStudyHero", "CaseStudyMetadata", "CaseStudyQuote", "InsightGrid", "RecommendationList"]) {
     assert.match(enterprise.html, new RegExp(`data-component="${name}"`));
   }
 });
@@ -66,7 +66,7 @@ git commit -m "test: cover enterprise component composition"
 
 - [ ] **Step 2: Replace inline quote, insight, recommendation, and outcome markup**
 
-Use `CaseStudyQuote` for the interview quote, `InsightGrid`/`InsightCard` for the three research insights, `RecommendationList`/`RecommendationCard` for recommendations, and `SimpleContentList` for the five outcomes. Keep existing `CaseStudyFigure` children and their source order inside recommendation cards.
+Use `CaseStudyQuote` for the interview quote, `InsightGrid`/`InsightCard` for the three research insights and five outcomes, and `RecommendationList`/`RecommendationCard` for recommendations. Keep existing `CaseStudyFigure` children and their source order inside recommendation cards.
 
 - [ ] **Step 3: Run the focused test and verify it passes**
 

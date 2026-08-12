@@ -4,10 +4,14 @@ import { ActionLink } from "../../components/ActionLink";
 import { PortfolioFooter } from "../../components/PortfolioFooter";
 import { PortfolioHeader } from "../../components/PortfolioHeader";
 import { CaseStudyFigure } from "../../components/case-study/CaseStudyFigure";
+import { CaseStudyHero } from "../../components/case-study/CaseStudyHero";
 import { CaseStudyMedia } from "../../components/case-study/CaseStudyMedia";
+import { CaseStudyQuote } from "../../components/case-study/CaseStudyQuote";
 import { CaseStudySection } from "../../components/case-study/CaseStudySection";
 import { VerticalChapterNav } from "../../components/case-study/VerticalChapterNav";
 import { MetricCard } from "../../components/case-study/MetricCard";
+import { InsightGrid } from "../../components/case-study/InsightGrid";
+import { RecommendationList } from "../../components/case-study/RecommendationList";
 
 export const metadata: Metadata = { title: "Enterprise Search in the Age of Generative AI — Melissa Shi", description: "Research that clarified the enduring value and future direction of an internal enterprise search product." };
 const asset = (name: string) => `/portfolio/enterprise-search-${name}.png`;
@@ -24,17 +28,24 @@ const enterpriseChapters = [
   { id: "outcomes", label: "Outcomes" },
 ];
 
+const enterpriseMetadata = [
+  { label: "Role", value: "Lead UX Researcher" },
+  { label: "Timeline", value: "September 2025 – December 2025" },
+  { label: "Organization", value: "Splunk × Cisco" },
+  { label: "Methods", value: "Survey · Interviews · Synthesis" },
+];
+
 export default function EnterpriseSearchCaseStudy() {
   return <main className="case-study">
     <PortfolioHeader />
-    <header className="case-hero case-shell">
-      <Link className="case-back" href="/#selected-work">← Back to selected work</Link>
-      <p className="eyebrow">Generative research · Enterprise AI</p>
-      <h1>Research: Value of Internal Enterprise Search in the Age of Generative AI</h1>
-      <p className="case-deck">How research uncovered why employees were leaving a trusted internal search product—and reframed it as the data layer for a new AI ecosystem.</p>
-      <div className="case-meta"><div><span>Role</span><strong>Lead UX Researcher</strong></div><div><span>Timeline</span><strong>September 2025 – December 2025</strong></div><div><span>Organization</span><strong>Splunk × Cisco</strong></div><div><span>Methods</span><strong>Survey · Interviews · Synthesis</strong></div></div>
-      <div className="case-hero-art"><span>Search</span><strong>→</strong><span>Trusted data</span><strong>→</strong><span>AI answers</span></div>
-    </header>
+    <CaseStudyHero
+      backLink={<Link className="case-back" href="/#selected-work">← Back to selected work</Link>}
+      eyebrow="Generative research · Enterprise AI"
+      title="Research: Value of Internal Enterprise Search in the Age of Generative AI"
+      deck="How research uncovered why employees were leaving a trusted internal search product—and reframed it as the data layer for a new AI ecosystem."
+      metadataItems={enterpriseMetadata}
+      mediaSlots={<div className="case-hero-art"><span>Search</span><strong>→</strong><span>Trusted data</span><strong>→</strong><span>AI answers</span></div>}
+    />
     <VerticalChapterNav chapters={enterpriseChapters} />
 
     <CaseStudySection id="background" eyebrow="01 · Background" title="A trusted product at a turning point">
@@ -55,11 +66,15 @@ export default function EnterpriseSearchCaseStudy() {
 
     <CaseStudySection id="interviews" eyebrow="04 · Interviews" title="Following real searches across a fragmented ecosystem" tone="pink">
       <div className="prose"><p>Interviews moved beyond stated preference into recent, concrete search episodes. Participants reconstructed where they started, which sources they trusted, what made them switch tools, and how they decided an answer was good enough.</p><p>The sample included active users from Sales and Customer Experience, infrequent users from Engineering, and four detractors. This range revealed not one universal journey, but a repeated pattern of bouncing between Slack, Webex, internal documentation, web search, AI assistants, and Concierge.</p></div>
-      <blockquote className="case-quote">“The hard part isn’t finding an answer. It’s knowing whether the answer is current, internal, and safe to trust.”</blockquote>
+      <CaseStudyQuote>The hard part isn’t finding an answer. It’s knowing whether the answer is current, internal, and safe to trust.</CaseStudyQuote>
     </CaseStudySection>
 
     <CaseStudySection id="key-insights" eyebrow="05 · Key insights" title="Concierge’s moat was trust, not the search box">
-      <div className="insight-grid"><article><span>01</span><h3>Trusted internal retrieval</h3><p>Employees valued direct access to authoritative, permission-aware internal sources—especially when external AI could not see or verify them.</p></article><article><span>02</span><h3>Drivers of abandonment</h3><p>Missing sources, English-only results, inefficient workflows, low awareness, and displacement by Cisco AI made the product feel incomplete.</p></article><article><span>03</span><h3>Workflow fragmentation</h3><p>Search happened inside collaboration tools. Asking employees to leave Slack or Webex for a separate destination created avoidable friction.</p></article></div>
+      <InsightGrid mode="insights" groups={[
+        <><h4>Trusted internal retrieval</h4><p>Employees valued direct access to authoritative, permission-aware internal sources—especially when external AI could not see or verify them.</p></>,
+        <><h4>Drivers of abandonment</h4><p>Missing sources, English-only results, inefficient workflows, low awareness, and displacement by Cisco AI made the product feel incomplete.</p></>,
+        <><h4>Workflow fragmentation</h4><p>Search happened inside collaboration tools. Asking employees to leave Slack or Webex for a separate destination created avoidable friction.</p></>,
+      ]} />
       <CaseStudyFigure src={asset("trusted-data")} alt="Research synthesis showing Concierge as a trusted internal data source" caption="The synthesis reframed Concierge’s primary value around trusted, retrievable internal data." />
     </CaseStudySection>
 
@@ -73,11 +88,22 @@ export default function EnterpriseSearchCaseStudy() {
     </CaseStudySection>
 
     <CaseStudySection id="recommendations" eyebrow="08 · Recommendations" title="Turn the findings into a new product position" tone="pink">
-      <div className="recommendation-list"><article><span>01</span><div><h3>Integrate Concierge into Slack and Webex</h3><p>Bring trusted retrieval into the collaboration spaces employees already use every day, reducing context switching and making internal search more discoverable.</p></div><CaseStudyFigure src={asset("slack-webex-integration")} alt="Concept for a Concierge app integrated in Slack" caption="Concierge embedded in the flow of work."/></article><article><span>02</span><div><h3>Enable Integration with Cisco AI Assistant</h3><p>Expose Concierge’s indexed internal knowledge through MCP so Cisco AI Assistant can ground generated answers in permission-aware company data.</p></div><CaseStudyFigure src={asset("mcp-integration")} alt="Diagram of Concierge integration through MCP" caption="MCP makes trusted internal retrieval available to AI experiences."/></article><article><span>03</span><div><h3>Reposition and Rebrand Concierge</h3><p>Shift the story from a standalone search engine to the trusted data layer that improves every internal AI and search experience.</p></div><CaseStudyFigure src={asset("data-layer-positioning")} alt="Diagram positioning Concierge as a data layer" caption="The new position: infrastructure for trusted enterprise answers."/></article><article className="recommendation-simple"><span>04</span><div><h3>Improve Targeted Awareness</h3><p>Focus education on high-value moments and segments—especially Customer Experience—rather than relying on broad, undifferentiated promotion.</p></div></article></div>
+      <RecommendationList cards={[
+        { segments: [<div className="feedback-blocks" key="slack-copy"><h4>Integrate Concierge into Slack and Webex</h4><p>Bring trusted retrieval into the collaboration spaces employees already use every day, reducing context switching and making internal search more discoverable.</p></div>, <CaseStudyMedia key="slack-media" kind="image" src={asset("slack-webex-integration")} alt="Concept for a Concierge app integrated in Slack" width={1185} height={720} caption="Concierge embedded in the flow of work." />] },
+        { segments: [<div className="feedback-blocks" key="mcp-copy"><h4>Enable Integration with Cisco AI Assistant</h4><p>Expose Concierge’s indexed internal knowledge through MCP so Cisco AI Assistant can ground generated answers in permission-aware company data.</p></div>, <CaseStudyMedia key="mcp-media" kind="image" src={asset("mcp-integration")} alt="Diagram of Concierge integration through MCP" width={411} height={265} caption="MCP makes trusted internal retrieval available to AI experiences." />] },
+        { segments: [<div className="feedback-blocks" key="positioning-copy"><h4>Reposition and Rebrand Concierge</h4><p>Shift the story from a standalone search engine to the trusted data layer that improves every internal AI and search experience.</p></div>, <CaseStudyMedia key="positioning-media" kind="image" src={asset("data-layer-positioning")} alt="Diagram positioning Concierge as a data layer" width={1018} height={870} caption="The new position: infrastructure for trusted enterprise answers." />] },
+        { segments: [<div className="feedback-blocks" key="awareness-copy"><h4>Improve Targeted Awareness</h4><p>Focus education on high-value moments and segments—especially Customer Experience—rather than relying on broad, undifferentiated promotion.</p></div>] },
+      ]} />
     </CaseStudySection>
 
     <CaseStudySection id="outcomes" eyebrow="09 · Outcomes" title="Research changed both the roadmap and the product’s role">
-      <div className="outcome-grid"><article><strong>Customer Experience</strong><p>Identified as a valuable segment with strong success but low awareness.</p></article><article><strong>Roadmap clarity</strong><p>Prioritized Slack indexing and Slack/Webex integration as near-term initiatives.</p></article><article><strong>Strategic repositioning</strong><p>Established Concierge as the critical data layer powering Cisco AI Assistant through MCP.</p></article><article><strong>2K+ users after release</strong><p>The MCP capability reached more than two thousand users following release.</p></article><article><strong>Introduced survey research practices</strong><p>Built a repeatable quantitative research approach for the team.</p></article></div>
+      <InsightGrid mode="outcomes" groups={[
+        <><h4>Customer Experience</h4><p>Identified as a valuable segment with strong success but low awareness.</p></>,
+        <><h4>Roadmap clarity</h4><p>Prioritized Slack indexing and Slack/Webex integration as near-term initiatives.</p></>,
+        <><h4>Strategic repositioning</h4><p>Established Concierge as the critical data layer powering Cisco AI Assistant through MCP.</p></>,
+        <><h4>2K+ users after release</h4><p>The MCP capability reached more than two thousand users following release.</p></>,
+        <><h4>Introduced survey research practices</h4><p>Built a repeatable quantitative research approach for the team.</p></>,
+      ]} />
       <div className="case-closing"><p className="eyebrow">The lasting lesson</p><h3>Generative AI did not eliminate the need for enterprise search. It made trustworthy retrieval more important.</h3><p>The research helped the team stop treating AI as a replacement threat and start treating Concierge as the evidence layer that makes internal AI useful, verifiable, and safe.</p></div>
     </CaseStudySection>
     <section className="case-next case-shell"><p className="eyebrow">Keep exploring</p><h2>See more work where research shapes product strategy.</h2><ActionLink href="/#selected-work">Back to selected work</ActionLink></section>
