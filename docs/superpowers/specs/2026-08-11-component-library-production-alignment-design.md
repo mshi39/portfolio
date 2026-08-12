@@ -152,4 +152,3 @@ Verification will prove:
 - Redesigning Home components.
 - Adding horizontal chapter-navigation variants.
 - Publishing the library separately or adding Storybook.
-
