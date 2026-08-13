@@ -17,4 +17,4 @@
 @media(min-width:901px) and (max-width:1439px){.case-study .case-shell{box-sizing:border-box;width:min(1040px,calc(100% - 224px));margin-left:208px;margin-right:16px}}
 .case-media-frame{padding:0}.case-quote{font-style:italic}.feedback-workflow-question{background:var(--purple-dark);color:#fff}
 .feedback-hero-overview p{max-width:790px;margin:0 0 22px;color:var(--muted);font-size:1.08rem;line-height:1.78}
-.feedback-hero-overview ul{margin:10px 0;color:var(--muted);line-height:1.65}
+.feedback-hero-overview ul{max-width:790px;margin:20px 0 32px;padding-left:24px}.feedback-hero-overview li{margin:10px 0;color:var(--muted);line-height:1.65}

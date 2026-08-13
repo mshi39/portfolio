@@ -1081,7 +1081,7 @@ test("HeroOverview lists use the shared case-study list style", async () => {
   const css = await readFile(new URL("../app/case-study.css", import.meta.url), "utf8");
   const rule = css.match(/\.feedback-hero-overview ul\{([^}]*)\}/)?.[1] ?? "";
 
-  for (const declaration of [/margin:\s*10px 0/, /color:\s*var\(--muted\)/, /line-height:\s*1\.65/]) {
-    assert.match(rule, declaration);
-  }
+  for (const declaration of [/max-width:\s*790px/, /margin:\s*20px 0 32px/, /padding-left:\s*24px/]) assert.match(rule, declaration);
+  const itemRule = css.match(/\.feedback-hero-overview li\{([^}]*)\}/)?.[1] ?? "";
+  for (const declaration of [/margin:\s*10px 0/, /color:\s*var\(--muted\)/, /line-height:\s*1\.65/]) assert.match(itemRule, declaration);
 });
