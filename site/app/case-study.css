@@ -16,3 +16,4 @@
 @media(max-width:900px){.vertical-chapter-nav{display:none}}
 @media(min-width:901px) and (max-width:1439px){.case-study .case-shell{box-sizing:border-box;width:min(1040px,calc(100% - 224px));margin-left:208px;margin-right:16px}}
 .case-media-frame{padding:0}.case-quote{font-style:italic}.feedback-workflow-question{background:var(--purple-dark);color:#fff}
+.feedback-hero-overview p{max-width:790px;margin:0 0 22px;color:var(--muted);font-size:1.08rem;line-height:1.78}

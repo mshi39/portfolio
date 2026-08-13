@@ -1065,3 +1065,13 @@ test("enterprise hero presents its background and outcome in the shared overview
   assert.match(hero, /Identified key drivers behind declining retention and engagement/);
   assert.match(hero, /<div class="case-meta enterprise-source-meta" data-component="CaseStudyMetadata">/);
 });
+
+test("HeroOverview paragraphs use the shared feedback case-study copy style", async () => {
+  const { readFile } = await import("node:fs/promises");
+  const css = await readFile(new URL("../app/case-study.css", import.meta.url), "utf8");
+  const rule = css.match(/\.feedback-hero-overview p\{([^}]*)\}/)?.[1] ?? "";
+
+  for (const declaration of [/max-width:\s*790px/, /margin:\s*0 0 22px/, /color:\s*var\(--muted\)/, /font-size:\s*1\.08rem/, /line-height:\s*1\.78/]) {
+    assert.match(rule, declaration);
+  }
+});
