@@ -1075,3 +1075,13 @@ test("HeroOverview paragraphs use the shared feedback case-study copy style", as
     assert.match(rule, declaration);
   }
 });
+
+test("HeroOverview lists use the shared case-study list style", async () => {
+  const { readFile } = await import("node:fs/promises");
+  const css = await readFile(new URL("../app/case-study.css", import.meta.url), "utf8");
+  const rule = css.match(/\.feedback-hero-overview ul\{([^}]*)\}/)?.[1] ?? "";
+
+  for (const declaration of [/margin:\s*10px 0/, /color:\s*var\(--muted\)/, /line-height:\s*1\.65/]) {
+    assert.match(rule, declaration);
+  }
+});
