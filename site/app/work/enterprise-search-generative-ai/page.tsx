@@ -30,9 +30,7 @@ const enterpriseChapters = [
 
 const enterpriseMetadata = [
   { label: "Role", value: "Lead UX Researcher" },
-  { label: "Timeline", value: "September 2025 – December 2025" },
-  { label: "Organization", value: "Splunk × Cisco" },
-  { label: "Methods", value: "Survey · Interviews · Synthesis" },
+  { label: "Timeline", value: "Sep 2025 – Dec 2025" },
 ];
 
 export default function EnterpriseSearchCaseStudy() {
@@ -43,8 +41,12 @@ export default function EnterpriseSearchCaseStudy() {
       eyebrow="Generative research · Enterprise AI"
       title="Research: Value of Internal Enterprise Search in the Age of Generative AI"
       deck="How research uncovered why employees were leaving a trusted internal search product—and reframed it as the data layer for a new AI ecosystem."
+      overviewPanels={[
+        { heading: "Background", content: <><p>Splunk had recently merged with Cisco and was undergoing a period of organizational and technological transition. As teams began aligning systems, tools, and workflows, generative AI was simultaneously becoming more prevalent and accessible across the company.</p><p>Within this shifting landscape, the Search Team sought to reassess the role and value of Concierge as Splunk’s internal enterprise search engine. Questions emerged around whether traditional enterprise search could remain competitive, how employee behaviors were evolving with the rise of AI tools, and what role Concierge should play in the future ecosystem.</p><p>I was tasked with leading research to evaluate these changes, understand emerging employee needs, and provide recommendations to inform the product’s long-term direction.</p></> },
+        { heading: "Outcome", content: <ul><li>Identified key drivers behind declining retention and engagement</li><li>Delivered actionable insights that informed three product initiatives added to the backlog</li></ul> },
+      ]}
       metadataItems={enterpriseMetadata}
-      mediaSlots={<div className="case-hero-art"><span>Search</span><strong>→</strong><span>Trusted data</span><strong>→</strong><span>AI answers</span></div>}
+      metadataClassName="enterprise-source-meta"
     />
     <VerticalChapterNav chapters={enterpriseChapters} />
 

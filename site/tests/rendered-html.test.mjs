@@ -1054,3 +1054,14 @@ test("enterprise search composes global case-study components", async () => {
     assert.match(html, new RegExp(`data-component="${name}"`));
   }
 });
+
+test("enterprise hero presents its background and outcome in the shared overview", async () => {
+  const { html } = await render("/work/enterprise-search-generative-ai");
+  const hero = html.match(/<header class="case-hero case-shell" data-component="CaseStudyHero">[\s\S]*?<\/header>/)?.[0] ?? "";
+
+  assert.match(hero, /<div class="feedback-hero-overview" data-component="HeroOverview">/);
+  assert.match(hero, /<h2>Background<\/h2>/);
+  assert.match(hero, /<h2>Outcome<\/h2>/);
+  assert.match(hero, /Identified key drivers behind declining retention and engagement/);
+  assert.match(hero, /<div class="case-meta enterprise-source-meta" data-component="CaseStudyMetadata">/);
+});
