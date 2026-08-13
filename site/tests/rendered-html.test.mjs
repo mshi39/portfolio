@@ -1114,4 +1114,5 @@ test("enterprise methods table is rounded and the interview prompt uses Workflow
   const tableRule = css.match(/\.research-methods-table\{([^}]*)\}/)?.[1] ?? "";
   assert.match(tableRule, /border-radius:\s*28px/);
   assert.match(tableRule, /overflow:\s*hidden/);
+  assert.match(tableRule, /border:\s*1px solid var\(--line\)/);
 });
