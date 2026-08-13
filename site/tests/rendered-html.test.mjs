@@ -1085,3 +1085,20 @@ test("HeroOverview lists use the shared case-study list style", async () => {
   const itemRule = css.match(/\.feedback-hero-overview li\{([^}]*)\}/)?.[1] ?? "";
   for (const declaration of [/margin:\s*10px 0/, /color:\s*var\(--muted\)/, /line-height:\s*1\.65/]) assert.match(itemRule, declaration);
 });
+
+test("enterprise goals and methods uses the narrative renderer and survey comparison table", async () => {
+  const { html } = await render("/work/enterprise-search-generative-ai");
+  const section = html.match(/<section id="goals-methods"[\s\S]*?<\/section>/)?.[0] ?? "";
+
+  assert.match(section, /data-component="ContentBlockRenderer"/);
+  assert.match(section, /<h3>Research goals<\/h3>/);
+  assert.match(section, /<h3>Mixed-method approach<\/h3>/);
+  assert.match(section, /A company-wide survey established usage, success, and tool preferences across the Splunk business entity\./);
+  assert.match(section, /<table class="research-methods-table">/);
+  for (const text of ["Survey", "Interviews", "Large-scale quantitative study", "1:1 qualitative deep dives", "Identified patterns and behaviors", "Explained underlying motivations", "Surfaced top use cases and value drivers", "Added context to survey findings"]) assert.match(section, new RegExp(text));
+  assert.match(section, /class="participant-strip"/);
+
+  const { readFile } = await import("node:fs/promises");
+  const css = await readFile(new URL("../app/case-study.css", import.meta.url), "utf8");
+  assert.ok([...css.matchAll(/\.case-closing\{([^}]*)\}/g)].some(([, rule]) => /background:var\(--purple-dark\)/.test(rule)));
+});

@@ -8,6 +8,7 @@ import { CaseStudyHero } from "../../components/case-study/CaseStudyHero";
 import { CaseStudyMedia } from "../../components/case-study/CaseStudyMedia";
 import { CaseStudyQuote } from "../../components/case-study/CaseStudyQuote";
 import { CaseStudySection } from "../../components/case-study/CaseStudySection";
+import { ContentBlockRenderer } from "../../components/case-study/ContentBlockRenderer";
 import { VerticalChapterNav } from "../../components/case-study/VerticalChapterNav";
 import { MetricCard } from "../../components/case-study/MetricCard";
 import { InsightGrid } from "../../components/case-study/InsightGrid";
@@ -33,6 +34,13 @@ const enterpriseMetadata = [
   { label: "Timeline", value: "Sep 2025 – Dec 2025" },
 ];
 
+const goalsAndMethodsBlocks = [
+  { type: "heading" as const, level: 3 as const, text: "Research goals" },
+  { type: "list" as const, items: ["Define the value employees still received from Concierge.", "Understand why awareness, engagement, and retention were declining.", "Identify how search should coexist with Cisco’s emerging AI tools.", "Prioritize opportunities the Search Team could act on."] },
+  { type: "heading" as const, level: 3 as const, text: "Mixed-method approach" },
+  { type: "paragraph" as const, text: "A company-wide survey established usage, success, and tool preferences across the Splunk business entity. Follow-up interviews then explored real search behavior, frustrations, workarounds, and attitudes toward AI." },
+];
+
 export default function EnterpriseSearchCaseStudy() {
   return <main className="case-study">
     <PortfolioHeader />
@@ -56,7 +64,8 @@ export default function EnterpriseSearchCaseStudy() {
     </CaseStudySection>
 
     <CaseStudySection id="goals-methods" eyebrow="02 · Goals and methods" title="Measure the pattern, then understand the why" tone="pink">
-      <div className="case-columns"><div><h3>Research goals</h3><ul><li>Define the value employees still received from Concierge.</li><li>Understand why awareness, engagement, and retention were declining.</li><li>Identify how search should coexist with Cisco’s emerging AI tools.</li><li>Prioritize opportunities the Search Team could act on.</li></ul></div><div><h3>Mixed-method approach</h3><p>A company-wide survey established usage, success, and tool preferences across the Splunk business entity. Follow-up interviews then explored real search behavior, frustrations, workarounds, and attitudes toward AI.</p><p>Interview volunteers were deliberately segmented by Concierge behavior so the study included active users, infrequent users, and detractors—not only product advocates.</p></div></div>
+      <ContentBlockRenderer blocks={goalsAndMethodsBlocks} renderMedia={() => null} />
+      <table className="research-methods-table"><thead><tr><th>Survey</th><th>Interviews</th></tr></thead><tbody><tr><td>Large-scale quantitative study</td><td>1:1 qualitative deep dives</td></tr><tr><td>Identified patterns and behaviors</td><td>Explained underlying motivations</td></tr><tr><td>Surfaced top use cases and value drivers</td><td>Added context to survey findings</td></tr></tbody></table>
       <div className="participant-strip"><span><strong>2</strong> active users</span><span><strong>2</strong> infrequent users</span><span><strong>4</strong> detractors</span><span><strong>4</strong> business groups</span></div>
     </CaseStudySection>
 
