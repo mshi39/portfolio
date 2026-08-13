@@ -1123,6 +1123,9 @@ test("enterprise persona cards use shared case-study media", async () => {
 
   assert.equal((section.match(/class="case-media case-media-image" data-component="CaseStudyMedia"/g) ?? []).length, 3);
   assert.doesNotMatch(section, /class="case-figure"/);
+  assert.match(section, /enterprise-search-ai-adversaries\.png"[^>]*width="326"[^>]*height="408"/);
+  assert.match(section, /enterprise-search-ai-light-users\.png"[^>]*width="326"[^>]*height="409"/);
+  assert.match(section, /enterprise-search-ai-power-users\.png"[^>]*width="327"[^>]*height="409"/);
 
   const { readFile } = await import("node:fs/promises");
   const css = await readFile(new URL("../app/case-study.css", import.meta.url), "utf8");
