@@ -1102,3 +1102,16 @@ test("enterprise goals and methods uses the narrative renderer and survey compar
   const css = await readFile(new URL("../app/case-study.css", import.meta.url), "utf8");
   assert.ok([...css.matchAll(/\.case-closing\{([^}]*)\}/g)].some(([, rule]) => /background:var\(--purple-dark\)/.test(rule)));
 });
+
+test("enterprise methods table is rounded and the interview prompt uses WorkflowQuestion", async () => {
+  const { html } = await render("/work/enterprise-search-generative-ai");
+  const interviews = html.match(/<section id="interviews"[\s\S]*?<\/section>/)?.[0] ?? "";
+  assert.match(interviews, /data-component="WorkflowQuestion"/);
+  assert.match(interviews, /class="case-quote feedback-workflow-question" data-component="CaseStudyQuote"/);
+
+  const { readFile } = await import("node:fs/promises");
+  const css = await readFile(new URL("../app/case-study.css", import.meta.url), "utf8");
+  const tableRule = css.match(/\.research-methods-table\{([^}]*)\}/)?.[1] ?? "";
+  assert.match(tableRule, /border-radius:\s*28px/);
+  assert.match(tableRule, /overflow:\s*hidden/);
+});

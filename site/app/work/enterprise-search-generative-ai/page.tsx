@@ -6,9 +6,9 @@ import { PortfolioHeader } from "../../components/PortfolioHeader";
 import { CaseStudyFigure } from "../../components/case-study/CaseStudyFigure";
 import { CaseStudyHero } from "../../components/case-study/CaseStudyHero";
 import { CaseStudyMedia } from "../../components/case-study/CaseStudyMedia";
-import { CaseStudyQuote } from "../../components/case-study/CaseStudyQuote";
 import { CaseStudySection } from "../../components/case-study/CaseStudySection";
 import { ContentBlockRenderer } from "../../components/case-study/ContentBlockRenderer";
+import { WorkflowQuestion } from "../../components/case-study/WorkflowQuestion";
 import { VerticalChapterNav } from "../../components/case-study/VerticalChapterNav";
 import { MetricCard } from "../../components/case-study/MetricCard";
 import { InsightGrid } from "../../components/case-study/InsightGrid";
@@ -77,7 +77,7 @@ export default function EnterpriseSearchCaseStudy() {
 
     <CaseStudySection id="interviews" eyebrow="04 · Interviews" title="Following real searches across a fragmented ecosystem" tone="pink">
       <div className="prose"><p>Interviews moved beyond stated preference into recent, concrete search episodes. Participants reconstructed where they started, which sources they trusted, what made them switch tools, and how they decided an answer was good enough.</p><p>The sample included active users from Sales and Customer Experience, infrequent users from Engineering, and four detractors. This range revealed not one universal journey, but a repeated pattern of bouncing between Slack, Webex, internal documentation, web search, AI assistants, and Concierge.</p></div>
-      <CaseStudyQuote>The hard part isn’t finding an answer. It’s knowing whether the answer is current, internal, and safe to trust.</CaseStudyQuote>
+      <WorkflowQuestion>The hard part isn’t finding an answer. It’s knowing whether the answer is current, internal, and safe to trust.</WorkflowQuestion>
     </CaseStudySection>
 
     <CaseStudySection id="key-insights" eyebrow="05 · Key insights" title="Concierge’s moat was trust, not the search box">
