@@ -94,7 +94,7 @@ export default function EnterpriseSearchCaseStudy() {
     </CaseStudySection>
 
     <CaseStudySection id="ai-attitudes" eyebrow="07 · AI attitudes" title="Three mindsets shaped adoption">
-      <div className="persona-grid"><CaseStudyFigure src={asset("ai-adversaries")} alt="Profile of employees who were adversarial toward AI" caption="Adversaries prioritized control, provenance, and reliability."/><CaseStudyFigure src={asset("ai-light-users")} alt="Profile of light AI users" caption="Light users adopted AI selectively for low-risk acceleration."/><CaseStudyFigure src={asset("ai-power-users")} alt="Profile of AI power users" caption="Power users expected synthesis, speed, and tool interoperability."/></div>
+      <div className="persona-grid"><CaseStudyMedia kind="image" src={asset("ai-adversaries")} alt="Profile of employees who were adversarial toward AI" width={336} height={417} caption="Adversaries prioritized control, provenance, and reliability."/><CaseStudyMedia kind="image" src={asset("ai-light-users")} alt="Profile of light AI users" width={336} height={417} caption="Light users adopted AI selectively for low-risk acceleration."/><CaseStudyMedia kind="image" src={asset("ai-power-users")} alt="Profile of AI power users" width={336} height={417} caption="Power users expected synthesis, speed, and tool interoperability."/></div>
       <div className="prose"><p>These attitudes were not a simple maturity ladder. Each group expressed legitimate needs. Adversaries made the case for transparent sources; light users highlighted the need for low-friction, situational value; power users showed why internal retrieval had to become composable within AI workflows.</p></div>
     </CaseStudySection>
 

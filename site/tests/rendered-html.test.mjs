@@ -1116,3 +1116,15 @@ test("enterprise methods table is rounded and the interview prompt uses Workflow
   assert.match(tableRule, /overflow:\s*hidden/);
   assert.match(tableRule, /border:\s*1px solid var\(--line\)/);
 });
+
+test("enterprise persona cards use shared case-study media", async () => {
+  const { html } = await render("/work/enterprise-search-generative-ai");
+  const section = html.match(/<section id="ai-attitudes"[\s\S]*?<\/section>/)?.[0] ?? "";
+
+  assert.equal((section.match(/class="case-media case-media-image" data-component="CaseStudyMedia"/g) ?? []).length, 3);
+  assert.doesNotMatch(section, /class="case-figure"/);
+
+  const { readFile } = await import("node:fs/promises");
+  const css = await readFile(new URL("../app/case-study.css", import.meta.url), "utf8");
+  assert.match(css, /\.persona-grid \.case-media\{margin-top:0\}/);
+});
