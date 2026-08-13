@@ -1131,3 +1131,13 @@ test("enterprise persona cards use shared case-study media", async () => {
   const css = await readFile(new URL("../app/case-study.css", import.meta.url), "utf8");
   assert.match(css, /\.persona-grid \.case-media\{margin-top:0\}/);
 });
+
+test("sales assessment case study renders its source narrative and locally hosted media", async () => {
+  const { html } = await render("/work/sales-assessment-platform-ai-integration");
+  assert.equal((html.match(/<h1>/g) ?? []).length, 1);
+  for (const text of ["The platform contained AI—but it wasn't truly designed around AI.", "How can AI actively collaborate with sales representatives throughout the assessment process?", "AI output quality starts before generation.", "Reframed SVP from AI-assisted automation to AI-guided collaboration."]) assert.match(html, new RegExp(text));
+  assert.equal((html.match(/class="case-media case-media-/g) ?? []).length, 20);
+  assert.ok((html.match(/sales-assessment-hero\.mp4/g) ?? []).length >= 2);
+  assert.match(html, /\/portfolio\/sales-assessment-hero\.mp4/);
+  assert.doesNotMatch(html, /drive\.google\.com/);
+});
