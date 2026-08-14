@@ -23,3 +23,7 @@
 .persona-grid .case-media{margin-top:0}
 .research-methods-table{width:100%;margin:28px 0 0;overflow:hidden;border:1px solid var(--line);border-collapse:collapse;border-radius:28px;background:#fff}.research-methods-table th,.research-methods-table td{padding:14px;border:1px solid var(--line);text-align:left}.research-methods-table th{color:var(--ink);font-family:"Fredoka",sans-serif;font-size:1.1rem}.research-methods-table td{color:var(--muted);line-height:1.65}.case-closing{background:var(--purple-dark)}
 .interim-design-card h5{margin:18px 0 6px;color:var(--purple-dark);font-size:.8rem;font-weight:900;letter-spacing:.08em;text-transform:uppercase}.interim-design-card h5:first-of-type{margin-top:0}
+.case-quote footer{margin-top:16px;font-family:Arial,sans-serif;font-size:1rem;line-height:1.5}
+.case-white .research-methods-table{background:var(--pink)}.case-pink .research-methods-table{background:#fff}.feedback-workflow-question{background:var(--purple-dark);color:#fff}
+.sales-final-vision{display:grid;grid-template-columns:minmax(220px,.55fr) minmax(0,1fr);gap:34px;align-items:start}.sales-final-vision .case-media{margin:0}@media(max-width:700px){.sales-final-vision{grid-template-columns:1fr}}
+.sales-assessment-case-study #introduction .metrics-grid{grid-template-columns:repeat(3,1fr)}

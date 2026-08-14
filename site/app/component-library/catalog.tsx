@@ -222,9 +222,9 @@ export const catalog: CatalogEntry[] = [
   },
   {
     name: "CaseStudyQuote",
-    description: "Use when highlighting a sourced insight or the related workflow-question variant.",
+    description: "Use when presenting a sourced quotation or testimony on a white card.",
     category: "Case studies",
-    preview: <div className="component-library-stack"><CaseStudyQuote attribution="Research participant">“The clear structure helped me understand what to do next.”</CaseStudyQuote><CaseStudyQuote variant="workflow-question">How might we make a complex workflow easier to understand?</CaseStudyQuote></div>,
+    preview: <CaseStudyQuote attribution="Research participant">“The clear structure helped me understand what to do next.”</CaseStudyQuote>,
   },
   {
     name: "WorkflowQuestion",
@@ -236,7 +236,7 @@ export const catalog: CatalogEntry[] = [
     name: "ComparisonTable",
     description: "Use when two related sets of evidence need a simple, scannable comparison.",
     category: "Case studies",
-    preview: <ComparisonTable headings={["Current state", "Future state"]} rows={[["Manual handoff", "Guided collaboration"], ["One-time output", "Living experience"]]} />,
+    preview: <div className="component-library-stack"><ComparisonTable variant="pink" headings={["White section", "Pink table"]} rows={[["Manual handoff", "Guided collaboration"]]} /><ComparisonTable variant="white" headings={["Pink section", "White table"]} rows={[["One-time output", "Living experience"]]} /></div>,
   },
   {
     name: "InterimDesignCard",

@@ -5,7 +5,7 @@ import { WorkflowQuestion } from "./WorkflowQuestion";
 export type ContentBlock<TMediaKey> =
   | { type: "heading"; level: 2 | 3; text: string; id?: string }
   | { type: "paragraph"; text: string }
-  | { type: "quote"; text: string; attribution?: string; variant?: "workflow-question" }
+  | { type: "quote"; text: string; attribution?: string; variant?: "workflow-question" | "emphasis" }
   | { type: "list"; items: string[] }
   | { type: "media"; key: TMediaKey };
 
@@ -29,7 +29,7 @@ export function ContentBlockRenderer<TMediaKey>({
   return <div className={`feedback-blocks ${className}`.trim()} data-component="ContentBlockRenderer">{blocks.map((block, index) => {
     if (block.type === "media") return <Fragment key={index}>{renderMedia(block.key, index)}</Fragment>;
     if (block.type === "list") return <Fragment key={index}>{renderList ? renderList(block.items, index) : <ul className={listClassName}>{block.items.map((item) => <li key={item}>{item}</li>)}</ul>}</Fragment>;
-    if (block.type === "quote") return block.variant === "workflow-question"
+    if (block.type === "quote") return block.variant === "emphasis" ? <p key={index}><strong>{block.text}</strong></p> : block.variant === "workflow-question"
       ? <WorkflowQuestion attribution={block.attribution} key={index}>{block.text}</WorkflowQuestion>
       : <CaseStudyQuote attribution={block.attribution} key={index}>{block.text}</CaseStudyQuote>;
     if (block.type === "heading") return block.level === 2

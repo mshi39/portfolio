@@ -1147,11 +1147,71 @@ test("sales assessment composes its refined reusable card patterns", async () =>
   assert.doesNotMatch(html, /sales-assessment-thumbnail\.png/);
   assert.match(html, /data-component="WorkflowQuestion"[\s\S]*?The platform contained AI/);
   assert.match(html, /data-component="ComparisonTable"/);
-  assert.equal((html.match(/data-component="InsightCard"/g) ?? []).length, 11);
+  assert.equal((html.match(/data-component="InsightCard"/g) ?? []).length, 6);
   assert.equal((html.match(/data-component="InterimDesignCard"/g) ?? []).length, 3);
   assert.ok((html.match(/data-component="RecommendationCard"/g) ?? []).length >= 7);
 
   const { html: library } = await render("/component-library");
   assert.match(library, /data-component-name="ComparisonTable"/);
   assert.match(library, /data-component-name="InterimDesignCard"/);
+});
+
+test("sales assessment orders design details and preserves refined quote treatments", async () => {
+  const { html } = await render("/work/sales-assessment-platform-ai-integration");
+  assert.ok((html.match(/data-component="RecommendationList"/g) ?? []).length >= 4);
+  assert.match(html, /<footer><cite>- Business Value Advisor<\/cite><\/footer>/);
+  assert.match(html, /<strong>Generate a deck<\/strong>/);
+  assert.match(html, /<strong>Create a living customer-facing assessment experience<\/strong>/);
+  assert.match(html, /data-component="WorkflowQuestion"[\s\S]*?AI output quality starts before generation/);
+  assert.match(html, /class="sales-final-vision"/);
+  const ciscoCard = html.match(/<h4>Cisco Design System<\/h4>[\s\S]*?<\/article>/)?.[0] ?? "";
+  assert.match(ciscoCard, /<p>I redesigned the experience using the Cisco IT Design System\.<\/p><ul><li>familiar internal experiences<\/li><li>development consistency<\/li><li>reduced implementation effort<\/li><li>enterprise credibility<\/li><\/ul>/);
+  assert.equal((html.match(/<li>familiar internal experiences<\/li>/g) ?? []).length, 1);
+});
+
+test("sales principles use metric cards and quote footers have shared typography", async () => {
+  const { html } = await render("/work/sales-assessment-platform-ai-integration");
+  const introduction = html.match(/<section id="introduction"[\s\S]*?<\/section>/)?.[0] ?? "";
+  assert.equal((introduction.match(/data-component="MetricCard"/g) ?? []).length, 5);
+
+  const { readFile } = await import("node:fs/promises");
+  const css = await readFile(new URL("../app/case-study.css", import.meta.url), "utf8");
+  assert.match(css, /\.case-quote footer\{margin-top:16px;font-family:Arial,sans-serif;font-size:1rem;line-height:1\.5\}/);
+  assert.match(css, /\.sales-final-vision\{display:grid/);
+  assert.match(css, /\.sales-assessment-case-study #introduction \.metrics-grid\{grid-template-columns:repeat\(3,1fr\)\}/);
+});
+
+test("sales design-principle metric cards pair each number with its icon", async () => {
+  const { html } = await render("/work/sales-assessment-platform-ai-integration");
+  const introduction = html.match(/<section id="introduction"[\s\S]*?<\/section>/)?.[0] ?? "";
+  assert.match(introduction, /<strong>01 🤝<\/strong>/);
+  assert.match(introduction, /<strong>03 ✏️<\/strong>/);
+  assert.match(introduction, /AI outputs should always remain editable/);
+});
+
+test("sales quotes and final product vision use their approved shared identities", async () => {
+  const { html } = await render("/work/sales-assessment-platform-ai-integration");
+  assert.equal((html.match(/data-component="WorkflowQuestion"/g) ?? []).length, 5);
+  assert.match(html, /<blockquote class="case-quote" data-component="CaseStudyQuote">“Working with you has been so great[\s\S]*?<footer><cite>- Business Value Advisor<\/cite><\/footer>/);
+  const testimony = html.match(/<h3>Testimony<\/h3>[\s\S]*?<\/blockquote>/)?.[0] ?? "";
+  assert.doesNotMatch(testimony, /data-component="WorkflowQuestion"/);
+
+  const vision = html.match(/<section id="product-vision"[\s\S]*?<\/section>/)?.[0] ?? "";
+  assert.match(vision, /Through discussion with stakeholders, we concluded that not all customer context belongs at the same level\.[\s\S]*?<li><strong>Account Context:<\/strong> Context includes information fundamental to all assessments/);
+  assert.match(vision, /This direction creates several advantages:[\s\S]*?<li>engagement tracking can help sales representatives understand what customers reviewed<\/li>/);
+  assert.match(vision, /I designed a step-by-step product tour to teach users how to generate quality inputs\. The tour would:[\s\S]*?<li>expose new capabilities that users might otherwise miss<\/li>[\s\S]*?The better the onboarding, the better the inputs\. The better the inputs, the better the AI outputs\./);
+  const headingIndex = vision.indexOf("<h3>Final Product Vision</h3>");
+  const layoutIndex = vision.indexOf('<div class="sales-final-vision">');
+  assert.ok(headingIndex >= 0 && layoutIndex > headingIndex);
+  const layout = vision.slice(layoutIndex);
+  assert.doesNotMatch(layout, /<h3>Final Product Vision<\/h3>/);
+  assert.ok(layout.indexOf("sales-assessment-final-workflow.png") < layout.indexOf("Rather than replacing sales representatives"));
+  const copy = layout.slice(layout.indexOf('<div class="sales-final-vision-copy">'));
+  assert.match(copy, /Rather than replacing sales representatives[\s\S]*?The platform vision evolved from a tool that generates sales artifacts/);
+
+  const { html: library } = await render("/component-library");
+  assert.match(library, /data-component-name="CaseStudyQuote"[\s\S]*?class="case-quote"/);
+  assert.match(library, /data-component-name="WorkflowQuestion"[\s\S]*?feedback-workflow-question/);
+  const quoteCatalog = library.slice(library.indexOf('data-component-name="CaseStudyQuote"'), library.indexOf('data-component-name="WorkflowQuestion"'));
+  assert.doesNotMatch(quoteCatalog, /feedback-workflow-question/);
 });

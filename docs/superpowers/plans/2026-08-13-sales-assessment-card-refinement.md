@@ -58,3 +58,30 @@
 
 - [ ] Run `git diff --check`, verify the Sales route and home-card link, and ensure the component-library previews are not public navigation destinations.
 - [ ] Commit the refinement on `codex/sales-assessment-platform`.
+
+### Task 5: Complete ordered design-detail refinements
+
+**Files:**
+- Modify: `site/app/work/sales-assessment-platform-ai-integration/page.tsx`
+- Modify: `site/app/data/sales-assessment-platform.ts`
+- Modify: `site/tests/rendered-html.test.mjs`
+
+- [ ] Add failing contracts for RecommendationList wrapping each requested card group, quote footer attribution, bold future-state statements, workflow-question reflection treatment, and two-column final vision layout.
+- [ ] Use existing RecommendationList, RecommendationCard, WorkflowQuestion, and CSS grid primitives; do not add a third card abstraction.
+- [ ] Run the full rendered test suite, changed-file lint, build, and diff hygiene check.
+
+### Task 6: Finalize quote identities and Final Product Vision layout
+
+**Files:**
+- Modify: `site/app/components/case-study/CaseStudyQuote.tsx`
+- Modify: `site/app/components/case-study/WorkflowQuestion.tsx`
+- Modify: `site/app/component-library/catalog.tsx`
+- Modify: `site/app/data/sales-assessment-platform.ts`
+- Modify: `site/app/work/sales-assessment-platform-ai-integration/page.tsx`
+- Modify: `site/app/case-study.css`
+- Modify: `site/tests/rendered-html.test.mjs`
+
+- [ ] Add failing rendered contracts for quote identity, Sales quote usage, component-library examples, and Final Product Vision DOM order.
+- [ ] Make WorkflowQuestion dark purple with white text while CaseStudyQuote remains white.
+- [ ] Move the Final Product Vision heading outside the two-column container and keep media left/copy right.
+- [ ] Run build, full rendered tests, changed-file lint, and diff hygiene checks without committing.
