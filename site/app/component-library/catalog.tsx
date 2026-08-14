@@ -25,6 +25,8 @@ import { RecommendationList } from "../components/case-study/RecommendationList"
 import { SimpleContentList } from "../components/case-study/SimpleContentList";
 import { MetricCard } from "../components/case-study/MetricCard";
 import { WorkflowQuestion } from "../components/case-study/WorkflowQuestion";
+import { ComparisonTable } from "../components/case-study/ComparisonTable";
+import { InterimDesignCard } from "../components/case-study/InterimDesignCard";
 
 export type CatalogCategory = "Foundations" | "Navigation & actions" | "Home" | "Case studies" | "Utility";
 
@@ -229,6 +231,18 @@ export const catalog: CatalogEntry[] = [
     description: "Use when elevating the defining how-might-we question in a feedback workflow narrative.",
     category: "Case studies",
     preview: <WorkflowQuestion>How might we connect trustworthy insight to meaningful product action?</WorkflowQuestion>,
+  },
+  {
+    name: "ComparisonTable",
+    description: "Use when two related sets of evidence need a simple, scannable comparison.",
+    category: "Case studies",
+    preview: <ComparisonTable headings={["Current state", "Future state"]} rows={[["Manual handoff", "Guided collaboration"], ["One-time output", "Living experience"]]} />,
+  },
+  {
+    name: "InterimDesignCard",
+    description: "Use when showing a numbered design iteration with before-and-after rationale and supporting media.",
+    category: "Case studies",
+    preview: <InterimDesignCard sequence={1} title="Lead with the right guidance" media={<CaseStudyMedia kind="image" src="/portfolio/enterprise-search.png" alt="Sample interface" width={900} height={620} caption="Supporting visual." />}><h5>Before</h5><p>Guidance appeared only after extra work.</p><h5>After</h5><p>Guidance starts the most useful part of the workflow.</p></InterimDesignCard>,
   },
   {
     name: "ContentBlockRenderer",

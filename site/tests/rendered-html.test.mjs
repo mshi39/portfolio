@@ -1136,8 +1136,22 @@ test("sales assessment case study renders its source narrative and locally hoste
   const { html } = await render("/work/sales-assessment-platform-ai-integration");
   assert.equal((html.match(/<h1>/g) ?? []).length, 1);
   for (const text of ["The platform contained AI—but it wasn't truly designed around AI.", "How can AI actively collaborate with sales representatives throughout the assessment process?", "AI output quality starts before generation.", "Reframed SVP from AI-assisted automation to AI-guided collaboration."]) assert.match(html, new RegExp(text));
-  assert.equal((html.match(/class="case-media case-media-/g) ?? []).length, 20);
+  assert.equal((html.match(/class="case-media case-media-/g) ?? []).length, 19);
   assert.ok((html.match(/sales-assessment-hero\.mp4/g) ?? []).length >= 2);
   assert.match(html, /\/portfolio\/sales-assessment-hero\.mp4/);
   assert.doesNotMatch(html, /drive\.google\.com/);
+});
+
+test("sales assessment composes its refined reusable card patterns", async () => {
+  const { html } = await render("/work/sales-assessment-platform-ai-integration");
+  assert.doesNotMatch(html, /sales-assessment-thumbnail\.png/);
+  assert.match(html, /data-component="WorkflowQuestion"[\s\S]*?The platform contained AI/);
+  assert.match(html, /data-component="ComparisonTable"/);
+  assert.equal((html.match(/data-component="InsightCard"/g) ?? []).length, 11);
+  assert.equal((html.match(/data-component="InterimDesignCard"/g) ?? []).length, 3);
+  assert.ok((html.match(/data-component="RecommendationCard"/g) ?? []).length >= 7);
+
+  const { html: library } = await render("/component-library");
+  assert.match(library, /data-component-name="ComparisonTable"/);
+  assert.match(library, /data-component-name="InterimDesignCard"/);
 });
