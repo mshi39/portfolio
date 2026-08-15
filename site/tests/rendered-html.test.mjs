@@ -183,6 +183,23 @@ test("VOC Admin Portal card links to its complete local case study", async () =>
   }
 });
 
+test("VOC case study uses the approved reusable content-card patterns", async () => {
+  const { html } = await render("/work/voice-of-the-customer-admin-portal-revamp");
+  const section = (id, nextId) => html.slice(html.indexOf(`<section id="${id}"`), nextId ? html.indexOf(`<section id="${nextId}"`) : html.length);
+  const count = (markup, component) => (markup.match(new RegExp(`data-component="${component}"`, "g")) ?? []).length;
+
+  assert.equal(count(section("challenge", "scope"), "InsightCard"), 4);
+  assert.equal(count(section("challenge", "scope"), "WorkflowQuestion"), 1);
+  assert.match(section("scope", "architecture"), /Design Principles/);
+  assert.equal(count(section("architecture", "guardrails"), "InterimDesignCard"), 4);
+  assert.equal(count(section("visibility", "workflows"), "RecommendationCard"), 2);
+  assert.equal(count(section("workflows", "scalability"), "RecommendationCard"), 4);
+  assert.equal(count(section("scalability", "collaboration"), "RecommendationCard"), 3);
+  assert.equal(count(section("results"), "MetricCard"), 3);
+  assert.match(section("results"), /“This visual snapshot is awesome/);
+  assert.match(section("results"), /“Improved the feedback and bug-reporting experience/);
+});
+
 test("server-renders the dedicated About Me page", async () => {
   const { response, html } = await render("/about");
   assert.equal(response.status, 200);
