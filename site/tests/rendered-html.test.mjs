@@ -155,6 +155,34 @@ test("feedback intelligence card links to the local case study", async () => {
   assert.match(html, /href="\/work\/ai-powered-feedback-intelligence-platform"/);
 });
 
+test("VOC Admin Portal card links to its complete local case study", async () => {
+  const { html: home } = await render("/");
+  assert.match(home, /Voice of the Customer Admin Portal Revamp/);
+  assert.match(home, /href="\/work\/voice-of-the-customer-admin-portal-revamp"/);
+
+  const { response, html } = await render("/work/voice-of-the-customer-admin-portal-revamp");
+  assert.equal(response.status, 200);
+  assert.equal((html.match(/<h1[ >]/g) ?? []).length, 1);
+  for (const id of ["overview", "challenge", "scope", "architecture", "guardrails", "visibility", "workflows", "scalability", "collaboration", "results"]) {
+    assert.match(html, new RegExp(`id="${id}"`));
+    assert.match(html, new RegExp(`href="#${id}"`));
+  }
+  for (const phrase of ["24%", "2.9 to 4.4", "77.1", "84.2", "Lead Designer and Researcher"]) {
+    assert.match(html, new RegExp(phrase.replace(".", "\\.")));
+  }
+  for (const phrase of ["Overview", "Impact", "more than 2,000 internal users", "Why it mattered", "What this project demonstrated"]) {
+    assert.match(html, new RegExp(phrase, "i"));
+  }
+  for (const file of ["program-ecosystem.png", "old-program-flow.png", "architecture-option-1.png", "architecture-option-2.png", "architecture-option-3.png", "architecture-option-4.png", "new-program-flow.png", "old-all-at-once-setup.png", "program-type-decision-tree.png", "customer-preview.png", "old-sectional-setup.png", "old-locked-stepper.png", "expectations-walkthrough.mp4", "preparation-guidance.png", "section-introduction.png", "flexible-navigation.png", "save-draft.png", "old-ui-constraints.png", "scalable-design.mp4", "guided-stepper.png", "consistent-patterns.png"]) {
+    assert.match(html, new RegExp(`/portfolio/voc-admin/${file.replace(".", "\\.")}`));
+  }
+  for (const video of html.match(/<video\b[^>]*>/gi) ?? []) {
+    assert.match(video, /\bcontrols(?:\s|=|>)/i);
+    assert.match(video, /\bplaysinline(?:\s|=|>)/i);
+    assert.match(video, /\bpreload="metadata"/i);
+  }
+});
+
 test("server-renders the dedicated About Me page", async () => {
   const { response, html } = await render("/about");
   assert.equal(response.status, 200);
