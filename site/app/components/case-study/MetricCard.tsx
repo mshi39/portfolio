@@ -1,3 +1,3 @@
-export function MetricCard({ value, label }: { value: string; label: string }) {
-  return <article className="metric-card" data-component="MetricCard"><strong>{value}</strong><span>{label}</span></article>;
+export function MetricCard({ value, label, variant = "pink" }: { value: string; label: string; variant?: "pink" | "white" }) {
+  return <article className={`metric-card${variant === "white" ? " metric-card-white" : ""}`} data-component="MetricCard"><strong>{value}</strong><span>{label}</span></article>;
 }

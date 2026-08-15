@@ -198,9 +198,9 @@ export const catalog: CatalogEntry[] = [
   },
   {
     name: "MetricCard",
-    description: "Use when a case study needs to emphasize one research metric and its meaning.",
+    description: "Use when emphasizing a case-study metric: pink on white sections and white on pink sections.",
     category: "Case studies",
-    preview: <MetricCard value="87%" label="reported success with other tools" />,
+    preview: <div className="metrics-grid"><MetricCard value="87%" label="pink on white sections" /><MetricCard value="24%" label="white on pink sections" variant="white" /></div>,
   },
   {
     name: "CaseStudyMetadata",

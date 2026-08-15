@@ -27,3 +27,4 @@
 .case-white .research-methods-table{background:var(--pink)}.case-pink .research-methods-table{background:#fff}.feedback-workflow-question{background:var(--purple-dark);color:#fff}
 .sales-final-vision{display:grid;grid-template-columns:minmax(220px,.55fr) minmax(0,1fr);gap:34px;align-items:start}.sales-final-vision .case-media{margin:0}@media(max-width:700px){.sales-final-vision{grid-template-columns:1fr}}
 .sales-assessment-case-study #introduction .metrics-grid{grid-template-columns:repeat(3,1fr)}
+.metric-card-white{background:#fff}

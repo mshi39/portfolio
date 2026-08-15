@@ -196,6 +196,7 @@ test("VOC case study uses the approved reusable content-card patterns", async ()
   assert.equal(count(section("workflows", "scalability"), "RecommendationCard"), 4);
   assert.equal(count(section("scalability", "collaboration"), "RecommendationCard"), 3);
   assert.equal(count(section("results"), "MetricCard"), 3);
+  assert.equal((section("results").match(/class="metric-card metric-card-white"/g) ?? []).length, 3);
   assert.match(section("results"), /“This visual snapshot is awesome/);
   assert.match(section("results"), /“Improved the feedback and bug-reporting experience/);
 });
@@ -966,6 +967,7 @@ test("gallery documents HeroOverview and MetricCard production identities", asyn
 
   const metricCardEntry = gallery.match(/<article[^>]+data-component-name="MetricCard"[\s\S]*?<\/article>/)?.[0] ?? "";
   assert.match(metricCardEntry, /<article class="metric-card" data-component="MetricCard">/);
+  assert.match(gallery, /<article class="metric-card metric-card-white" data-component="MetricCard">/);
   assert.equal((enterprise.match(/<article class="metric-card" data-component="MetricCard">/g) ?? []).length, 4);
 });
 
