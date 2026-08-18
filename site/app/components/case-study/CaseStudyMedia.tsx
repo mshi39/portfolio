@@ -1,4 +1,5 @@
 import Image from "next/image";
+import { ImageLightbox } from "./ImageLightbox";
 
 type ImageMediaProps = {
   src: string;
@@ -7,6 +8,7 @@ type ImageMediaProps = {
   caption: string;
   width: number;
   height: number;
+  expandable?: boolean;
 };
 
 type VideoMediaProps = {
@@ -26,7 +28,11 @@ export function CaseStudyMedia(props: Props) {
             Your browser does not support this video.
           </video>
         ) : (
-          <Image unoptimized src={props.src} alt={props.alt} width={props.width} height={props.height} />
+          props.expandable ? (
+            <ImageLightbox src={props.src} alt={props.alt} width={props.width} height={props.height}>
+              <Image unoptimized src={props.src} alt={props.alt} width={props.width} height={props.height} />
+            </ImageLightbox>
+          ) : <Image unoptimized src={props.src} alt={props.alt} width={props.width} height={props.height} />
         )}
       </div>
       <figcaption>{props.caption}</figcaption>

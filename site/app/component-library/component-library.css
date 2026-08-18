@@ -363,6 +363,68 @@
   box-shadow: none
 }
 
+.component-library-page .image-lightbox-trigger {
+  display: block;
+  width: 100%;
+  padding: 0;
+  border: 0;
+  border-radius: inherit;
+  background: transparent;
+  cursor: zoom-in;
+}
+
+.component-library-page .image-lightbox-trigger:focus-visible {
+  outline: 4px solid var(--purple);
+  outline-offset: 4px;
+}
+
+.component-library-page .image-lightbox-dialog {
+  width: 100vw;
+  max-width: none;
+  height: 100dvh;
+  max-height: none;
+  margin: 0;
+  padding: clamp(56px, 8vw, 88px) clamp(16px, 4vw, 56px) clamp(16px, 4vw, 56px);
+  border: 0;
+  background: rgb(23 18 29 / .96);
+}
+
+.component-library-page .image-lightbox-dialog::backdrop {
+  background: rgb(23 18 29 / .72);
+}
+
+.component-library-page .image-lightbox-dialog img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+.component-library-page .image-lightbox-close {
+  position: fixed;
+  top: 16px;
+  right: 16px;
+  z-index: 1;
+  display: grid;
+  width: 48px;
+  height: 48px;
+  padding: 0;
+  place-items: center;
+  border: 2px solid rgb(255 255 255 / .72);
+  border-radius: 50%;
+  background: #fff;
+  color: var(--ink);
+  font-size: 32px;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.component-library-page .image-lightbox-close:hover,
+.component-library-page .image-lightbox-close:focus-visible {
+  border-color: var(--purple);
+  outline: 4px solid rgb(255 255 255 / .9);
+  outline-offset: 3px;
+}
+
 .component-library-page .component-library-preview .case-quote {
   max-width: 100%;
   margin: 0;

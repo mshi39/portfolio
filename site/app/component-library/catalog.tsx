@@ -218,7 +218,7 @@ export const catalog: CatalogEntry[] = [
     name: "CaseStudyMedia",
     description: "Use when presenting captioned case-study imagery or video with consistent controls.",
     category: "Case studies",
-    preview: <div className="component-library-media-grid"><CaseStudyMedia kind="image" src="/portfolio/enterprise-search.png" alt="Abstract enterprise interface sample" width={900} height={620} caption="A semantic image and caption." /><CaseStudyMedia kind="video" src="/portfolio/feedback-intelligence-hero-insights.mp4" caption="A controlled local video preview." /></div>,
+    preview: <div className="component-library-media-grid"><CaseStudyMedia kind="image" src="/portfolio/enterprise-search.png" alt="Abstract enterprise interface sample" width={900} height={620} caption="Click the image to open a larger view." expandable /><CaseStudyMedia kind="video" src="/portfolio/feedback-intelligence-hero-insights.mp4" caption="A controlled local video preview." /></div>,
   },
   {
     name: "CaseStudyQuote",
@@ -242,7 +242,7 @@ export const catalog: CatalogEntry[] = [
     name: "InterimDesignCard",
     description: "Use when showing a numbered design iteration with before-and-after rationale and supporting media.",
     category: "Case studies",
-    preview: <InterimDesignCard sequence={1} title="Lead with the right guidance" media={<CaseStudyMedia kind="image" src="/portfolio/enterprise-search.png" alt="Sample interface" width={900} height={620} caption="Supporting visual." />}><h5>Before</h5><p>Guidance appeared only after extra work.</p><h5>After</h5><p>Guidance starts the most useful part of the workflow.</p></InterimDesignCard>,
+    preview: <InterimDesignCard sequence={1} title="Lead with the right guidance" media={<CaseStudyMedia kind="image" src="/portfolio/enterprise-search.png" alt="Sample interface" width={900} height={620} caption="Click to inspect the supporting visual." expandable />}><h5>Before</h5><p>Guidance appeared only after extra work.</p><h5>After</h5><p>Guidance starts the most useful part of the workflow.</p></InterimDesignCard>,
   },
   {
     name: "ContentBlockRenderer",
@@ -266,7 +266,7 @@ export const catalog: CatalogEntry[] = [
     name: "RecommendationCard",
     description: "Use when explaining one sequenced recommendation with supporting content.",
     category: "Case studies",
-    preview: <RecommendationCard sequence={1} segments={[<div className="feedback-blocks" key="connect"><h4>Connect insight to action</h4><p>Carry evidence into the tools where decisions happen.</p></div>]} />,
+    preview: <RecommendationCard sequence={1} segments={[<div className="feedback-blocks" key="connect"><h4>Connect insight to action</h4><p>Carry evidence into the tools where decisions happen.</p></div>, <CaseStudyMedia key="recommendation-visual" kind="image" src="/portfolio/enterprise-search.png" alt="Recommendation interface sample" width={900} height={620} caption="Click to inspect the recommendation visual." expandable />]} />,
   },
   {
     name: "RecommendationList",

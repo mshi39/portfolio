@@ -412,7 +412,7 @@ test("self-contained case study cards match production", async () => {
   const recommendationPreview = gallery.match(/<article[^>]+data-component-name="RecommendationCard"[\s\S]*?<\/article>/)?.[0] ?? "";
   assert.match(insightPreview, /<article class="insight-card" data-component="InsightCard">/);
   assert.match(recommendationPreview, /<article class="recommendation-card" data-component="RecommendationCard">/);
-  assert.doesNotMatch(recommendationPreview, /<figure\b|<img\b|<video\b/, "standalone RecommendationCard preview must stay text-only");
+  assert.match(recommendationPreview, /<figure\b[\s\S]*?data-component="ImageLightbox"/, "RecommendationCard preview documents its expandable visual");
   assert.match(feedback, /<div class="feedback-comparison-grid" data-component="InsightGrid"><article class="insight-card insight-card-highlighted" data-component="InsightCard">/);
   const insightGridStarts = [...feedback.matchAll(/<div class="feedback-(?:comparison|insights|outcomes)-grid" data-component="InsightGrid">/g)];
   const comparisonStart = insightGridStarts.find((match) => match[0].includes("feedback-comparison-grid"))?.index ?? -1;
@@ -1342,4 +1342,18 @@ test("Resort Trip Planner has a local decision-led case study and Home link", as
   assert.match(caseStudy, /92%[\s\S]*?likely to reserve ahead/);
   assert.equal((caseStudy.match(/\/portfolio\/resort-trip-planner\//g) ?? []).length >= 10, true);
   assert.match(caseStudy, /class="case-next case-shell"[\s\S]*?Keep exploring[\s\S]*?href="\/#selected-work"/);
+});
+
+test("component library image lightbox covers standalone and card visuals", async () => {
+  const { html } = await render("/component-library");
+  const entry = (name, nextName) => html.slice(
+    html.indexOf(`data-component-name="${name}"`),
+    html.indexOf(`data-component-name="${nextName}"`),
+  );
+
+  assert.match(entry("CaseStudyMedia", "CaseStudyQuote"), /data-component="ImageLightbox"/);
+  assert.match(entry("InterimDesignCard", "ContentBlockRenderer"), /data-component="ImageLightbox"/);
+  assert.match(entry("RecommendationCard", "RecommendationList"), /data-component="ImageLightbox"/);
+  assert.match(html, /<dialog[^>]+aria-label="Expanded image"/);
+  assert.match(html, /aria-label="Close image"[^>]*>×<\/button>/);
 });
