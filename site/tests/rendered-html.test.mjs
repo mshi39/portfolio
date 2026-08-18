@@ -59,17 +59,78 @@ async function readPng(fileUrl) {
   return { width, height, channels, pixels };
 }
 
-async function render(path = "/") {
+async function render(path = "/", { authenticated = true, ...init } = {}) {
   const workerUrl = new URL("../dist/server/index.js", import.meta.url);
   workerUrl.searchParams.set("test", `${process.pid}-${Date.now()}-${path}`);
   const { default: worker } = await import(workerUrl.href);
   const response = await worker.fetch(
-    new Request(`http://localhost${path}`, { headers: { accept: "text/html" } }),
+    new Request(`http://localhost${path}`, { ...init, headers: { accept: "text/html", ...(authenticated ? { cookie: "portfolio_access=69729119473c144446a5a5c3e18ebb7536fdf75c5d3d19b2290cdda727f4fb0a" } : {}), ...init.headers } }),
     { ASSETS: { fetch: async () => new Response("Not found", { status: 404 }) } },
     { waitUntil() {}, passThroughOnException() {} },
   );
   return { response, html: await response.text() };
 }
+
+const protectedProjects = [
+  "/work/sales-assessment-platform-ai-integration",
+  "/work/ai-powered-feedback-intelligence-platform",
+  "/work/enterprise-search-generative-ai",
+  "/work/voice-of-the-customer-admin-portal-revamp",
+];
+
+test("protected case studies require the branded password gate", async () => {
+  for (const path of protectedProjects) {
+    const { response, html } = await render(path, { authenticated: false });
+    assert.equal(response.status, 401);
+    assert.match(html, /Enter password to view this case study/);
+    assert.match(html, /name="password"[^>]+type="password"/);
+    assert.match(html, />Access</);
+    assert.match(html, /href="\/">Cancel</);
+    assert.match(html, /Contact me for password: <a href="mailto:melissa\.x\.shi@gmail\.com">melissa\.x\.shi@gmail\.com<\/a>/);
+    assert.doesNotMatch(html, /<h1>Sales Assessment Platform AI Integration<\/h1>/);
+  }
+});
+
+test("the project password creates a browser-session access cookie", async () => {
+  const path = protectedProjects[0];
+  const body = new URLSearchParams({ password: "mxs@ccess" });
+  const { response } = await render(path, {
+    authenticated: false,
+    method: "POST",
+    headers: { "content-type": "application/x-www-form-urlencoded" },
+    body,
+    redirect: "manual",
+  });
+
+  assert.equal(response.status, 303);
+  assert.equal(response.headers.get("location"), path);
+  const cookie = response.headers.get("set-cookie") ?? "";
+  assert.match(cookie, /^portfolio_access=[^;]+; Path=\/; HttpOnly; Secure; SameSite=Lax$/);
+  assert.doesNotMatch(cookie, /Max-Age|Expires/i);
+
+  const { response: unlocked, html } = await render(path, { headers: { cookie: cookie.split(";", 1)[0] } });
+  assert.equal(unlocked.status, 200);
+  assert.match(html, /<h1>Sales Assessment Platform AI Integration<\/h1>/);
+});
+
+test("an incorrect project password stays locked with an accessible error", async () => {
+  const { response, html } = await render(protectedProjects[0], {
+    authenticated: false,
+    method: "POST",
+    headers: { "content-type": "application/x-www-form-urlencoded" },
+    body: new URLSearchParams({ password: "incorrect" }),
+  });
+
+  assert.equal(response.status, 401);
+  assert.match(html, /role="alert">That password isn&#39;t correct/);
+  assert.doesNotMatch(response.headers.get("set-cookie") ?? "", /portfolio_access/);
+});
+
+test("unprotected portfolio routes remain public", async () => {
+  const { response, html } = await render("/work/resort-trip-planner");
+  assert.equal(response.status, 200);
+  assert.match(html, /<h1>Nemacolin Woodlands Resort Trip Planner<\/h1>/);
+});
 
 test("server-renders Melissa's My Work page", async () => {
   const { response, html } = await render();
@@ -106,10 +167,11 @@ test("home composes production-backed library components", async () => {
   assert.match(portrait, /width="1086"/);
   assert.match(portrait, /height="1448"/);
   for (const href of [
-    "https://drive.google.com/file/d/1MeOyIEgyo-7H6YKICb3Wx_NCdbPeXLrx/view?usp=sharing",
+    "https://drive.google.com/file/d/1jpwHy6RFQeSLDYWaqkUoXuedW34rSur7/view?usp=sharing",
     "https://www.linkedin.com/in/melissaxshi/",
     "https://medium.com/@shineew16",
   ]) assert.ok(html.includes(`href="${href}"`), `expected professional link: ${href}`);
+  assert.match(html, /<a[^>]+href="https:\/\/drive\.google\.com\/file\/d\/1jpwHy6RFQeSLDYWaqkUoXuedW34rSur7\/view\?usp=sharing"[^>]+target="_blank"[^>]+rel="noopener noreferrer"[^>]*>View résumé/);
   assert.match(html, /href="#selected-work"/);
   assert.equal((html.match(/aria-label="View case study:/g) ?? []).length, 7, "Home must keep every project preview");
   assert.match(html, /Curious about how I think and create\?/);
@@ -1356,4 +1418,28 @@ test("component library image lightbox covers standalone and card visuals", asyn
   assert.match(entry("RecommendationCard", "RecommendationList"), /data-component="ImageLightbox"/);
   assert.match(html, /<dialog[^>]+aria-label="Expanded image"/);
   assert.match(html, /aria-label="Close image"[^>]*>×<\/button>/);
+});
+
+test("every portfolio CaseStudyMedia image opens in the shared lightbox", async () => {
+  const { readFile } = await import("node:fs/promises");
+  const routes = [
+    "/work/ai-powered-feedback-intelligence-platform",
+    "/work/enterprise-search-generative-ai",
+    "/work/evaluative-research-cost-analysis-tool",
+    "/work/operations-information-hub",
+    "/work/resort-trip-planner",
+    "/work/sales-assessment-platform-ai-integration",
+    "/work/voice-of-the-customer-admin-portal-revamp",
+  ];
+
+  for (const route of routes) {
+    const { html } = await render(route);
+    const figures = [...html.matchAll(/<figure class="case-media case-media-image"[\s\S]*?<\/figure>/g)].map((match) => match[0]);
+    assert.ok(figures.length > 0, `${route} must render case-study images`);
+    for (const figure of figures) assert.match(figure, /data-component="ImageLightbox"/, `${route} images must be expandable`);
+  }
+
+  const css = await readFile(new URL("../app/case-study.css", import.meta.url), "utf8");
+  assert.match(css, /\.image-lightbox-dialog\{[^}]*width:100vw[^}]*height:100dvh/);
+  assert.match(css, /\.image-lightbox-close\{[^}]*position:fixed[^}]*top:16px[^}]*right:16px/);
 });
