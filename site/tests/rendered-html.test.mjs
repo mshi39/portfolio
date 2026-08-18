@@ -1288,3 +1288,13 @@ test("Cost Analysis research has a local case study and Home link", async () => 
   assert.equal((caseStudy.match(/\/portfolio\/cost-analysis\//g) ?? []).length >= 7, true);
   assert.match(caseStudy, /class="case-next case-shell"[\s\S]*?Keep exploring[\s\S]*?href="\/#selected-work"/);
 });
+
+test("InsightGrid uses two columns only when it contains four InsightCards", async () => {
+  const { readFile } = await import("node:fs/promises");
+  const { html: costAnalysis } = await render("/work/evaluative-research-cost-analysis-tool");
+  const css = await readFile(new URL("../app/case-study.css", import.meta.url), "utf8");
+
+  assert.match(costAnalysis, /feedback-outcomes-grid insight-grid-four[\s\S]*?<h3>Prioritized development<\/h3>/);
+  assert.match(css, /\.insight-grid-four\s*\{\s*grid-template-columns:\s*repeat\(2,minmax\(0,1fr\)\)/);
+  assert.match(css, /\.feedback-comparison-grid,\.feedback-insights-grid,\.feedback-outcomes-grid\{grid-template-columns:repeat\(3,minmax\(0,1fr\)\)/);
+});
