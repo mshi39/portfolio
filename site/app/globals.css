@@ -10,7 +10,7 @@
 .case-hero h1,.typography-case-study-display{font-family:"Fredoka",sans-serif;font-size:clamp(3.5rem,7vw,6.8rem);line-height:.96}
 .section-heading h2,.case-section h2,.typography-section-heading{font-family:"Fredoka",sans-serif;font-size:clamp(2.7rem,5vw,4.7rem);line-height:1.02}
 .case-section h3,.typography-content-heading{color:var(--purple);font-family:"Fredoka",sans-serif;font-size:1.55rem}
-.insight-card h4,.recommendation-card h4,.typography-card-heading{color:#17121d;font-family:"Fredoka",sans-serif;font-size:20px;line-height:1.35}
+.insight-card h4,.recommendation-card h4,.typography-card-heading{color:var(--ink);font-family:"Fredoka",sans-serif;font-size:20px;line-height:1.35}
 .eyebrow,.typography-eyebrow{color:var(--purple-dark);font-size:.78rem;font-weight:800;letter-spacing:.13em;text-transform:uppercase}
 body,.typography-body{color:var(--ink);font-family:"Nunito Sans","Segoe UI",sans-serif;font-size:1rem;font-weight:400;line-height:normal}
 .prose p,.typography-muted-body{color:var(--muted);font-family:"Nunito Sans","Segoe UI",sans-serif;font-size:1.13rem;font-weight:400;line-height:1.78}

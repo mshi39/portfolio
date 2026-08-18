@@ -68,7 +68,7 @@ export default function OperationsInformationHubPage() {
       metadataItems={[
         { label: "My role", value: "UX Design Lead" },
         { label: "Team", value: "Senior UX Designer, Senior Service Designer, UX Designer" },
-        { label: "Employer", value: "ExxonMobil Information Technology" },
+        { label: "Employer", value: "ExxonMobil" },
         { label: "Timeline", value: "May 2021–Dec 2022" },
       ]}
       mediaSlots={renderMedia("hero")}
@@ -87,10 +87,10 @@ export default function OperationsInformationHubPage() {
     <CaseStudySection id="context" eyebrow="Design context" title="The visible problem was too many tools" tone="pink">
       <p className="case-deck">A single workflow could span several applications. Data stayed isolated, operators transferred it manually, and unreliable field connectivity made already slow software harder to use.</p>
       <InsightGrid mode="outcomes">
-        <InsightCard><h3>Duplicated capabilities</h3><p>Several tools served the same purpose, increasing the number of systems operators had to remember.</p></InsightCard>
-        <InsightCard><h3>Disconnected data</h3><p>Multi-step workflows crossed tools that did not share information, forcing manual transfer.</p></InsightCard>
-        <InsightCard><h3>Field constraints</h3><p>Spotty site connectivity limited the usefulness of tools designed without the field environment in mind.</p></InsightCard>
-        <InsightCard><h3>Poor software experience</h3><p>Slow loading, short login sessions, and tedious processes took time from surveillance and optimization.</p></InsightCard>
+        <InsightCard><h4>Duplicated capabilities</h4><p>Several tools served the same purpose, increasing the number of systems operators had to remember.</p></InsightCard>
+        <InsightCard><h4>Disconnected data</h4><p>Multi-step workflows crossed tools that did not share information, forcing manual transfer.</p></InsightCard>
+        <InsightCard><h4>Field constraints</h4><p>Spotty site connectivity limited the usefulness of tools designed without the field environment in mind.</p></InsightCard>
+        <InsightCard><h4>Poor software experience</h4><p>Slow loading, short login sessions, and tedious processes took time from surveillance and optimization.</p></InsightCard>
       </InsightGrid>
       {renderMedia("day")}
     </CaseStudySection>
@@ -122,9 +122,9 @@ export default function OperationsInformationHubPage() {
     <CaseStudySection id="expand-scope" eyebrow="Pivotal decision" title="Expand the right scope through field observation">
       <p>A two-week contextual inquiry into well operation revealed an inefficiency that had become invisible through habit: operators recorded digital test results again on paper because historical results were not available to them.</p>
       <InsightGrid mode="outcomes">
-        <InsightCard><h3>Redundant workd</h3><p>Well teset results need to be recorded digitally, yet operators had to record them first on paper because digital devices are forbidden on pads.</p></InsightCard>
-        <InsightCard><h3>Error-prone</h3><p>Results could be missed, entered on the wrong day, or associated with the wrong test.</p></InsightCard>
-        <InsightCard><h3>Hard to interpret</h3><p>A paper table made historical trends difficult to recognize when assessing test quality.</p></InsightCard>
+        <InsightCard><h4>Redundant workd</h4><p>Well teset results need to be recorded digitally, yet operators had to record them first on paper because digital devices are forbidden on pads.</p></InsightCard>
+        <InsightCard><h4>Error-prone</h4><p>Results could be missed, entered on the wrong day, or associated with the wrong test.</p></InsightCard>
+        <InsightCard><h4>Hard to interpret</h4><p>A paper table made historical trends difficult to recognize when assessing test quality.</p></InsightCard>
       </InsightGrid>
       <RecommendationList>
         <RecommendationCard sequence={1} segments={[<div className="feedback-blocks" key="copy"><h4>Use design to make an unplanned opportunity visible</h4><p>I proposed expanding MVP scope to add digitizing well test record book so operators could easily visualize well performance, reducing repetition and enabling better decisions.</p><p>I aligned product team and business stakeholders on the proposed solution, and successfully expanded MVP scope so the solution would be truly transformative for the business and the operators.</p></div>, renderMedia("firstTrend")]} />
@@ -135,11 +135,11 @@ export default function OperationsInformationHubPage() {
 
     <CaseStudySection id="results" eyebrow="Results and reflection" title="Design changed both the product and the team's confidence" tone="pink">
       <InsightGrid mode="outcomes">
-        <InsightCard><h3>Stakeholder confidence</h3><p>Research-backed prototypes re-established business confidence and sustained support for the work.</p></InsightCard>
-        <InsightCard><h3>Operator-centered architecture</h3><p>Navigation followed pad- and run-centric thinking instead of mirroring source systems.</p></InsightCard>
-        <InsightCard><h3>End-to-end workflows</h3><p>User evidence influenced support for write-back when source APIs allowed it.</p></InsightCard>
-        <InsightCard><h3>Lower learning burden</h3><p>Most operators reported needing only about a 30-minute walkthrough for learning the Hub.</p></InsightCard>
-        <InsightCard><h3>Higher-value MVP</h3><p>Field observation brought historical well-test visualization into the release-one roadmap.</p></InsightCard>
+        <InsightCard><h4>Stakeholder confidence</h4><p>Research-backed prototypes re-established business confidence and sustained support for the work.</p></InsightCard>
+        <InsightCard><h4>Operator-centered architecture</h4><p>Navigation followed pad- and run-centric thinking instead of mirroring source systems.</p></InsightCard>
+        <InsightCard><h4>End-to-end workflows</h4><p>User evidence influenced support for write-back when source APIs allowed it.</p></InsightCard>
+        <InsightCard><h4>Lower learning burden</h4><p>Most operators reported needing only about a 30-minute walkthrough for learning the Hub.</p></InsightCard>
+        <InsightCard><h4>Higher-value MVP</h4><p>Field observation brought historical well-test visualization into the release-one roadmap.</p></InsightCard>
       </InsightGrid>
       <p className="case-deck">My biggest takeaway was that stated requirements captured only part of the opportunity. The pivotal moves came from making the future concrete, testing the product model early, and observing the work closely enough to notice the problems users had stopped mentioning.</p>
     </CaseStudySection>

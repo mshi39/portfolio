@@ -1,4 +1,4 @@
-import { isValidElement, type ReactNode } from "react";
+import { Children, isValidElement, type ReactNode } from "react";
 import { InsightCard } from "./InsightCard";
 import { MetricCard } from "./MetricCard";
 
@@ -14,7 +14,8 @@ export function InsightGrid({ mode, groups = [], children }: InsightGridProps) {
     const [icon, ...words] = label.split(" ");
     return <MetricCard key={index} value={`${String(index + 1).padStart(2, "0")} ${icon}`} label={words.join(" ")} />;
   })}</div>;
-  return <div className={`feedback-${mode}-grid`} data-component="InsightGrid">
+  const cardCount = groups.length + Children.count(children);
+  return <div className={`feedback-${mode}-grid${cardCount === 4 ? " insight-grid-four" : ""}`} data-component="InsightGrid">
     {groups.map((group, index) => <InsightCard key={index} variant={mode === "comparison" && index === 0 ? "highlighted" : "default"}>{group}</InsightCard>)}
     {children}
   </div>;

@@ -1021,7 +1021,7 @@ const typographySpecimens = [
   { name: "Case-study h1", element: "h4", className: "typography-case-study-display", selector: ".case-hero h1", source: ".case-hero h1", declarations: [/font-family:\s*"Fredoka",sans-serif/, /font-size:\s*clamp\(3\.5rem,7vw,6\.8rem\)/, /line-height:\s*\.96/] },
   { name: "Section h2", element: "h4", className: "typography-section-heading", selector: ".case-section h2", source: ".case-section h2", declarations: [/font-family:\s*"Fredoka",sans-serif/, /font-size:\s*clamp\(2\.7rem,5vw,4\.7rem\)/, /line-height:\s*1\.02/] },
   { name: "Content h3", element: "h4", className: "typography-content-heading", selector: ".case-section h3", source: ".case-section h3", declarations: [/color:\s*var\(--purple\)/, /font-family:\s*"Fredoka",sans-serif/, /font-size:\s*1\.55rem/] },
-  { name: "Article/card h4", element: "h4", className: "typography-card-heading", selector: ".insight-card h4", source: ".insight-card h4", declarations: [/color:\s*#17121d/, /font-family:\s*"Fredoka",sans-serif/, /font-size:\s*20px/, /line-height:\s*1\.35/] },
+  { name: "Article/card h4", element: "h4", className: "typography-card-heading", selector: ".insight-card h4", source: ".insight-card h4", declarations: [/color:\s*var\(--ink\)/, /font-family:\s*"Fredoka",sans-serif/, /font-size:\s*20px/, /line-height:\s*1\.35/] },
   { name: "Eyebrow", element: "p", className: "typography-eyebrow", selector: ".eyebrow", source: ".eyebrow", declarations: [/color:\s*var\(--purple-dark\)/, /font-size:\s*\.78rem/, /font-weight:\s*800/, /letter-spacing:\s*\.13em/, /text-transform:\s*uppercase/] },
   { name: "Body", element: "p", className: "typography-body", selector: "body", source: "body", declarations: [/color:\s*var\(--ink\)/, /font-family:\s*"Nunito Sans","Segoe UI",sans-serif/, /font-size:\s*1rem/, /font-weight:\s*400/, /line-height:\s*normal/] },
   { name: "Muted body", element: "p", className: "typography-muted-body", selector: ".prose p", source: ".prose p", declarations: [/color:\s*var\(--muted\)/, /font-family:\s*"Nunito Sans","Segoe UI",sans-serif/, /font-size:\s*1\.13rem/, /font-weight:\s*400/, /line-height:\s*1\.78/] },
@@ -1274,4 +1274,57 @@ test("Operations Information Hub has a local case study and Home link", async ()
   assert.match(caseStudy, /Expand the right scope/);
   assert.match(caseStudy, /\/portfolio\/operations-hub\/hero\.jpg/);
   assert.match(caseStudy, /class="case-next case-shell"[\s\S]*?Keep exploring[\s\S]*?href="\/#selected-work"/);
+});
+
+test("Cost Analysis research has a local case study and Home link", async () => {
+  const { html: home } = await render("/");
+  const { html: caseStudy } = await render("/work/evaluative-research-cost-analysis-tool");
+
+  assert.match(home, /href="\/work\/evaluative-research-cost-analysis-tool"/);
+  assert.match(caseStudy, /<h1>Evaluative Research on Cost Analysis Tool<\/h1>/);
+  assert.match(caseStudy, /Diagnose alignment before usability/);
+  assert.match(caseStudy, /Earn room for deeper research/);
+  assert.match(caseStudy, /Turn findings into product direction/);
+  assert.equal((caseStudy.match(/\/portfolio\/cost-analysis\//g) ?? []).length >= 7, true);
+  assert.match(caseStudy, /class="case-next case-shell"[\s\S]*?Keep exploring[\s\S]*?href="\/#selected-work"/);
+});
+
+test("InsightGrid uses two columns only when it contains four InsightCards", async () => {
+  const { readFile } = await import("node:fs/promises");
+  const { html: costAnalysis } = await render("/work/evaluative-research-cost-analysis-tool");
+  const css = await readFile(new URL("../app/case-study.css", import.meta.url), "utf8");
+
+  assert.match(costAnalysis, /feedback-outcomes-grid insight-grid-four[\s\S]*?<h4>Prioritized development<\/h4>/);
+  assert.match(css, /\.insight-grid-four\s*\{\s*grid-template-columns:\s*repeat\(2,minmax\(0,1fr\)\)/);
+  assert.match(css, /\.feedback-comparison-grid,\.feedback-insights-grid,\.feedback-outcomes-grid\{grid-template-columns:repeat\(3,minmax\(0,1fr\)\)/);
+});
+
+test("VOC challenge uses InsightGrid and InsightCard headings use the ink token", async () => {
+  const { readFile } = await import("node:fs/promises");
+  const { html: voc } = await render("/work/voice-of-the-customer-admin-portal-revamp");
+  const [css, globals] = await Promise.all([
+    readFile(new URL("../app/case-study.css", import.meta.url), "utf8"),
+    readFile(new URL("../app/globals.css", import.meta.url), "utf8"),
+  ]);
+
+  assert.match(voc, /<div class="feedback-insights-grid insight-grid-four" data-component="InsightGrid">[\s\S]*?<h4>Conflicting product definitions<\/h4>/);
+  assert.match(css, /\.insight-card h4\{color:var\(--ink\)\}/);
+  assert.match(globals, /\.insight-card h4,\.recommendation-card h4,\.typography-card-heading\{color:var\(--ink\)/);
+});
+
+test("Home graduate-project CTA uses project-link and every InsightCard heading is h4", async () => {
+  const routes = [
+    "/work/ai-powered-feedback-intelligence-platform",
+    "/work/enterprise-search-generative-ai",
+    "/work/evaluative-research-cost-analysis-tool",
+    "/work/operations-information-hub",
+    "/work/sales-assessment-platform-ai-integration",
+    "/work/voice-of-the-customer-admin-portal-revamp",
+  ];
+  const [{ html: home }, ...caseStudies] = await Promise.all([render("/"), ...routes.map(render)]);
+
+  assert.match(home, /<a[^>]+class="project-link"[^>]*>View more graduate school projects/);
+  for (const { html } of caseStudies) {
+    assert.doesNotMatch(html, /<article class="insight-card(?: insight-card-highlighted)?" data-component="InsightCard"><h3>/);
+  }
 });
