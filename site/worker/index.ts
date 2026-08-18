@@ -19,7 +19,7 @@ interface ExecutionContext {
   passThroughOnException(): void;
 }
 
-const PROJECT_PASSWORD = "mxs@ccess";
+const PROJECT_PASSWORD = "mxs@cc355";
 const ACCESS_COOKIE = "portfolio_access";
 const PROTECTED_PROJECTS = new Set([
   "/work/sales-assessment-platform-ai-integration",

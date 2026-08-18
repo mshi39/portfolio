@@ -64,7 +64,7 @@ async function render(path = "/", { authenticated = true, ...init } = {}) {
   workerUrl.searchParams.set("test", `${process.pid}-${Date.now()}-${path}`);
   const { default: worker } = await import(workerUrl.href);
   const response = await worker.fetch(
-    new Request(`http://localhost${path}`, { ...init, headers: { accept: "text/html", ...(authenticated ? { cookie: "portfolio_access=69729119473c144446a5a5c3e18ebb7536fdf75c5d3d19b2290cdda727f4fb0a" } : {}), ...init.headers } }),
+    new Request(`http://localhost${path}`, { ...init, headers: { accept: "text/html", ...(authenticated ? { cookie: "portfolio_access=2938fd14a53ef324b5d6a88b5d906558b6106f911816d9c56a0ccd12f5bd5dc6" } : {}), ...init.headers } }),
     { ASSETS: { fetch: async () => new Response("Not found", { status: 404 }) } },
     { waitUntil() {}, passThroughOnException() {} },
   );
@@ -93,7 +93,7 @@ test("protected case studies require the branded password gate", async () => {
 
 test("the project password creates a browser-session access cookie", async () => {
   const path = protectedProjects[0];
-  const body = new URLSearchParams({ password: "mxs@ccess" });
+  const body = new URLSearchParams({ password: "mxs@cc355" });
   const { response } = await render(path, {
     authenticated: false,
     method: "POST",
