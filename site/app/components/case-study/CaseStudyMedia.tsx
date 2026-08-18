@@ -28,7 +28,7 @@ export function CaseStudyMedia(props: Props) {
             Your browser does not support this video.
           </video>
         ) : (
-          props.expandable ? (
+          props.expandable !== false ? (
             <ImageLightbox src={props.src} alt={props.alt} width={props.width} height={props.height}>
               <Image unoptimized src={props.src} alt={props.alt} width={props.width} height={props.height} />
             </ImageLightbox>

@@ -19,7 +19,7 @@ export default function Home() {
         title={<>Hi there, I&apos;m <span className="name-highlight">Melissa Shi</span></>}
         lede={<><strong>AI-powered enterprise SaaS products</strong> are my passion. As a UX designer, I transform complex workflows into research-based, scalable, high-impact digital solutions.</>}
         note="Collaborative. Innovative. Reliable. Impactful."
-        actions={<><ActionLink href="https://drive.google.com/file/d/1MeOyIEgyo-7H6YKICb3Wx_NCdbPeXLrx/view?usp=sharing">View résumé</ActionLink><ActionLink href="https://www.linkedin.com/in/melissaxshi/" variant="secondary">LinkedIn</ActionLink><ActionLink href="https://medium.com/@shineew16" variant="secondary">Medium</ActionLink></>}
+        actions={<><ActionLink href="https://drive.google.com/file/d/1jpwHy6RFQeSLDYWaqkUoXuedW34rSur7/view?usp=sharing">View résumé</ActionLink><ActionLink href="https://www.linkedin.com/in/melissaxshi/" variant="secondary">LinkedIn</ActionLink><ActionLink href="https://medium.com/@shineew16" variant="secondary">Medium</ActionLink></>}
         portrait={<PortraitStage src="/portfolio/melissa-hero.png" alt="Melissa Shi smiling" ariaLabel="Portrait of Melissa Shi" width={1086} height={1448} priority />}
         scrollCue={<ScrollCue href="#selected-work">Explore my work</ScrollCue>}
       />

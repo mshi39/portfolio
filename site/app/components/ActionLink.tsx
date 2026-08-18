@@ -10,7 +10,7 @@ export function ActionLink({ href, children, variant = "primary" }: Props) {
   const external = href.startsWith("http");
 
   return (
-    <a className={`button button-${variant}`} data-component="ActionLink" href={href} target={external ? "_blank" : undefined} rel={external ? "noreferrer" : undefined}>
+    <a className={`button button-${variant}`} data-component="ActionLink" href={href} target={external ? "_blank" : undefined} rel={external ? "noopener noreferrer" : undefined}>
       {children}<span aria-hidden="true">↗</span>
     </a>
   );
