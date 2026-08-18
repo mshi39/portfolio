@@ -1262,3 +1262,16 @@ test("sales quotes and final product vision use their approved shared identities
   const quoteCatalog = library.slice(library.indexOf('data-component-name="CaseStudyQuote"'), library.indexOf('data-component-name="WorkflowQuestion"'));
   assert.doesNotMatch(quoteCatalog, /feedback-workflow-question/);
 });
+
+test("Operations Information Hub has a local case study and Home link", async () => {
+  const { html: home } = await render("/");
+  const { html: caseStudy } = await render("/work/operations-information-hub");
+
+  assert.match(home, /href="\/work\/operations-information-hub"/);
+  assert.match(caseStudy, /<h1>Operations Information Hub<\/h1>/);
+  assert.match(caseStudy, /Build stakeholder belief/);
+  assert.match(caseStudy, /Design around the operator/);
+  assert.match(caseStudy, /Expand the right scope/);
+  assert.match(caseStudy, /\/portfolio\/operations-hub\/hero\.jpg/);
+  assert.match(caseStudy, /class="case-next case-shell"[\s\S]*?Keep exploring[\s\S]*?href="\/#selected-work"/);
+});
