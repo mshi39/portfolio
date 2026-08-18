@@ -1328,3 +1328,18 @@ test("Home graduate-project CTA uses project-link and every InsightCard heading 
     assert.doesNotMatch(html, /<article class="insight-card(?: insight-card-highlighted)?" data-component="InsightCard"><h3>/);
   }
 });
+
+test("Resort Trip Planner has a local decision-led case study and Home link", async () => {
+  const { html: home } = await render("/");
+  const { html: caseStudy } = await render("/work/resort-trip-planner");
+
+  assert.match(home, /href="\/work\/resort-trip-planner"/);
+  assert.match(caseStudy, /<h1>Nemacolin Woodlands Resort Trip Planner<\/h1>/);
+  assert.match(caseStudy, /Target motivations instead of demographics/);
+  assert.match(caseStudy, /Support the full reservation journey/);
+  assert.match(caseStudy, /Add structure without removing control/);
+  assert.match(caseStudy, /25[\s\S]*?testing participants/);
+  assert.match(caseStudy, /92%[\s\S]*?likely to reserve ahead/);
+  assert.equal((caseStudy.match(/\/portfolio\/resort-trip-planner\//g) ?? []).length >= 10, true);
+  assert.match(caseStudy, /class="case-next case-shell"[\s\S]*?Keep exploring[\s\S]*?href="\/#selected-work"/);
+});
