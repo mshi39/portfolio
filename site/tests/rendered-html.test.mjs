@@ -1275,3 +1275,16 @@ test("Operations Information Hub has a local case study and Home link", async ()
   assert.match(caseStudy, /\/portfolio\/operations-hub\/hero\.jpg/);
   assert.match(caseStudy, /class="case-next case-shell"[\s\S]*?Keep exploring[\s\S]*?href="\/#selected-work"/);
 });
+
+test("Cost Analysis research has a local case study and Home link", async () => {
+  const { html: home } = await render("/");
+  const { html: caseStudy } = await render("/work/evaluative-research-cost-analysis-tool");
+
+  assert.match(home, /href="\/work\/evaluative-research-cost-analysis-tool"/);
+  assert.match(caseStudy, /<h1>Evaluative Research on Cost Analysis Tool<\/h1>/);
+  assert.match(caseStudy, /Diagnose alignment before usability/);
+  assert.match(caseStudy, /Earn room for deeper research/);
+  assert.match(caseStudy, /Turn findings into product direction/);
+  assert.equal((caseStudy.match(/\/portfolio\/cost-analysis\//g) ?? []).length >= 7, true);
+  assert.match(caseStudy, /class="case-next case-shell"[\s\S]*?Keep exploring[\s\S]*?href="\/#selected-work"/);
+});
