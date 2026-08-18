@@ -27,7 +27,7 @@ export default function Home() {
         <div className="shell">
           <ScrollReveal><SectionIntro id="work-title" eyebrow="Selected work" title="Turning complex systems into experiences that click." description="A selection of product design and research work across AI, enterprise platforms, and service experiences." /></ScrollReveal>
           <div className="project-grid">{projects.map((project, index) => <ScrollReveal key={project.title} delay={(index % 2) * 90}><ProjectPreviewCard project={project} index={index} /></ScrollReveal>)}</div>
-          <ScrollReveal className="more-work"><ActionLink href="https://shineew16.wixsite.com/melissashi" variant="secondary">View more graduate school projects</ActionLink></ScrollReveal>
+          <ScrollReveal className="more-work"><a className="project-link" href="https://shineew16.wixsite.com/melissashi" target="_blank" rel="noreferrer">View more graduate school projects <span aria-hidden="true">↗</span></a></ScrollReveal>
         </div>
       </section>
       <ContactCallout eyebrow={<>There&apos;s more to the story</>} title="Curious about how I think and create?" body="Get to know the designer behind the work—or come say hello on LinkedIn." actions={<><ActionLink href="/about">About me</ActionLink><ActionLink href="https://www.linkedin.com/in/melissaxshi/" variant="secondary">Let&apos;s connect</ActionLink></>} />

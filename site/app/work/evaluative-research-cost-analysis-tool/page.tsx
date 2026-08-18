@@ -81,9 +81,9 @@ export default function CostAnalysisResearchPage() {
     <CaseStudySection id="context" eyebrow="Design context" title="A usability request revealed a product alignment problem" tone="pink">
       <p className="case-deck">The Cost Analysis Tool helped a production site see where value was eroding and where costs could be reduced. Development started in 2021, but ownership changes left the team without a reliable view of the intended users, their work, or the product&apos;s definition of success.</p>
       <InsightGrid mode="outcomes">
-        <InsightCard><h3>Unclear audience</h3><p>Different stakeholders named different primary users and access needs.</p></InsightCard>
-        <InsightCard><h3>Unclear value</h3><p>The team could not consistently explain how users would apply the tool in cost decisions.</p></InsightCard>
-        <InsightCard><h3>Unclear readiness</h3><p>A planned release date existed, but shared success criteria and workflow evidence did not.</p></InsightCard>
+        <InsightCard><h4>Unclear audience</h4><p>Different stakeholders named different primary users and access needs.</p></InsightCard>
+        <InsightCard><h4>Unclear value</h4><p>The team could not consistently explain how users would apply the tool in cost decisions.</p></InsightCard>
+        <InsightCard><h4>Unclear readiness</h4><p>A planned release date existed, but shared success criteria and workflow evidence did not.</p></InsightCard>
       </InsightGrid>
       <WorkflowQuestion>Before evaluating screens, did the team agree on the problem the product needed to solve?</WorkflowQuestion>
     </CaseStudySection>
@@ -92,7 +92,6 @@ export default function CostAnalysisResearchPage() {
       <p>A conventional usability test would have measured an interface against unstable assumptions. I began with six stakeholder interviews to establish where the product vision diverged.</p>
       <RecommendationList>
         <RecommendationCard sequence={1} segments={[<div className="feedback-blocks" key="copy"><h4>Test the product story first</h4><p>I asked the product owner and subject-matter experts to describe the goal, users, development stage, success criteria, and expected access. Comparing the answers exposed a stark vision gap.</p></div>, renderMedia("stakeholderAccess")]} />
-        <RecommendationCard sequence={2} segments={[<div className="feedback-blocks" key="copy"><h4>Convert disagreement into research questions</h4><p>The gaps became four decision-focused objectives: evaluate MVP usability, assess whether value drivers were sufficient, understand usefulness in real work, and determine appropriate access.</p></div>]} />
       </RecommendationList>
       <p>This reframed the assignment from validating a nearly finished interface to determining whether the product was ready to deliver the intended value.</p>
     </CaseStudySection>
@@ -102,15 +101,16 @@ export default function CostAnalysisResearchPage() {
       <RecommendationList>
         <RecommendationCard sequence={1} segments={[<div className="feedback-blocks" key="copy"><h4>Start with a heuristic evaluation</h4><p>The review identified immediate interaction issues while helping me learn the product well enough to design realistic tasks. A structured findings log made the risks visible and traceable.</p></div>, renderMedia("heuristicLog")]} />
         <RecommendationCard sequence={2} segments={[<div className="feedback-blocks" key="copy"><h4>Use early evidence to expand the study</h4><p>The findings demonstrated what expert review could reveal and what it could not. That distinction built credibility and helped secure access to users for formal usability testing.</p></div>]} />
+        <RecommendationCard sequence={2} segments={[<div className="feedback-blocks" key="copy"><h4>Convert disagreement into research questions</h4><p>The gaps became four decision-focused objectives:</p><ul><li>Evaluate MVP usability</li><li>Assess whether value drivers were sufficient</li><li>Understand tool usefulness in real work</li><li>Determine appropriate access</li></ul></div>]} />
       </RecommendationList>
     </CaseStudySection>
 
     <CaseStudySection id="focus-study" eyebrow="Decision 3" title="Focus limited research where it could change decisions">
       <p>Eight business teams used the underlying process, but the schedule could not support interviewing every group. I selected participants for decision coverage rather than broad representation alone.</p>
       <InsightGrid mode="outcomes">
-        <InsightCard><h3>Role coverage</h3><p>Two Role A and four Role B participants represented the people expected to interpret and act on cost information.</p></InsightCard>
-        <InsightCard><h3>Fresh perspective</h3><p>One new subject-matter expert challenged inherited assumptions and added domain context.</p></InsightCard>
-        <InsightCard><h3>Mixed evidence</h3><p>Task performance exposed breakdowns, SUS provided a benchmark, and follow-up interviews clarified value and workflow needs.</p></InsightCard>
+        <InsightCard><h4>Role coverage</h4><p>Two Role A and four Role B participants represented the people expected to interpret and act on cost information.</p></InsightCard>
+        <InsightCard><h4>Fresh perspective</h4><p>One new subject-matter expert challenged inherited assumptions and added domain context.</p></InsightCard>
+        <InsightCard><h4>Mixed evidence</h4><p>Task performance exposed breakdowns, SUS provided a benchmark, and follow-up interviews clarified value and workflow needs.</p></InsightCard>
       </InsightGrid>
       {renderMedia("sus")}
       <p>The combination was deliberate: observation showed what people could do, the scale made usability comparable, and interviews explained why the tool did or did not fit their work.</p>
@@ -127,10 +127,10 @@ export default function CostAnalysisResearchPage() {
 
     <CaseStudySection id="results" eyebrow="Results and reflection" title="The team left with evidence it could act on">
       <InsightGrid mode="outcomes">
-        <InsightCard><h3>Prioritized development</h3><p>The team received an actionable backlog, and several recommendations were underway within two months.</p></InsightCard>
-        <InsightCard><h3>Continued investment</h3><p>Evidence about usefulness and future value supported the case for continued product development and funding.</p></InsightCard>
-        <InsightCard><h3>Shared product model</h3><p>User profiles, access needs, and current and future workflows gave the team a common basis for decisions.</p></InsightCard>
-        <InsightCard><h3>Reopened communication</h3><p>The study reconnected the project team with primary users and created a repeatable way to collect and prioritize feedback.</p></InsightCard>
+        <InsightCard><h4>Prioritized development</h4><p>The team received an actionable backlog, and several recommendations were underway within two months.</p></InsightCard>
+        <InsightCard><h4>Continued investment</h4><p>Evidence about usefulness and future value supported the case for continued product development and funding.</p></InsightCard>
+        <InsightCard><h4>Shared product model</h4><p>User profiles, access needs, and current and future workflows gave the team a common basis for decisions.</p></InsightCard>
+        <InsightCard><h4>Reopened communication</h4><p>The study reconnected the project team with primary users and created a repeatable way to collect and prioritize feedback.</p></InsightCard>
       </InsightGrid>
       <p className="case-deck">My main takeaway was that rigor is not the number of methods used. It is choosing each method for the uncertainty it resolves, then connecting the evidence to a decision the team can make.</p>
     </CaseStudySection>

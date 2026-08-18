@@ -1294,7 +1294,7 @@ test("InsightGrid uses two columns only when it contains four InsightCards", asy
   const { html: costAnalysis } = await render("/work/evaluative-research-cost-analysis-tool");
   const css = await readFile(new URL("../app/case-study.css", import.meta.url), "utf8");
 
-  assert.match(costAnalysis, /feedback-outcomes-grid insight-grid-four[\s\S]*?<h3>Prioritized development<\/h3>/);
+  assert.match(costAnalysis, /feedback-outcomes-grid insight-grid-four[\s\S]*?<h4>Prioritized development<\/h4>/);
   assert.match(css, /\.insight-grid-four\s*\{\s*grid-template-columns:\s*repeat\(2,minmax\(0,1fr\)\)/);
   assert.match(css, /\.feedback-comparison-grid,\.feedback-insights-grid,\.feedback-outcomes-grid\{grid-template-columns:repeat\(3,minmax\(0,1fr\)\)/);
 });
@@ -1310,4 +1310,21 @@ test("VOC challenge uses InsightGrid and InsightCard headings use the ink token"
   assert.match(voc, /<div class="feedback-insights-grid insight-grid-four" data-component="InsightGrid">[\s\S]*?<h4>Conflicting product definitions<\/h4>/);
   assert.match(css, /\.insight-card h4\{color:var\(--ink\)\}/);
   assert.match(globals, /\.insight-card h4,\.recommendation-card h4,\.typography-card-heading\{color:var\(--ink\)/);
+});
+
+test("Home graduate-project CTA uses project-link and every InsightCard heading is h4", async () => {
+  const routes = [
+    "/work/ai-powered-feedback-intelligence-platform",
+    "/work/enterprise-search-generative-ai",
+    "/work/evaluative-research-cost-analysis-tool",
+    "/work/operations-information-hub",
+    "/work/sales-assessment-platform-ai-integration",
+    "/work/voice-of-the-customer-admin-portal-revamp",
+  ];
+  const [{ html: home }, ...caseStudies] = await Promise.all([render("/"), ...routes.map(render)]);
+
+  assert.match(home, /<a[^>]+class="project-link"[^>]*>View more graduate school projects/);
+  for (const { html } of caseStudies) {
+    assert.doesNotMatch(html, /<article class="insight-card(?: insight-card-highlighted)?" data-component="InsightCard"><h3>/);
+  }
 });
