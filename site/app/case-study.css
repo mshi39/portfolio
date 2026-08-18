@@ -7,6 +7,7 @@
 @media(max-width:900px){.feedback-hero-overview,.feedback-comparison-grid,.feedback-pipeline-grid{grid-template-columns:1fr}.feedback-insights-grid,.feedback-outcomes-grid{grid-template-columns:repeat(2,1fr)}.recommendation-card{grid-template-columns:40px 1fr}.recommendation-card>.case-media{grid-column:2}.feedback-case-study .case-media img,.feedback-case-study .case-media video{max-width:100%}}
 @media(max-width:600px){.feedback-insights-grid,.feedback-outcomes-grid{grid-template-columns:1fr}.feedback-hero-overview>div{padding:24px}.recommendation-card{padding:24px}.recommendation-card>.case-media{grid-column:1/-1}.insight-card{padding:22px}}
 .feedback-comparison-grid,.feedback-insights-grid,.feedback-outcomes-grid{grid-template-columns:repeat(3,minmax(0,1fr))}.insight-grid-four{grid-template-columns:repeat(2,minmax(0,1fr))}@media(max-width:600px){.feedback-comparison-grid,.feedback-insights-grid,.feedback-outcomes-grid,.insight-grid-four{grid-template-columns:1fr}}
+.insight-card h4{color:var(--ink)}
 .feedback-source-meta{grid-template-columns:repeat(2,1fr)}
 .enterprise-source-meta{grid-template-columns:repeat(2,1fr)}
 .sales-source-meta{grid-template-columns:repeat(3,1fr)}
