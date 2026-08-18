@@ -1272,4 +1272,6 @@ test("Operations Information Hub has a local case study and Home link", async ()
   assert.match(caseStudy, /Build stakeholder belief/);
   assert.match(caseStudy, /Design around the operator/);
   assert.match(caseStudy, /Expand the right scope/);
+  assert.match(caseStudy, /\/portfolio\/operations-hub\/hero\.jpg/);
+  assert.match(caseStudy, /class="case-next case-shell"[\s\S]*?Keep exploring[\s\S]*?href="\/#selected-work"/);
 });
