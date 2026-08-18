@@ -103,7 +103,7 @@ test("the project password creates a browser-session access cookie", async () =>
   });
 
   assert.equal(response.status, 303);
-  assert.equal(response.headers.get("location"), path);
+  assert.equal(response.headers.get("location"), `http://localhost${path}`);
   const cookie = response.headers.get("set-cookie") ?? "";
   assert.match(cookie, /^portfolio_access=[^;]+; Path=\/; HttpOnly; Secure; SameSite=Lax$/);
   assert.doesNotMatch(cookie, /Max-Age|Expires/i);

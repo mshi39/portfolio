@@ -1,0 +1,13 @@
+.dev-*.log
+.next
+.openai
+.wrangler
+build
+db
+dist
+examples
+outputs
+tests
+worker
+drizzle.config.ts
+vite.config.ts

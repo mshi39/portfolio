@@ -10,7 +10,7 @@ type InsightGridProps = {
 
 export function InsightGrid({ mode, groups = [], children }: InsightGridProps) {
   if (mode === "insights" && groups.length === 5) return <div className="metrics-grid" data-component="InsightGrid">{groups.map((group, index) => {
-    const label = isValidElement(group) ? String(group.props.children) : String(group);
+    const label = isValidElement<{ children?: ReactNode }>(group) ? String(group.props.children) : String(group);
     const [icon, ...words] = label.split(" ");
     return <MetricCard key={index} value={`${String(index + 1).padStart(2, "0")} ${icon}`} label={words.join(" ")} />;
   })}</div>;
