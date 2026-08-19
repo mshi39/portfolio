@@ -750,6 +750,18 @@ test("feedback section headings are unnumbered", async () => {
 test("workflow research keeps Outcome outside insight cards and preserves its revised narrative order", async () => {
   const { html } = await render("/work/ai-powered-feedback-intelligence-platform");
   const section = html.match(/<section id="workflow-research"[\s\S]*?<\/section>/)?.[0] ?? "";
+  const metrics = section.match(/<article class="metric-card metric-card-white" data-component="MetricCard">[\s\S]*?<\/article>/g) ?? [];
+  assert.equal(metrics.length, 5);
+  const labels = [
+    "User agreement being a game stopper for PMs to leverage VOC",
+    "Back and forth communication with customers to align meeting time",
+    "Huge amount of time spent working through raw notes to extract insights",
+    "Have to turn insights into different presentation materials to share with leadership and product team",
+    "Turning insights into actionable insights trackable in Jira",
+  ];
+  metrics.forEach((metric, index) => {
+    assert.match(metric, new RegExp(`<strong>0${index + 1}<\\/strong><span>${labels[index]}<\\/span>`));
+  });
   assert.match(section, /<h3>Outcome<\/h3>/);
   const insightArticles = section.match(/<article\b[^>]*>[\s\S]*?<\/article>/g) ?? [];
   for (const article of insightArticles) assert.doesNotMatch(article, /<h3>Outcome<\/h3>/);

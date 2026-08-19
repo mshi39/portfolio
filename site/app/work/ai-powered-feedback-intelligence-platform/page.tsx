@@ -9,6 +9,7 @@ import { CaseStudySection } from "../../components/case-study/CaseStudySection";
 import { VerticalChapterNav } from "../../components/case-study/VerticalChapterNav";
 import { ContentBlockRenderer } from "../../components/case-study/ContentBlockRenderer";
 import { InsightGrid } from "../../components/case-study/InsightGrid";
+import { MetricCard } from "../../components/case-study/MetricCard";
 import { RecommendationList } from "../../components/case-study/RecommendationList";
 import { SimpleContentList } from "../../components/case-study/SimpleContentList";
 import { feedbackContent, type FeedbackContentBlock, type FeedbackMediaKey } from "../../data/feedback-intelligence";
@@ -84,10 +85,17 @@ function GroupedBlocks({ blocks, mode }: { blocks: FeedbackContentBlock[]; mode:
     } else if (current) current.push(block);
     else introduction.push(block);
   }
-  return <>
-    <ContentBlockRenderer blocks={introduction} renderMedia={mediaBlock} />
-    <InsightGrid mode={mode} groups={groups.map((group, index) => <ContentBlockRenderer blocks={group} renderMedia={mediaBlock} articleHeadings key={index} />)} />
-  </>;
+  if (mode === "insights") {
+    const labels = [
+      "User agreement being a game stopper for PMs to leverage VOC",
+      "Back and forth communication with customers to align meeting time",
+      "Huge amount of time spent working through raw notes to extract insights",
+      "Have to turn insights into different presentation materials to share with leadership and product team",
+      "Turning insights into actionable insights trackable in Jira",
+    ];
+    return <><ContentBlockRenderer blocks={introduction} renderMedia={mediaBlock} /><div className="metrics-grid" data-component="InsightGrid">{labels.map((label, index) => <MetricCard key={label} value={String(index + 1).padStart(2, "0")} label={label} variant="white" />)}</div></>;
+  }
+  return <><ContentBlockRenderer blocks={introduction} renderMedia={mediaBlock} /><InsightGrid mode={mode} groups={groups.map((group, index) => <ContentBlockRenderer blocks={group} renderMedia={mediaBlock} articleHeadings key={index} />)} /></>;
 }
 
 function PipelineBlocks({ blocks }: { blocks: FeedbackContentBlock[] }) {
