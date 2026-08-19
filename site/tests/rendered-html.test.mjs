@@ -762,6 +762,9 @@ test("workflow research keeps Outcome outside insight cards and preserves its re
   metrics.forEach((metric, index) => {
     assert.match(metric, new RegExp(`<strong>0${index + 1}<\\/strong><span>${labels[index]}<\\/span>`));
   });
+  const { readFile } = await import("node:fs/promises");
+  const css = await readFile(new URL("../app/case-study.css", import.meta.url), "utf8");
+  assert.match(css, /\.feedback-case-study #workflow-research \.metrics-grid\{grid-template-columns:repeat\(3,1fr\)\}/);
   assert.match(section, /<h3>Outcome<\/h3>/);
   const insightArticles = section.match(/<article\b[^>]*>[\s\S]*?<\/article>/g) ?? [];
   for (const article of insightArticles) assert.doesNotMatch(article, /<h3>Outcome<\/h3>/);
