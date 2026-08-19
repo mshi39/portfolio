@@ -966,6 +966,7 @@ test("component library documents each production component once", async () => {
   assert.equal(new Set(names).size, names.length, "component catalog names must be unique");
   assert.equal(descriptions.length, names.length, "every catalog entry needs one Use when description");
   for (const name of requiredNames) assert.equal(names.filter((candidate) => candidate === name).length, 1, `expected ${name} exactly once`);
+  assert.match(html, /InsightGrid[\s\S]*?Rule of thumb: use two columns for 3n\+1 cards; otherwise use three columns\./);
 });
 
 test("component library renders production identities and semantic previews", async () => {

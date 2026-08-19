@@ -258,7 +258,7 @@ export const catalog: CatalogEntry[] = [
   },
   {
     name: "InsightGrid",
-    description: "Use when comparing a set of related insights, outcomes, or concepts.",
+    description: "Use when comparing a set of related insights, outcomes, or concepts. Rule of thumb: use two columns for 3n+1 cards; otherwise use three columns.",
     category: "Case studies",
     preview: <InsightGrid mode="insights" groups={[<><h4>Signal one</h4><p>Representative supporting detail.</p></>, <><h4>Signal two</h4><p>Representative supporting detail.</p></>]} />,
   },
