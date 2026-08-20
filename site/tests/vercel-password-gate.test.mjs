@@ -29,4 +29,8 @@ test("Vercel serves the password gate before protected case studies", { skip: !b
 
   const stillLocked = await fetch(`${baseUrl}${paths[1]}`, { headers: { cookie: cookie.split(";", 1)[0] } });
   assert.equal(stillLocked.status, 401, "one case study cookie must not unlock another");
+
+  const legacyCookie = "portfolio_access=2938fd14a53ef324b5d6a88b5d906558b6106f911816d9c56a0ccd12f5bd5dc6";
+  const accessible = await fetch(`${baseUrl}${path}`, { headers: { cookie: `${cookie.split(";", 1)[0]}; ${legacyCookie}` } });
+  assert.equal(accessible.status, 200, "an old site-wide cookie must not override valid case study access");
 });

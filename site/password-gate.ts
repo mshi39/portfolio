@@ -50,8 +50,11 @@ function passwordPage(path: string, showError = false) {
 export async function passwordGate(request: Request) {
   const url = new URL(request.url);
   const token = await accessToken(url.pathname);
-  const cookies = Object.fromEntries((request.headers.get("cookie") ?? "").split(";").map((part) => part.trim().split("=", 2)));
-  if (cookies[ACCESS_COOKIE] === token) return null;
+  const hasAccess = (request.headers.get("cookie") ?? "").split(";").some((part) => {
+    const [name, value] = part.trim().split("=", 2);
+    return name === ACCESS_COOKIE && value === token;
+  });
+  if (hasAccess) return null;
   if (request.method === "POST") {
     const form = await request.formData();
     if (form.get("password") === PROJECT_PASSWORD) {
