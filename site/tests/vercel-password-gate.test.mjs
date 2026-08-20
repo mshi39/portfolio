@@ -23,5 +23,10 @@ test("Vercel serves the password gate before protected case studies", { skip: !b
     redirect: "manual",
   });
   assert.equal(unlocked.status, 303);
-  assert.match(unlocked.headers.get("set-cookie") ?? "", /^portfolio_access=[^;]+; Path=\/; HttpOnly; Secure; SameSite=Lax$/);
+  const cookie = unlocked.headers.get("set-cookie") ?? "";
+  assert.match(cookie, new RegExp(`^portfolio_access=[^;]+; Path=${path}; HttpOnly; Secure; SameSite=Lax$`));
+  assert.doesNotMatch(cookie, /Max-Age|Expires/i);
+
+  const stillLocked = await fetch(`${baseUrl}${paths[1]}`, { headers: { cookie: cookie.split(";", 1)[0] } });
+  assert.equal(stillLocked.status, 401, "one case study cookie must not unlock another");
 });

@@ -1,5 +1,6 @@
 import assert from "node:assert/strict";
 import test from "node:test";
+import { createHmac } from "node:crypto";
 
 async function readPng(fileUrl) {
   const { readFile } = await import("node:fs/promises");
@@ -64,7 +65,7 @@ async function render(path = "/", { authenticated = true, ...init } = {}) {
   workerUrl.searchParams.set("test", `${process.pid}-${Date.now()}-${path}`);
   const { default: worker } = await import(workerUrl.href);
   const response = await worker.fetch(
-    new Request(`http://localhost${path}`, { ...init, headers: { accept: "text/html", ...(authenticated ? { cookie: "portfolio_access=2938fd14a53ef324b5d6a88b5d906558b6106f911816d9c56a0ccd12f5bd5dc6" } : {}), ...init.headers } }),
+    new Request(`http://localhost${path}`, { ...init, headers: { accept: "text/html", ...(authenticated ? { cookie: `portfolio_access=${createHmac("sha256", "mxs@cc355").update(`melissa-shi-portfolio-access:${path}`).digest("hex")}` } : {}), ...init.headers } }),
     { ASSETS: { fetch: async () => new Response("Not found", { status: 404 }) } },
     { waitUntil() {}, passThroughOnException() {} },
   );
@@ -105,7 +106,7 @@ test("the project password creates a browser-session access cookie", async () =>
   assert.equal(response.status, 303);
   assert.equal(response.headers.get("location"), `http://localhost${path}`);
   const cookie = response.headers.get("set-cookie") ?? "";
-  assert.match(cookie, /^portfolio_access=[^;]+; Path=\/; HttpOnly; Secure; SameSite=Lax$/);
+  assert.match(cookie, new RegExp(`^portfolio_access=[^;]+; Path=${path}; HttpOnly; Secure; SameSite=Lax$`));
   assert.doesNotMatch(cookie, /Max-Age|Expires/i);
 
   const { response: unlocked, html } = await render(path, { headers: { cookie: cookie.split(";", 1)[0] } });
@@ -205,7 +206,7 @@ test("home preserves the complete contact and footer copy contracts", async () =
 test("enterprise search card uses final metadata and local route", async () => {
   const { html } = await render();
   assert.match(html, /Research: Value of Internal Enterprise Search in the Age of Generative AI/);
-  assert.match(html, /September 2025 .* December 2025/);
+  assert.match(html, /Sep 2025 .* Dec 2025/);
   assert.match(html, /href="\/work\/enterprise-search-generative-ai"/);
 });
 
@@ -213,7 +214,7 @@ test("enterprise search card uses final metadata and local route", async () => {
 test("feedback intelligence card links to the local case study", async () => {
   const { html } = await render("/");
   assert.match(html, /AI-Powered Customer Feedback Intelligence Platform/);
-  assert.match(html, /April.*May 2026/);
+  assert.match(html, /Apr.*May 2026/);
   assert.match(html, /href="\/work\/ai-powered-feedback-intelligence-platform"/);
 });
 

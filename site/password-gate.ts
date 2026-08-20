@@ -1,9 +1,9 @@
 const PROJECT_PASSWORD = "mxs@cc355";
 const ACCESS_COOKIE = "portfolio_access";
 
-async function accessToken() {
+async function accessToken(path: string) {
   const key = await crypto.subtle.importKey("raw", new TextEncoder().encode(PROJECT_PASSWORD), { name: "HMAC", hash: "SHA-256" }, false, ["sign"]);
-  const signature = await crypto.subtle.sign("HMAC", key, new TextEncoder().encode("melissa-shi-portfolio-access"));
+  const signature = await crypto.subtle.sign("HMAC", key, new TextEncoder().encode(`melissa-shi-portfolio-access:${path}`));
   return [...new Uint8Array(signature)].map((byte) => byte.toString(16).padStart(2, "0")).join("");
 }
 
@@ -49,13 +49,13 @@ function passwordPage(path: string, showError = false) {
 
 export async function passwordGate(request: Request) {
   const url = new URL(request.url);
-  const token = await accessToken();
+  const token = await accessToken(url.pathname);
   const cookies = Object.fromEntries((request.headers.get("cookie") ?? "").split(";").map((part) => part.trim().split("=", 2)));
   if (cookies[ACCESS_COOKIE] === token) return null;
   if (request.method === "POST") {
     const form = await request.formData();
     if (form.get("password") === PROJECT_PASSWORD) {
-      return new Response(null, { status: 303, headers: { location: url.href, "set-cookie": `${ACCESS_COOKIE}=${token}; Path=/; HttpOnly; Secure; SameSite=Lax` } });
+      return new Response(null, { status: 303, headers: { location: url.href, "set-cookie": `${ACCESS_COOKIE}=${token}; Path=${url.pathname}; HttpOnly; Secure; SameSite=Lax` } });
     }
     return passwordPage(url.pathname, true);
   }
