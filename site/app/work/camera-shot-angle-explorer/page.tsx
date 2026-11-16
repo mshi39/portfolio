@@ -7,7 +7,6 @@ import { CaseStudyEmbed } from "../../components/case-study/CaseStudyEmbed";
 import { CaseStudyHero } from "../../components/case-study/CaseStudyHero";
 import { CaseStudySection } from "../../components/case-study/CaseStudySection";
 import { ComparisonTable } from "../../components/case-study/ComparisonTable";
-import { InsightGrid } from "../../components/case-study/InsightGrid";
 import { VerticalChapterNav } from "../../components/case-study/VerticalChapterNav";
 import { WorkflowQuestion } from "../../components/case-study/WorkflowQuestion";
 
@@ -21,7 +20,7 @@ const chapters = [
   { id: "solution", label: "My solution" },
   { id: "v1-decisions", label: "V1 decisions" },
   { id: "v1-refinements", label: "Refining V1" },
-  { id: "v2-production", label: "V2" },
+  { id: "v2-production", label: "V2 New Features" },
   { id: "ai-collaboration", label: "How I used AI" },
   { id: "outcome", label: "Outcome" },
 ];
@@ -65,34 +64,31 @@ export default function CameraShotAngleExplorerCaseStudy() {
     </CaseStudySection>
 
     <CaseStudySection id="v1-decisions" eyebrow="03 · Key product decisions in V1" title="Key product decisions in V1">
-      <div className="camera-shot-table-labels"><p>User pain point</p><p>My solution and design reasoning</p></div>
-      <InsightGrid mode="insights" groups={[
-        <><h4>“I don’t know what changing the camera will do.”</h4><p><strong>Live preview and automatic shot labels</strong> connect each adjustment to its visual result, helping users learn through experimentation.</p></>,
-        <><h4>“Moving the camera and turning it feel like the same thing.”</h4><p><strong>Independent position and rotation controls</strong> distinguish where the camera is from where it points. Users can adjust orbit and distance while preserving orientation, or change yaw, pitch, and roll while preserving location.</p></>,
-        <><h4>“I lost the subject while experimenting.”</h4><p><strong>Look at Subject</strong> re-aims the camera toward the subject’s eyes while preserving location and roll, giving beginners a simple recovery action.</p></>,
-        <><h4>“I can see the composition, but can’t describe it accurately.”</h4><p><strong>AI Shot Prompt</strong> translates the camera setup into a copyable instruction, combining framing, camera level, viewpoint, lens, aspect ratio, and composition. The goal is clearer generation instructions, fewer wasted attempts, and lower credit or token consumption.</p></>,
+      <ComparisonTable headings={["User pain point", "My solution", "Design vision"]} rows={[
+        ["“I don’t know what changing the camera will do.”", "Live preview and automatic shot labels", "connect each adjustment to its visual result, helping users learn through experimentation."],
+        ["“Moving the camera and turning it feel like the same thing.”", "Independent position and rotation controls", "distinguish where the camera is from where it points. Users can adjust orbit and distance while preserving orientation, or change yaw, pitch, and roll while preserving location."],
+        ["“I lost the subject while experimenting.”", "Look at Subject", "re-aims the camera toward the subject’s eyes while preserving location and roll, giving beginners a simple recovery action."],
+        ["“I can see the composition, but can’t describe it accurately.”", "AI Shot Prompt", "translates the camera setup into a copyable instruction, combining framing, camera level, viewpoint, lens, aspect ratio, and composition. The goal is clearer generation instructions, fewer wasted attempts, and lower credit or token consumption."],
       ]} />
       <div className="prose"><p>I chose subject-centered orbit controls to make the camera–subject relationship easier to understand. I also fixed the lens at 50mm to keep the initial learning experience focused on position, orientation, and framing.</p><p>The preview updates continuously, while prompts update through an explicit <strong>Refresh</strong> action. Users can experiment freely before capturing the setup they want to reuse.</p></div>
     </CaseStudySection>
 
     <CaseStudySection id="v1-refinements" eyebrow="04 · Refining V1" title="Refining V1">
       <div className="prose"><p>I evaluated the working experience and refined both its interaction details and the accuracy of its feedback.</p></div>
-      <div className="camera-shot-table-labels"><p>Refinement</p><p>Problem identified and improvement</p></div>
-      <InsightGrid mode="insights" groups={[
-        <><h4>Continuous camera-level classification</h4><p>The initial output covered only a few heights, such as eye, shoulder, and knee level. Gaps between them frequently returned “Unclassified,” making valid camera positions appear unsupported. I expanded the labels—including chest level—and defined continuous classification boundaries from ground to eye level. This made the feedback more useful and consistent throughout exploration.</p></>,
-        <><h4>Consistent color coding</h4><p>Aligned camera handles and related controls to help users connect spatial manipulation with interface inputs. Labels and active-state highlighting provide guidance alongside color.</p></>,
-        <><h4>Clearer information pop-ups</h4><p>Refined contextual guidance to explain controls without overwhelming the workspace.</p></>,
-        <><h4>More deliberate shortcuts</h4><p>Refined mode-specific axis shortcuts, visible hints, and toggle-to-release behavior. Shortcuts remain inactive while typing or dragging to prevent accidental changes.</p></>,
-        <><h4>Independent recovery controls</h4><p>Separate position and rotation resets let users recover one setting without losing the other.</p></>,
-        <><h4>Better continuity and feedback</h4><p>Saved camera settings support returning users, while an outdated-prompt indicator makes it clear when the displayed prompt needs refreshing.</p></>,
+      <ComparisonTable headings={["Refinement", "Problem identified and improvement"]} rows={[
+        ["Continuous camera-level classification", "The initial output covered only a few heights, such as eye, shoulder, and knee level. Gaps between them frequently returned “Unclassified,” making valid camera positions appear unsupported. I expanded the labels—including chest level—and defined continuous classification boundaries from ground to eye level. This made the feedback more useful and consistent throughout exploration."],
+        ["Consistent color coding", "Aligned camera handles and related controls to help users connect spatial manipulation with interface inputs. Labels and active-state highlighting provide guidance alongside color."],
+        ["Clearer information pop-ups", "Refined contextual guidance to explain controls without overwhelming the workspace."],
+        ["More deliberate shortcuts", "Refined mode-specific axis shortcuts, visible hints, and toggle-to-release behavior. Shortcuts remain inactive while typing or dragging to prevent accidental changes."],
+        ["Independent recovery controls", "Separate position and rotation resets let users recover one setting without losing the other."],
+        ["Better continuity and feedback", "Saved camera settings support returning users, while an outdated-prompt indicator makes it clear when the displayed prompt needs refreshing."],
       ]} />
     </CaseStudySection>
 
     <CaseStudySection id="v2-production" eyebrow="05 · V2: Connecting exploration to production" title="V2: Connecting exploration to production" tone="pink">
-      <div className="camera-shot-table-labels"><p>User pain point</p><p>My solution and design reasoning</p></div>
-      <InsightGrid mode="insights" groups={[
-        <><h4>“The text prompt alone doesn’t fully communicate the composition I want.”</h4><p><strong>Export Image</strong> captures the current preview as a clean PNG without interface overlays. Users can pair this visual reference with the shot prompt in compatible AI generation tools. I added this to communicate spatial relationships and framing more explicitly, with the goal of improving generation accuracy and reducing wasted attempts.</p></>,
-        <><h4>“Unfamiliar English camera terms make it harder to learn and write prompts.”</h4><p><strong>English and Simplified Chinese support</strong> translates the interface and generated prompts while remembering the user’s preference. I extended language support across both learning and output so users can understand the controls and prepare instructions in their preferred language.</p></>,
+      <ComparisonTable variant="white" headings={["User pain point", "My solution", "Design vision"]} rows={[
+        ["“The text prompt alone doesn’t fully communicate the composition I want.”", "Export Image", "captures the current preview as a clean PNG without interface overlays. Users can pair this visual reference with the shot prompt in compatible AI generation tools. I added this to communicate spatial relationships and framing more explicitly, with the goal of improving generation accuracy and reducing wasted attempts."],
+        ["“Unfamiliar English camera terms make it harder to learn and write prompts.”", "English and Simplified Chinese support", "translates the interface and generated prompts while remembering the user’s preference. I extended language support across both learning and output so users can understand the controls and prepare instructions in their preferred language."],
       ]} />
     </CaseStudySection>
 

@@ -345,6 +345,19 @@ test("Camera Shot Angle Explorer renders the supplied source narrative and live 
     assert.match(html, new RegExp(`href="#${id}"`));
   }
 
+  const v1Section = html.match(/<section id="v1-decisions"[\s\S]*?<\/section>/)?.[0] ?? "";
+  assert.match(v1Section, /<table[^>]+data-component="ComparisonTable"[^>]*>[\s\S]*?<th>User pain point<\/th>[\s\S]*?<th>My solution<\/th>[\s\S]*?<th>Design vision<\/th>/);
+  assert.match(v1Section, /<td>“I don’t know what changing the camera will do\.”<\/td>[\s\S]*?<td>Live preview and automatic shot labels<\/td>/);
+
+  const refinementsSection = html.match(/<section id="v1-refinements"[\s\S]*?<\/section>/)?.[0] ?? "";
+  assert.match(refinementsSection, /<table[^>]+data-component="ComparisonTable"[^>]*>[\s\S]*?<th>Refinement<\/th>[\s\S]*?<th>Problem identified and improvement<\/th>/);
+  assert.match(refinementsSection, /<td>Continuous camera-level classification<\/td>[\s\S]*?<td>The initial output covered only a few heights/);
+
+  const v2Section = html.match(/<section id="v2-production"[\s\S]*?<\/section>/)?.[0] ?? "";
+  assert.match(v2Section, /<table[^>]+data-component="ComparisonTable"[^>]*>[\s\S]*?<th>User pain point<\/th>[\s\S]*?<th>My solution<\/th>[\s\S]*?<th>Design vision<\/th>/);
+  assert.match(v2Section, /<td>“The text prompt alone doesn’t fully communicate the composition I want\.”<\/td>[\s\S]*?<td>Export Image<\/td>/);
+  assert.match(html, /<a href="#v2-production">V2 New Features<\/a>/);
+
   for (const phrase of [
     "From imagining a shot to confidently directing it.",
     "While creating AI short dramas, I could picture the shot I wanted but struggled to describe it using cinematography terminology.",
