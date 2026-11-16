@@ -6,6 +6,7 @@ import { PortfolioHeader } from "../../components/PortfolioHeader";
 import { CaseStudyEmbed } from "../../components/case-study/CaseStudyEmbed";
 import { CaseStudyHero } from "../../components/case-study/CaseStudyHero";
 import { CaseStudySection } from "../../components/case-study/CaseStudySection";
+import { ComparisonTable } from "../../components/case-study/ComparisonTable";
 import { InsightGrid } from "../../components/case-study/InsightGrid";
 import { VerticalChapterNav } from "../../components/case-study/VerticalChapterNav";
 import { WorkflowQuestion } from "../../components/case-study/WorkflowQuestion";
@@ -97,13 +98,13 @@ export default function CameraShotAngleExplorerCaseStudy() {
 
     <CaseStudySection id="ai-collaboration" eyebrow="06 · How I used AI" title="How I used AI">
       <div className="prose"><p>AI served as my technical collaborator throughout the process. I began with a product idea, explored its feasibility through dialogue with AI, and investigated how the 3D interactions could work. These conversations helped turn my intended experience into a feasible technical direction.</p></div>
-      <div className="case-columns">
-        <div><h3>Identify the opportunity</h3><p><strong>My contribution:</strong> Recognized the gap between visual intent, cinematography knowledge, and AI video instructions through my own production experience.</p><p><strong>AI assistance:</strong> Helped explore possible approaches and clarify technical constraints.</p></div>
-        <div><h3>Define the experience</h3><p><strong>My contribution:</strong> Established the connection between camera manipulation, live preview, terminology, and reusable prompts.</p><p><strong>AI assistance:</strong> Explored how to implement the 3D scene, camera behavior, and synchronized preview.</p></div>
-        <div><h3>Make product decisions</h3><p><strong>My contribution:</strong> Chose the initial scope, subject-centered controls, independent transforms, fixed lens, and recovery actions.</p><p><strong>AI assistance:</strong> Translated those decisions into technical approaches and implementation code.</p></div>
-        <div><h3>Evaluate and refine</h3><p><strong>My contribution:</strong> Identified confusing interactions and classification gaps; directed improvements to labels, guidance, consistency, and shortcuts.</p><p><strong>AI assistance:</strong> Helped diagnose implementation issues, revise classification logic, and implement refinements.</p></div>
-        <div><h3>Set quality expectations</h3><p><strong>My contribution:</strong> Assessed whether the behavior matched the intended learning experience and defined what needed validation.</p><p><strong>AI assistance:</strong> Supported debugging and automated checks of camera behavior and interface interactions.</p></div>
-      </div>
+      <ComparisonTable variant="pink" headings={["My contribution", "AI assistance"]} rows={[
+        [<><strong>Identify the opportunity:</strong> Recognized the gap between visual intent, cinematography knowledge, and AI video instructions through my own production experience.</>, "Helped explore possible approaches and clarify technical constraints."],
+        [<><strong>Define the experience:</strong> Established the connection between camera manipulation, live preview, terminology, and reusable prompts.</>, "Explored how to implement the 3D scene, camera behavior, and synchronized preview."],
+        [<><strong>Make product decisions:</strong> Chose the initial scope, subject-centered controls, independent transforms, fixed lens, and recovery actions.</>, "Translated those decisions into technical approaches and implementation code."],
+        [<><strong>Evaluate and refine:</strong> Identified confusing interactions and classification gaps; directed improvements to labels, guidance, consistency, and shortcuts.</>, "Helped diagnose implementation issues, revise classification logic, and implement refinements."],
+        [<><strong>Set quality expectations:</strong> Assessed whether the behavior matched the intended learning experience and defined what needed validation.</>, "Supported debugging and automated checks of camera behavior and interface interactions."],
+      ]} />
       <div className="prose"><p>My role was to own the problem, product direction, and experience quality while using AI to bridge technical knowledge gaps and build a working product.</p><p>The product’s shot prompts are assembled from structured camera settings; generating them does not require an AI model call.</p></div>
     </CaseStudySection>
 

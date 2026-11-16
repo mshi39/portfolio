@@ -359,6 +359,7 @@ test("Camera Shot Angle Explorer renders the supplied source narrative and live 
 
   assert.match(html, /The experience connects\s*<strong>spatial exploration → visual feedback → terminology → generation instructions<\/strong>\./);
   assert.match(html, /The preview updates continuously, while prompts update through an explicit <strong>Refresh<\/strong> action\./);
+  assert.match(html, /<table[^>]+data-component="ComparisonTable"[^>]*>[\s\S]*?<th>My contribution<\/th>[\s\S]*?<th>AI assistance<\/th>[\s\S]*?<strong>Identify the opportunity:<\/strong> Recognized the gap between visual intent, cinematography knowledge, and AI video instructions through my own production experience\./);
   assert.match(html, /<iframe[^>]+src="https:\/\/camera-shot-angle-explorer\.vercel\.app\/"[^>]+loading="lazy"[^>]+allow="clipboard-write"/);
   assert.match(html, />Explore the live product ↗<\/a>/);
 });
