@@ -333,6 +333,35 @@ test("interactive case-study embed renders a framed live product and fallback li
   assert.match(html, /<a[^>]+href="https:\/\/camera-shot-angle-explorer\.vercel\.app\/"[^>]+target="_blank"[^>]+rel="noopener noreferrer"[^>]*>Explore the live product ↗<\/a>/);
 });
 
+test("Camera Shot Angle Explorer renders the supplied source narrative and live product", async () => {
+  const { response, html } = await render("/work/camera-shot-angle-explorer");
+  assert.equal(response.status, 200);
+  assert.equal((html.match(/<h1[ >]/g) ?? []).length, 1);
+  assert.match(html, /<h1>Camera Shot Angle Explorer<\/h1>/);
+
+  for (const id of ["problem", "solution", "v1-decisions", "v1-refinements", "v2-production", "ai-collaboration", "outcome"]) {
+    assert.match(html, new RegExp(`id="${id}"`));
+    assert.match(html, new RegExp(`href="#${id}"`));
+  }
+
+  for (const phrase of [
+    "From imagining a shot to confidently directing it.",
+    "While creating AI short dramas, I could picture the shot I wanted but struggled to describe it using cinematography terminology.",
+    "Live preview and automatic shot labels",
+    "Look at Subject",
+    "Continuous camera-level classification",
+    "Export Image",
+    "English and Simplified Chinese support",
+    "The product’s shot prompts are assembled from structured camera settings; generating them does not require an AI model call.",
+    "I turned a personal production challenge into a working browser-based tool that connects learning cinematography with preparing AI video instructions.",
+  ]) assert.match(html, new RegExp(phrase.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")));
+
+  assert.match(html, /The experience connects\s*<strong>spatial exploration → visual feedback → terminology → generation instructions<\/strong>\./);
+  assert.match(html, /The preview updates continuously, while prompts update through an explicit <strong>Refresh<\/strong> action\./);
+  assert.match(html, /<iframe[^>]+src="https:\/\/camera-shot-angle-explorer\.vercel\.app\/"[^>]+loading="lazy"[^>]+allow="clipboard-write"/);
+  assert.match(html, />Explore the live product ↗<\/a>/);
+});
+
 test("renders the complete feedback intelligence case study", async () => {
   const { response, html } = await render("/work/ai-powered-feedback-intelligence-platform");
   assert.equal(response.status, 200);
