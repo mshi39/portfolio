@@ -310,6 +310,29 @@ test("shared case-study media renders semantic image markup", async () => {
     /<figure class="case-media case-media-image"[^>]*>[\s\S]*?<img[^>]+enterprise-search-question-consolidation[^>]*>[\s\S]*?<figcaption>/,
   );
 });
+
+test("interactive case-study embed renders a framed live product and fallback link", async () => {
+  const [{ createElement }, { renderToStaticMarkup }, { tsImport }] = await Promise.all([
+    import("react"),
+    import("react-dom/server"),
+    import("tsx/esm/api"),
+  ]);
+  const { CaseStudyEmbed } = await tsImport("../app/components/case-study/CaseStudyEmbed.tsx", import.meta.url);
+  const html = renderToStaticMarkup(createElement(CaseStudyEmbed, {
+    src: "https://camera-shot-angle-explorer.vercel.app/",
+    title: "Camera Shot Angle Explorer interactive demo",
+    height: 760,
+    caption: "Explore the working product in context.",
+    actionHref: "https://camera-shot-angle-explorer.vercel.app/",
+    actionLabel: "Explore the live product ↗",
+  }));
+
+  assert.match(html, /<figure class="case-media case-media-embed"[^>]+data-component="CaseStudyEmbed"/);
+  assert.match(html, /<iframe[^>]+src="https:\/\/camera-shot-angle-explorer\.vercel\.app\/"[^>]+title="Camera Shot Angle Explorer interactive demo"[^>]+height="760"[^>]+loading="lazy"[^>]+allow="clipboard-write"/);
+  assert.match(html, /<figcaption>Explore the working product in context\.<\/figcaption>/);
+  assert.match(html, /<a[^>]+href="https:\/\/camera-shot-angle-explorer\.vercel\.app\/"[^>]+target="_blank"[^>]+rel="noopener noreferrer"[^>]*>Explore the live product ↗<\/a>/);
+});
+
 test("renders the complete feedback intelligence case study", async () => {
   const { response, html } = await render("/work/ai-powered-feedback-intelligence-platform");
   assert.equal(response.status, 200);
@@ -954,6 +977,7 @@ test("component library documents each production component once", async () => {
     "CaseStudyMetadata",
     "CaseStudySection",
     "CaseStudyMedia",
+    "CaseStudyEmbed",
     "CaseStudyQuote",
     "WorkflowQuestion",
     "ContentBlockRenderer",
@@ -978,7 +1002,7 @@ test("component library renders production identities and semantic previews", as
   const productionNames = [
     "PortfolioHeader", "PortfolioNavToggle", "ActionLink", "VerticalChapterNav", "ScrollCue", "PortfolioHero", "PortraitStage",
     "SectionIntro", "ProjectPreviewCard", "ContactCallout", "PortfolioFooter", "ScrollReveal",
-    "CaseStudyHero", "CaseStudyMetadata", "CaseStudySection", "CaseStudyMedia", "CaseStudyQuote",
+    "CaseStudyHero", "CaseStudyMetadata", "CaseStudySection", "CaseStudyMedia", "CaseStudyEmbed", "CaseStudyQuote",
     "WorkflowQuestion", "ContentBlockRenderer", "InsightCard", "InsightGrid", "RecommendationCard",
     "RecommendationList", "SimpleContentList", "Tag",
   ];

@@ -14,6 +14,7 @@ import { Tag } from "../components/Tag";
 import { CaseStudyHero } from "../components/case-study/CaseStudyHero";
 import { HeroOverview } from "../components/case-study/HeroOverview";
 import { CaseStudyMedia } from "../components/case-study/CaseStudyMedia";
+import { CaseStudyEmbed } from "../components/case-study/CaseStudyEmbed";
 import { CaseStudyMetadata } from "../components/case-study/CaseStudyMetadata";
 import { CaseStudyQuote } from "../components/case-study/CaseStudyQuote";
 import { CaseStudySection } from "../components/case-study/CaseStudySection";
@@ -226,6 +227,12 @@ export const catalog: CatalogEntry[] = [
     description: "Use when presenting captioned case-study imagery or video with consistent controls.",
     category: "Case studies",
     preview: <div className="component-library-media-grid"><CaseStudyMedia kind="image" src="/portfolio/enterprise-search.png" alt="Abstract enterprise interface sample" width={900} height={620} caption="Click the image to open a larger view." expandable /><CaseStudyMedia kind="video" src="/portfolio/feedback-intelligence-hero-insights.mp4" caption="A controlled local video preview." /></div>,
+  },
+  {
+    name: "CaseStudyEmbed",
+    description: "Use when a case study needs to present an interactive external product with a clear fallback link.",
+    category: "Case studies",
+    preview: <CaseStudyEmbed src="https://camera-shot-angle-explorer.vercel.app/" title="Camera Shot Angle Explorer interactive demo" height={760} caption="Explore the working product in context." actionHref="https://camera-shot-angle-explorer.vercel.app/" actionLabel="Explore the live product ↗" />,
   },
   {
     name: "CaseStudyQuote",
