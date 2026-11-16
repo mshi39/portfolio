@@ -276,6 +276,8 @@ test("production shared chrome has stable component-library names", async () => 
   const { html: about } = await render("/about");
 
   assert.match(home, /<header[^>]+data-component="PortfolioHeader"/);
+  assert.match(home, /<nav class="portfolio-nav-toggle portfolio-nav-toggle-pink" data-component="PortfolioNavToggle" aria-label="Primary navigation">/);
+  assert.match(about, /<nav class="portfolio-nav-toggle portfolio-nav-toggle-pink" data-component="PortfolioNavToggle" aria-label="Primary navigation">/);
   assert.match(home, /<a(?=[^>]*class="brand")(?=[^>]*href="\/")(?=[^>]*aria-label="Melissa Shi home")[^>]*>.*?Melissa Shi/);
   assert.match(home, /<a[^>]+href="\/#selected-work"[^>]*>My Work<\/a>/);
   assert.match(home, /<a[^>]+href="\/about"[^>]*>About Me<\/a>/);
@@ -937,6 +939,7 @@ test("component library documents each production component once", async () => {
 
   const requiredNames = [
     "PortfolioHeader",
+    "PortfolioNavToggle",
     "ActionLink",
     "VerticalChapterNav",
     "ScrollCue",
@@ -973,7 +976,7 @@ test("component library documents each production component once", async () => {
 test("component library renders production identities and semantic previews", async () => {
   const { html } = await render("/component-library");
   const productionNames = [
-    "PortfolioHeader", "ActionLink", "VerticalChapterNav", "ScrollCue", "PortfolioHero", "PortraitStage",
+    "PortfolioHeader", "PortfolioNavToggle", "ActionLink", "VerticalChapterNav", "ScrollCue", "PortfolioHero", "PortraitStage",
     "SectionIntro", "ProjectPreviewCard", "ContactCallout", "PortfolioFooter", "ScrollReveal",
     "CaseStudyHero", "CaseStudyMetadata", "CaseStudySection", "CaseStudyMedia", "CaseStudyQuote",
     "WorkflowQuestion", "ContentBlockRenderer", "InsightCard", "InsightGrid", "RecommendationCard",

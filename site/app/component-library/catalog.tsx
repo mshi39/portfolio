@@ -3,6 +3,7 @@ import { ActionLink } from "../components/ActionLink";
 import { ContactCallout } from "../components/ContactCallout";
 import { PortfolioFooter } from "../components/PortfolioFooter";
 import { PortfolioHeader } from "../components/PortfolioHeader";
+import { PortfolioNavToggle } from "../components/PortfolioNavToggle";
 import { PortfolioHero } from "../components/PortfolioHero";
 import { PortraitStage } from "../components/PortraitStage";
 import { ProjectPreviewCard } from "../components/ProjectPreviewCard";
@@ -129,6 +130,12 @@ export const catalog: CatalogEntry[] = [
     description: "Use when providing the persistent portfolio identity and primary navigation.",
     category: "Navigation & actions",
     preview: <PortfolioHeader />,
+  },
+  {
+    name: "PortfolioNavToggle",
+    description: "Use when switching between My Work and About Me. Use pink on white surfaces and white on pink surfaces.",
+    category: "Navigation & actions",
+    preview: <div className="component-library-stack"><PortfolioNavToggle /><PortfolioNavToggle surface="white" /></div>,
   },
   {
     name: "ActionLink",
