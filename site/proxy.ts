@@ -11,5 +11,6 @@ export const config = {
     "/work/ai-powered-feedback-intelligence-platform",
     "/work/enterprise-search-generative-ai",
     "/work/voice-of-the-customer-admin-portal-revamp",
+    "/work/camera-shot-angle-explorer",
   ],
 };

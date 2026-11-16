@@ -9,6 +9,7 @@ test("Vercel serves the password gate before protected case studies", { skip: !b
     "/work/ai-powered-feedback-intelligence-platform",
     "/work/enterprise-search-generative-ai",
     "/work/voice-of-the-customer-admin-portal-revamp",
+    "/work/camera-shot-angle-explorer",
   ];
   for (const path of paths) {
     const locked = await fetch(`${baseUrl}${path}`);

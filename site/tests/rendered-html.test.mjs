@@ -77,6 +77,7 @@ const protectedProjects = [
   "/work/ai-powered-feedback-intelligence-platform",
   "/work/enterprise-search-generative-ai",
   "/work/voice-of-the-customer-admin-portal-revamp",
+  "/work/camera-shot-angle-explorer",
 ];
 
 test("protected case studies require the branded password gate", async () => {
@@ -360,6 +361,11 @@ test("Camera Shot Angle Explorer renders the supplied source narrative and live 
   assert.match(html, /The preview updates continuously, while prompts update through an explicit <strong>Refresh<\/strong> action\./);
   assert.match(html, /<iframe[^>]+src="https:\/\/camera-shot-angle-explorer\.vercel\.app\/"[^>]+loading="lazy"[^>]+allow="clipboard-write"/);
   assert.match(html, />Explore the live product ↗<\/a>/);
+});
+
+test("Camera Shot Angle Explorer stays out of the home-page project grid", async () => {
+  const { html } = await render("/");
+  assert.doesNotMatch(html, /Camera Shot Angle Explorer|\/work\/camera-shot-angle-explorer/);
 });
 
 test("renders the complete feedback intelligence case study", async () => {
