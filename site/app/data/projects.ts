@@ -8,3 +8,7 @@ export const projects: Project[] = [
   { title: "Evaluative Research on Cost Analysis Tool", description: "Evaluative research that established future product direction through feature findings, workflow mapping, and usability testing.", date: "Jan 2023 – Mar 2023", tags: ["Evaluative Research", "Enterprise Research", "Product Strategy"], image: "/portfolio/cost-analysis.png", href: "/work/evaluative-research-cost-analysis-tool", alt: "Cost analysis tool research presentation preview" },
   { title: "Nemacolin Woodlands Resort Trip Planner", description: "A machine-learning-based smart trip planner that makes resort booking feel more bespoke, confident, and stress-free.", date: "Jan 2019 – Jul 2019", tags: ["Mobile", "UX Research", "Recommendation System", "Capstone"], image: "/portfolio/trip-planner.jpg", href: "/work/resort-trip-planner", alt: "Nemacolin resort trip planner screens" },
 ];
+
+export const personalAiProjects: Project[] = [
+  { title: "Camera Shot Angle Explorer", description: "An interactive 3D workspace that lets creators explore camera angles, visualize compositions, and generate reusable shot prompts.", date: "Personal AI Project", tags: ["AI-native Product Design", "Interactive 3D", "Creative Tools"], image: "/portfolio/camera-shot-angle-explorer/case-media-heroshot.png", href: "/work/camera-shot-angle-explorer", alt: "Camera Shot Explorer interactive workspace" },
+];

@@ -5,8 +5,11 @@ import { PortfolioFooter } from "../../components/PortfolioFooter";
 import { PortfolioHeader } from "../../components/PortfolioHeader";
 import { CaseStudyEmbed } from "../../components/case-study/CaseStudyEmbed";
 import { CaseStudyHero } from "../../components/case-study/CaseStudyHero";
+import { CaseStudyMedia } from "../../components/case-study/CaseStudyMedia";
 import { CaseStudySection } from "../../components/case-study/CaseStudySection";
 import { ComparisonTable } from "../../components/case-study/ComparisonTable";
+import { RecommendationCard } from "../../components/case-study/RecommendationCard";
+import { RecommendationList } from "../../components/case-study/RecommendationList";
 import { VerticalChapterNav } from "../../components/case-study/VerticalChapterNav";
 import { WorkflowQuestion } from "../../components/case-study/WorkflowQuestion";
 
@@ -38,6 +41,7 @@ export default function CameraShotAngleExplorerCaseStudy() {
         { heading: "My role", content: <p>AI-native product design—from problem definition and interaction design to AI-assisted implementation and refinement.</p> },
       ]}
       metadataItems={[{ label: "Project type", value: "Self-initiated product" }, { label: "Focus", value: "AI-native product design" }]}
+      mediaSlots={<CaseStudyMedia src="/portfolio/camera-shot-angle-explorer/case-media-heroshot.png" kind="image" alt="Camera Shot Explorer interactive workspace and live camera preview" caption="Camera Shot Explorer V2" width={1916} height={908} expandable={false} />}
     />
     <VerticalChapterNav chapters={chapters} />
 
@@ -75,14 +79,14 @@ export default function CameraShotAngleExplorerCaseStudy() {
 
     <CaseStudySection id="v1-refinements" eyebrow="04 · Refining V1" title="Refining V1">
       <div className="prose"><p>I evaluated the working experience and refined both its interaction details and the accuracy of its feedback.</p></div>
-      <ComparisonTable headings={["Refinement", "Problem identified and improvement"]} rows={[
-        ["Continuous camera-level classification", "The initial output covered only a few heights, such as eye, shoulder, and knee level. Gaps between them frequently returned “Unclassified,” making valid camera positions appear unsupported. I expanded the labels—including chest level—and defined continuous classification boundaries from ground to eye level. This made the feedback more useful and consistent throughout exploration."],
-        ["Consistent color coding", "Aligned camera handles and related controls to help users connect spatial manipulation with interface inputs. Labels and active-state highlighting provide guidance alongside color."],
-        ["Clearer information pop-ups", "Refined contextual guidance to explain controls without overwhelming the workspace."],
-        ["More deliberate shortcuts", "Refined mode-specific axis shortcuts, visible hints, and toggle-to-release behavior. Shortcuts remain inactive while typing or dragging to prevent accidental changes."],
-        ["Independent recovery controls", "Separate position and rotation resets let users recover one setting without losing the other."],
-        ["Better continuity and feedback", "Saved camera settings support returning users, while an outdated-prompt indicator makes it clear when the displayed prompt needs refreshing."],
-      ]} />
+      <RecommendationList>
+        <RecommendationCard sequence={1} segments={[<div className="feedback-blocks" key="copy"><h4>Continuous camera-level classification</h4><p>The initial output covered only a few heights, such as eye, shoulder, and knee level. Gaps between them frequently returned “Unclassified,” making valid camera positions appear unsupported. I expanded the labels—including chest level—and defined continuous classification boundaries from ground to eye level. This made the feedback more useful and consistent throughout exploration.</p></div>, <CaseStudyMedia key="media" src="/portfolio/camera-shot-angle-explorer/continuous-camera-level.mp4" kind="video" caption="Continuous camera-level feedback in V1." />]} />
+        <RecommendationCard sequence={2} segments={[<div className="feedback-blocks" key="copy"><h4>Consistent color coding</h4><p>Aligned camera handles and related controls to help users connect spatial manipulation with interface inputs. Labels and active-state highlighting provide guidance alongside color.</p></div>, <CaseStudyMedia key="media" src="/portfolio/camera-shot-angle-explorer/color-coded-slider.png" kind="image" alt="Color-coded camera slider controls" caption="Color connects controls to camera movement." width={823} height={203} />]} />
+        <RecommendationCard sequence={3} segments={[<div className="feedback-blocks" key="copy"><h4>Clearer information pop-ups</h4><p>Refined contextual guidance to explain controls without overwhelming the workspace.</p></div>, <CaseStudyMedia key="media" src="/portfolio/camera-shot-angle-explorer/info-pop-up.png" kind="image" alt="Contextual information pop-up in Camera Shot Explorer" caption="Contextual guidance explains controls in place." width={385} height={343} />]} />
+        <RecommendationCard sequence={4} segments={[<div className="feedback-blocks" key="copy"><h4>More deliberate shortcuts</h4><p>Refined mode-specific axis shortcuts, visible hints, and toggle-to-release behavior. Shortcuts remain inactive while typing or dragging to prevent accidental changes.</p></div>, <CaseStudyMedia key="media" src="/portfolio/camera-shot-angle-explorer/deliberate-shortcuts.png" kind="image" alt="Visible keyboard shortcut guidance" caption="Shortcut hints make mode-specific controls discoverable." width={516} height={187} />]} />
+        <RecommendationCard sequence={5} segments={[<div className="feedback-blocks" key="copy"><h4>Independent recovery controls</h4><p>Separate position and rotation resets let users recover one setting without losing the other.</p></div>, <CaseStudyMedia key="media" src="/portfolio/camera-shot-angle-explorer/independent-reset.mp4" kind="video" caption="Independent reset controls preserve the other camera setting." />]} />
+        <RecommendationCard sequence={6} segments={[<div className="feedback-blocks" key="copy"><h4>Better continuity and feedback</h4><p>Saved camera settings support returning users, while an outdated-prompt indicator makes it clear when the displayed prompt needs refreshing.</p></div>, <CaseStudyMedia key="media" src="/portfolio/camera-shot-angle-explorer/outdated-prompt-indicator.png" kind="image" alt="Outdated prompt indicator with refresh control" caption="The prompt indicates when it needs refreshing." width={215} height={104} />]} />
+      </RecommendationList>
     </CaseStudySection>
 
     <CaseStudySection id="v2-production" eyebrow="05 · V2: Connecting exploration to production" title="V2: Connecting exploration to production" tone="pink">

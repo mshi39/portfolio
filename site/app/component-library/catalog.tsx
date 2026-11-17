@@ -4,6 +4,7 @@ import { ContactCallout } from "../components/ContactCallout";
 import { PortfolioFooter } from "../components/PortfolioFooter";
 import { PortfolioHeader } from "../components/PortfolioHeader";
 import { PortfolioNavToggle } from "../components/PortfolioNavToggle";
+import { WorkCategoryToggle } from "../components/WorkCategoryToggle";
 import { PortfolioHero } from "../components/PortfolioHero";
 import { PortraitStage } from "../components/PortraitStage";
 import { ProjectPreviewCard } from "../components/ProjectPreviewCard";
@@ -137,6 +138,12 @@ export const catalog: CatalogEntry[] = [
     description: "Use when switching between My Work and About Me. Use pink on white surfaces and white on pink surfaces.",
     category: "Navigation & actions",
     preview: <div className="component-library-stack"><PortfolioNavToggle /><PortfolioNavToggle surface="white" /></div>,
+  },
+  {
+    name: "WorkCategoryToggle",
+    description: "Use when switching a work collection between professional and personal AI projects. Use the white surface on a pink section.",
+    category: "Navigation & actions",
+    preview: <WorkCategoryToggle />,
   },
   {
     name: "ActionLink",

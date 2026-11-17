@@ -138,8 +138,8 @@ test("server-renders Melissa's My Work page", async () => {
   const { response, html } = await render();
   assert.equal(response.status, 200);
   assert.match(html, /Melissa Shi/);
-  assert.match(html, /Selected work/);
-  assert.equal((html.match(/aria-label="View case study:/g) ?? []).length, 7);
+  assert.match(html, /Professional Work/);
+  assert.equal((html.match(/aria-label="View case study:/g) ?? []).length, 8);
   assert.match(html, /Product designer .* Design strategist/i);
 });
 
@@ -155,7 +155,8 @@ test("home composes production-backed library components", async () => {
   for (const name of [
     "PortfolioHero",
     "PortraitStage",
-    "SectionIntro",
+    "WorkCategoryToggle",
+    "WorkSelection",
     "ProjectPreviewCard",
     "ContactCallout",
     "PortfolioFooter",
@@ -175,7 +176,13 @@ test("home composes production-backed library components", async () => {
   ]) assert.ok(html.includes(`href="${href}"`), `expected professional link: ${href}`);
   assert.match(html, /<a[^>]+href="https:\/\/drive\.google\.com\/file\/d\/1jpwHy6RFQeSLDYWaqkUoXuedW34rSur7\/view\?usp=sharing"[^>]+target="_blank"[^>]+rel="noopener noreferrer"[^>]*>View résumé/);
   assert.match(html, /href="#selected-work"/);
-  assert.equal((html.match(/aria-label="View case study:/g) ?? []).length, 7, "Home must keep every project preview");
+  assert.equal((html.match(/aria-label="View case study:/g) ?? []).length, 8, "Home must include professional and personal project previews");
+  assert.match(html, /data-component="WorkCategoryToggle"[\s\S]*?Professional Work[\s\S]*?Personal AI Projects/);
+  assert.match(html, /Exploring AI Native Product Design/);
+  assert.match(html, /A selection of personal projects exploring the boundaries of AI\./);
+  assert.match(html, /Camera Shot Angle Explorer/);
+  assert.match(html, /href="\/work\/camera-shot-angle-explorer"/);
+  assert.match(html, /View more graduate school projects/);
   assert.match(html, /Curious about how I think and create\?/);
   assert.match(html, /Get to know the designer behind the work/);
   assert.match(html, /Designed with curiosity and a little purple magic\./);
@@ -350,8 +357,14 @@ test("Camera Shot Angle Explorer renders the supplied source narrative and live 
   assert.match(v1Section, /<td>“I don’t know what changing the camera will do\.”<\/td>[\s\S]*?<td>Live preview and automatic shot labels<\/td>/);
 
   const refinementsSection = html.match(/<section id="v1-refinements"[\s\S]*?<\/section>/)?.[0] ?? "";
-  assert.match(refinementsSection, /<table[^>]+data-component="ComparisonTable"[^>]*>[\s\S]*?<th>Refinement<\/th>[\s\S]*?<th>Problem identified and improvement<\/th>/);
-  assert.match(refinementsSection, /<td>Continuous camera-level classification<\/td>[\s\S]*?<td>The initial output covered only a few heights/);
+  assert.match(refinementsSection, /data-component="RecommendationList"/);
+  assert.equal((refinementsSection.match(/data-component="RecommendationCard"/g) ?? []).length, 6);
+  assert.match(refinementsSection, /<h4>Continuous camera-level classification<\/h4>[\s\S]*?The initial output covered only a few heights/);
+  assert.equal((refinementsSection.match(/data-component="CaseStudyMedia"/g) ?? []).length, 6);
+  for (const asset of ["continuous-camera-level.mp4", "color-coded-slider.png", "info-pop-up.png", "deliberate-shortcuts.png", "independent-reset.mp4", "outdated-prompt-indicator.png"]) {
+    assert.match(refinementsSection, new RegExp(`src="/portfolio/camera-shot-angle-explorer/${asset}"`));
+  }
+  assert.match(html, /src="\/portfolio\/camera-shot-angle-explorer\/case-media-heroshot\.png"/);
 
   const v2Section = html.match(/<section id="v2-production"[\s\S]*?<\/section>/)?.[0] ?? "";
   assert.match(v2Section, /<table[^>]+data-component="ComparisonTable"[^>]*>[\s\S]*?<th>User pain point<\/th>[\s\S]*?<th>My solution<\/th>[\s\S]*?<th>Design vision<\/th>/);
@@ -377,9 +390,10 @@ test("Camera Shot Angle Explorer renders the supplied source narrative and live 
   assert.match(html, />Explore the live product ↗<\/a>/);
 });
 
-test("Camera Shot Angle Explorer stays out of the home-page project grid", async () => {
+test("Camera Shot Angle Explorer appears only in the personal AI project collection", async () => {
   const { html } = await render("/");
-  assert.doesNotMatch(html, /Camera Shot Angle Explorer|\/work\/camera-shot-angle-explorer/);
+  assert.match(html, /\/work\/camera-shot-angle-explorer[\s\S]*?Camera Shot Angle Explorer/);
+  assert.match(html, /hidden="" aria-hidden="true"[\s\S]*?Camera Shot Angle Explorer/);
 });
 
 test("renders the complete feedback intelligence case study", async () => {
@@ -1012,6 +1026,7 @@ test("component library documents each production component once", async () => {
   const requiredNames = [
     "PortfolioHeader",
     "PortfolioNavToggle",
+    "WorkCategoryToggle",
     "ActionLink",
     "VerticalChapterNav",
     "ScrollCue",
@@ -1039,7 +1054,7 @@ test("component library documents each production component once", async () => {
   ];
   const names = [...html.matchAll(/data-component-name="([^"]+)"/g)].map((match) => match[1]);
   const descriptions = [...html.matchAll(/data-component-description="(Use when [^"]+)"/g)].map((match) => match[1]);
-  assert.ok(names.length >= 27, `expected at least 27 catalog entries, received ${names.length}`);
+  assert.ok(names.length >= 28, `expected at least 28 catalog entries, received ${names.length}`);
   assert.equal(new Set(names).size, names.length, "component catalog names must be unique");
   assert.equal(descriptions.length, names.length, "every catalog entry needs one Use when description");
   for (const name of requiredNames) assert.equal(names.filter((candidate) => candidate === name).length, 1, `expected ${name} exactly once`);
@@ -1049,7 +1064,7 @@ test("component library documents each production component once", async () => {
 test("component library renders production identities and semantic previews", async () => {
   const { html } = await render("/component-library");
   const productionNames = [
-    "PortfolioHeader", "PortfolioNavToggle", "ActionLink", "VerticalChapterNav", "ScrollCue", "PortfolioHero", "PortraitStage",
+    "PortfolioHeader", "PortfolioNavToggle", "WorkCategoryToggle", "ActionLink", "VerticalChapterNav", "ScrollCue", "PortfolioHero", "PortraitStage",
     "SectionIntro", "ProjectPreviewCard", "ContactCallout", "PortfolioFooter", "ScrollReveal",
     "CaseStudyHero", "CaseStudyMetadata", "CaseStudySection", "CaseStudyMedia", "CaseStudyEmbed", "CaseStudyQuote",
     "WorkflowQuestion", "ContentBlockRenderer", "InsightCard", "InsightGrid", "RecommendationCard",
@@ -1317,6 +1332,7 @@ test("enterprise methods table is rounded and the interview prompt uses Workflow
   assert.match(tableRule, /border-radius:\s*28px/);
   assert.match(tableRule, /overflow:\s*hidden/);
   assert.match(tableRule, /border:\s*1px solid var\(--line\)/);
+  assert.match(css, /\.research-methods-table td\{vertical-align:top\}/);
 });
 
 test("enterprise persona cards use shared case-study media", async () => {
